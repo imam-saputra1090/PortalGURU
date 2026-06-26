@@ -2516,12 +2516,12 @@ const DEFAULT_STUDENTS = [
       const overlay = document.getElementById("verify-overlay");
       overlay.querySelector(".verify-text").innerText = "Verifikasi Akses Siswa";
       overlay.querySelector("#verify-subtext").innerText = "Memeriksa status penempatan PKL...";
-      overlay.style.display = "flex";
+      overlay.classList.add("active");
 
       setTimeout(() => {
-        overlay.style.display = "none";
+        overlay.classList.remove("active");
         showStudentDashboard();
-        showToast("Login Siswa Sukses", "Selamat datang di Portal Jurnal Harian PKL.");
+        showToast("Login Siswa Sukses", "Selamat datang di Portal Jurnal Harian PKL, " + selectedName + "!");
       }, 2000);
     }
 

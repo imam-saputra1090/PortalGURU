@@ -1562,66 +1562,96 @@
         <!-- Verification overlay -->
         <div class="verify-overlay" id="verify-overlay">
           <div class="verify-spinner"></div>
-          <div class="verify-text">Verifikasi NUPTK Sekolah</div>
-          <div class="verify-subtext" id="verify-subtext">Mencocokkan database dapodik...</div>
+          <div class="verify-text">Verifikasi Akses Portal</div>
+          <div class="verify-subtext" id="verify-subtext">Menghubungkan ke server sekolah...</div>
         </div>
-
-      <!-- TABS REMOVED: GURU PORTAL ONLY -->
 
         <div id="guru-form-container" style="display: block;">
           <div class="auth-logo">
-          <span class="auth-logo-dot"></span>
-          INFODESK<span style="color: var(--accent-ruby);">234</span>
-        </div>
-        <h2 class="auth-title">Pendaftaran Akses Guru</h2>
-        <p class="auth-subtitle">Akses kelola siswa PKL, modul ajar digital, bank soal kejuruan TKR, dan instrumen UKK.</p>
+            <span class="auth-logo-dot"></span>
+            INFODESK<span style="color: var(--accent-ruby);">234</span>
+          </div>
+          <h2 class="auth-title">Portal Guru</h2>
+          <p class="auth-subtitle">Akses kelola siswa PKL, modul ajar digital, bank soal kejuruan TKR, dan instrumen UKK.</p>
 
-        <form id="auth-form" onsubmit="handleRegistration(event)">
-          <div class="form-group">
-            <label class="form-label" for="reg-name">Nama Lengkap (dengan gelar)</label>
-            <input class="form-control" type="text" id="reg-name" required placeholder="Contoh: Drs. Budi Santoso, M.T.">
+          <!-- AUTH TOGGLE TABS -->
+          <div style="display:flex; gap:0; margin-bottom: 24px; border:1px solid var(--border-glass); border-radius:10px; overflow:hidden;">
+            <button id="tab-login-btn" onclick="switchAuthTab('login')" style="flex:1; padding:10px; background:var(--accent-ruby); color:#fff; border:none; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.3s;">
+              <i class="fa fa-right-to-bracket"></i> Masuk
+            </button>
+            <button id="tab-daftar-btn" onclick="switchAuthTab('daftar')" style="flex:1; padding:10px; background:transparent; color:var(--text-muted); border:none; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.3s;">
+              <i class="fa fa-user-plus"></i> Daftar Baru
+            </button>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="reg-school">Asal Sekolah (SMK)</label>
-            <input class="form-control" type="text" id="reg-school" required placeholder="Contoh: SMK Negeri 2 Jakarta">
+          <!-- LOGIN FORM -->
+          <div id="login-form-panel" style="display:block;">
+            <form id="guru-login-form" onsubmit="handleGuruLogin(event)">
+              <div class="form-group">
+                <label class="form-label" for="login-name">Nama Lengkap</label>
+                <input class="form-control" type="text" id="login-name" required placeholder="Nama sesuai saat pendaftaran">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="login-wa">Nomor WhatsApp</label>
+                <input class="form-control" type="text" id="login-wa" required placeholder="Nomor WA yang didaftarkan">
+              </div>
+              <button class="btn-auth" type="submit">
+                <i class="fa fa-right-to-bracket"></i> Masuk Portal Guru
+              </button>
+            </form>
+            <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-muted);">Belum punya akun? <a onclick="switchAuthTab('daftar')" style="color:var(--accent-cyan); cursor:pointer; font-weight:600;">Daftar di sini</a></p>
           </div>
 
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="reg-subject">Kompetensi Keahlian</label>
-              <select class="form-control" id="reg-subject" required>
-                <option value="Teknik Kendaraan Ringan Otomotif">Teknik Kendaraan Ringan (TKR)</option>
-                <option value="Teknik Sepeda Motor">Teknik Sepeda Motor (TSM)</option>
-                <option value="Teknik Bodi Otomotif">Teknik Bodi Otomotif</option>
-                <option value="Rekayasa Perangkat Lunak kejuruan">Rekayasa Perangkat Lunak (IT)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="reg-wa">Nomor WhatsApp Aktif</label>
-              <input class="form-control" type="text" id="reg-wa" required placeholder="Contoh: 081234567890">
-            </div>
-          </div>
+          <!-- REGISTER FORM -->
+          <div id="daftar-form-panel" style="display:none;">
+            <form id="auth-form" onsubmit="handleRegistration(event)">
+              <div class="form-group">
+                <label class="form-label" for="reg-name">Nama Lengkap (dengan gelar)</label>
+                <input class="form-control" type="text" id="reg-name" required placeholder="Contoh: Drs. Budi Santoso, M.T.">
+              </div>
 
-          <div class="form-group">
-            <label class="form-label">Kelas Yang Diajar (Pilih salah satu/lebih)</label>
-            <div class="checkbox-grid">
-              <label class="checkbox-item">
-                <input type="checkbox" name="class-taught" value="Kelas X" checked> Kelas X
-              </label>
-              <label class="checkbox-item">
-                <input type="checkbox" name="class-taught" value="Kelas XI"> Kelas XI
-              </label>
-              <label class="checkbox-item">
-                <input type="checkbox" name="class-taught" value="Kelas XII"> Kelas XII
-              </label>
-            </div>
-          </div>
+              <div class="form-group">
+                <label class="form-label" for="reg-school">Asal Sekolah (SMK)</label>
+                <input class="form-control" type="text" id="reg-school" required placeholder="Contoh: SMK Negeri 2 Jakarta">
+              </div>
 
-          <button class="btn-auth" type="submit">
-            <i class="fa fa-id-card"></i> Daftar &amp; Masuk Portal
-          </button>
-        </form>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="reg-subject">Kompetensi Keahlian</label>
+                  <select class="form-control" id="reg-subject" required>
+                    <option value="Teknik Kendaraan Ringan Otomotif">Teknik Kendaraan Ringan (TKR)</option>
+                    <option value="Teknik Sepeda Motor">Teknik Sepeda Motor (TSM)</option>
+                    <option value="Teknik Bodi Otomotif">Teknik Bodi Otomotif</option>
+                    <option value="Rekayasa Perangkat Lunak kejuruan">Rekayasa Perangkat Lunak (IT)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="reg-wa">Nomor WhatsApp Aktif</label>
+                  <input class="form-control" type="text" id="reg-wa" required placeholder="Contoh: 081234567890">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Kelas Yang Diajar (Pilih salah satu/lebih)</label>
+                <div class="checkbox-grid">
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="class-taught" value="Kelas X" checked> Kelas X
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="class-taught" value="Kelas XI"> Kelas XI
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="class-taught" value="Kelas XII"> Kelas XII
+                  </label>
+                </div>
+              </div>
+
+              <button class="btn-auth" type="submit">
+                <i class="fa fa-id-card"></i> Daftar &amp; Masuk Portal
+              </button>
+            </form>
+            <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-muted);">Sudah punya akun? <a onclick="switchAuthTab('login')" style="color:var(--accent-cyan); cursor:pointer; font-weight:600;">Masuk di sini</a></p>
+          </div>
         </div>
 
         <!-- SISWA LOGIN FORM -->
@@ -2476,12 +2506,12 @@ const DEFAULT_STUDENTS = [
       const overlay = document.getElementById("verify-overlay");
       overlay.querySelector(".verify-text").innerText = "Verifikasi Akses Siswa";
       overlay.querySelector("#verify-subtext").innerText = "Memeriksa status penempatan PKL...";
-      overlay.style.display = "flex";
+      overlay.classList.add("active");
 
       setTimeout(() => {
-        overlay.style.display = "none";
+        overlay.classList.remove("active");
         showStudentDashboard();
-        showToast("Login Siswa Sukses", "Selamat datang di Portal Jurnal Harian PKL.");
+        showToast("Login Siswa Sukses", "Selamat datang, " + selectedName + "!");
       }, 2000);
     }
 
@@ -3026,94 +3056,154 @@ const DEFAULT_STUDENTS = [
     // ==========================================================================
     // REGISTRATION & AUTH LOGIC (PHASE 1)
     // ==========================================================================
-    async function handleRegistration(event) {
-      event.preventDefault();
-      
-      const name = document.getElementById("reg-name").value.trim();
-      const school = document.getElementById("reg-school").value.trim();
-      const subject = document.getElementById("reg-subject").value;
-      const wa = document.getElementById("reg-wa").value.trim();
-      
-      // Get classes taught (checkboxes)
-      const checkedBoxes = document.querySelectorAll("input[name='class-taught']:checked");
-      const classes = Array.from(checkedBoxes).map(cb => cb.value);
 
-      if (classes.length === 0) {
-        alert("Pilih minimal satu tingkat kelas yang Anda ajar!");
+    // Toggle between Login and Daftar panels
+    function switchAuthTab(tab) {
+      const loginPanel  = document.getElementById("login-form-panel");
+      const daftarPanel = document.getElementById("daftar-form-panel");
+      const loginBtn    = document.getElementById("tab-login-btn");
+      const daftarBtn   = document.getElementById("tab-daftar-btn");
+
+      if (tab === 'login') {
+        loginPanel.style.display  = "block";
+        daftarPanel.style.display = "none";
+        loginBtn.style.background  = "var(--accent-ruby)";
+        loginBtn.style.color       = "#fff";
+        daftarBtn.style.background = "transparent";
+        daftarBtn.style.color      = "var(--text-muted)";
+      } else {
+        loginPanel.style.display  = "none";
+        daftarPanel.style.display = "block";
+        daftarBtn.style.background = "var(--accent-ruby)";
+        daftarBtn.style.color      = "#fff";
+        loginBtn.style.background  = "transparent";
+        loginBtn.style.color       = "var(--text-muted)";
+      }
+    }
+
+    // LOGIN GURU - verifikasi nama + WA via GAS API
+    async function handleGuruLogin(event) {
+      event.preventDefault();
+      const name = document.getElementById("login-name").value.trim();
+      const wa   = document.getElementById("login-wa").value.trim();
+
+      if (!name || !wa) {
+        showToast("Input Kosong", "Harap isi nama dan nomor WhatsApp.", "error");
         return;
       }
 
-      // Trigger verification overlay animation
+      // Show loading overlay
       const overlay = document.getElementById("verify-overlay");
       const subtext = document.getElementById("verify-subtext");
+      overlay.querySelector(".verify-text").innerText = "Verifikasi Akun Guru";
+      subtext.innerText = "Mencocokkan data dengan database sekolah...";
       overlay.classList.add("active");
 
-      // Save teacher locally first
-      appState.teacher = {
-        name: name,
-        school: school,
-        subject: subject,
-        wa: wa,
-        classes: classes
-      };
-
-      // Stage 1 Verification
-      setTimeout(() => {
-        subtext.innerText = "Menghubungkan ke database sekolah...";
-      }, 1000);
-
-      // Stage 2 Verification (Register to Google Sheets if API_URL is set)
-      let cloudSaved = false;
-      setTimeout(async () => {
-        subtext.innerText = "Sinkronisasi hak akses modul kejuruan...";
+      try {
         if (API_URL) {
-          try {
-            const payload = {
-              action: "registerTeacher",
-              name: name,
-              school: school,
-              subject: subject,
-              wa: wa,
-              classes: classes
-            };
-            await fetch(API_URL, {
-              method: "POST",
-              mode: "no-cors",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(payload)
-            });
-            cloudSaved = true;
-          } catch (err) {
-            console.error("Gagal sinkronisasi pendaftaran guru:", err);
+          // Call GAS with GET params for login
+          const url = `${API_URL}?action=loginTeacher&name=${encodeURIComponent(name)}&wa=${encodeURIComponent(wa)}`;
+          const response = await fetch(url);
+          const data = await response.json();
+
+          overlay.classList.remove("active");
+
+          if (data.status === "success" && data.teacher) {
+            // Save teacher session
+            appState.teacher = data.teacher;
+            localStorage.setItem("infodesk_teacher", JSON.stringify(appState.teacher));
+            showDashboard();
+            showToast("Login Berhasil", "Selamat datang, " + data.teacher.name + "!");
+          } else {
+            showToast("Login Gagal", data.message || "Data tidak ditemukan. Pastikan nama & WA sesuai pendaftaran.", "error");
+          }
+        } else {
+          // Offline mode: match from teachers loaded in appState (if any)
+          overlay.classList.remove("active");
+          showToast("Offline Mode", "Tidak ada koneksi ke server. Gunakan mode daftar baru untuk sesi lokal.", "error");
+        }
+      } catch (err) {
+        overlay.classList.remove("active");
+        console.error("Login error:", err);
+        showToast("Error Koneksi", "Gagal terhubung ke server. Coba lagi atau gunakan form Daftar Baru.", "error");
+      }
+    }
+
+    async function handleRegistration(event) {
+
+      event.preventDefault();
+      const name    = document.getElementById("reg-name").value.trim();
+      const school  = document.getElementById("reg-school").value.trim();
+      const subject = document.getElementById("reg-subject").value;
+      const wa      = document.getElementById("reg-wa").value.trim();
+      
+      const checkedBoxes = document.querySelectorAll("input[name='class-taught']:checked");
+      const classes = Array.from(checkedBoxes).map(cb => cb.value);
+
+      if (!name || !school || !wa) {
+        showToast("Data Tidak Lengkap", "Harap isi nama, sekolah, dan nomor WhatsApp.", "error");
+        return;
+      }
+      if (classes.length === 0) {
+        showToast("Pilih Kelas", "Pilih minimal satu tingkat kelas yang Anda ajar!", "error");
+        return;
+      }
+
+      // Show loading overlay
+      const overlay = document.getElementById("verify-overlay");
+      const subtext = document.getElementById("verify-subtext");
+      overlay.querySelector(".verify-text").innerText = "Mendaftarkan Akun Guru";
+      subtext.innerText = "Menyimpan data ke database sekolah...";
+      overlay.classList.add("active");
+
+      // Build teacher object
+      appState.teacher = { name, school, subject, wa, classes };
+
+      try {
+        if (API_URL) {
+          subtext.innerText = "Sinkronisasi ke Google Sheets...";
+          // GAS doesn't support CORS on POST directly; use GET with params
+          const params = new URLSearchParams({
+            action: "registerTeacher",
+            name, school, subject, wa,
+            classes: JSON.stringify(classes)
+          });
+          const response = await fetch(`${API_URL}?${params.toString()}`);
+          const data = await response.json();
+
+          overlay.classList.remove("active");
+
+          if (data.status === "exists" && data.teacher) {
+            // Already registered — auto-login
+            appState.teacher = data.teacher;
+            localStorage.setItem("infodesk_teacher", JSON.stringify(appState.teacher));
+            showDashboard();
+            showToast("Akun Sudah Ada", "Login otomatis. Selamat datang kembali, " + data.teacher.name + "!");
+            return;
           }
         }
-      }, 2000);
-
-      // Complete Verification & Save State
-      setTimeout(() => {
+      } catch (err) {
+        console.error("Gagal sinkronisasi ke cloud:", err);
+        // Continue with local save even if cloud fails
         overlay.classList.remove("active");
+      }
 
-        // Initialize lists if empty
-        if (appState.students.length === 0) appState.students = [...DEFAULT_STUDENTS];
-        if (appState.journals.length === 0) appState.journals = [...DEFAULT_JOURNALS];
-        appState.modules = [...TEACHING_MODULES];
+      overlay.classList.remove("active");
 
-        // Persist
-        localStorage.setItem("infodesk_teacher", JSON.stringify(appState.teacher));
-        localStorage.setItem("infodesk_students", JSON.stringify(appState.students));
-        localStorage.setItem("infodesk_journals", JSON.stringify(appState.journals));
-        localStorage.setItem("infodesk_approved", JSON.stringify(appState.approvedJournals));
-        localStorage.setItem("infodesk_modules", JSON.stringify(appState.modules));
+      // Initialize lists if empty
+      if (appState.students.length === 0) appState.students = [...DEFAULT_STUDENTS];
+      if (appState.journals.length === 0) appState.journals = [...DEFAULT_JOURNALS];
+      appState.modules = [...TEACHING_MODULES];
 
-        showDashboard();
-        if (API_URL && cloudSaved) {
-          showToast("Registrasi Berhasil", "Sesi aktif disimpan secara cloud & lokal.");
-        } else {
-          showToast("Registrasi Berhasil", "Selamat Datang di Portal Guru InfoDesk234 (Sesi Lokal).");
-        }
-      }, 3500);
+      // Persist locally
+      localStorage.setItem("infodesk_teacher", JSON.stringify(appState.teacher));
+      localStorage.setItem("infodesk_students", JSON.stringify(appState.students));
+      localStorage.setItem("infodesk_journals", JSON.stringify(appState.journals));
+      localStorage.setItem("infodesk_approved", JSON.stringify(appState.approvedJournals));
+      localStorage.setItem("infodesk_modules", JSON.stringify(appState.modules));
+
+      showDashboard();
+      showToast("Registrasi Berhasil", "Selamat datang di Portal Guru InfoDesk234, " + name + "!");
     }
 
     function handleLogout() {
@@ -4219,7 +4309,7 @@ Telah disimpan ke direktori download.`);
     // ==========================================================================
     // TOAST NOTIFICATION HELPERS
     // ==========================================================================
-    function showToast(title, message, isSuccess = true) {
+    function showToast(title, message, type = true) {
       const toast = document.getElementById("toast-notify");
       const tTitle = document.getElementById("toast-title");
       const tMsg = document.getElementById("toast-msg");
@@ -4228,21 +4318,28 @@ Telah disimpan ke direktori download.`);
       tTitle.innerText = title;
       tMsg.innerText = message;
       
-      if (isSuccess) {
-        tIcon.className = "fa fa-circle-check toast-icon";
-        tIcon.style.color = "var(--accent-cyan)";
-        toast.style.borderColor = "var(--accent-cyan)";
-      } else {
+      const isError   = (type === false || type === "error");
+      const isWarning = (type === "warning");
+      
+      if (isError) {
         tIcon.className = "fa fa-circle-xmark toast-icon";
         tIcon.style.color = "var(--accent-ruby)";
         toast.style.borderColor = "var(--accent-ruby)";
+      } else if (isWarning) {
+        tIcon.className = "fa fa-triangle-exclamation toast-icon";
+        tIcon.style.color = "var(--accent-orange)";
+        toast.style.borderColor = "var(--accent-orange)";
+      } else {
+        tIcon.className = "fa fa-circle-check toast-icon";
+        tIcon.style.color = "var(--accent-cyan)";
+        toast.style.borderColor = "var(--accent-cyan)";
       }
 
       toast.classList.add("active");
 
       setTimeout(() => {
         toast.classList.remove("active");
-      }, 4000);
+      }, 4500);
     }
   
     // Dynamically update header buttons depending on active tab
