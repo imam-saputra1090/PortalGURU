@@ -1380,7 +1380,175 @@
         padding: 10px;
       }
     }
-  </style>
+  
+    /* ==========================================================================
+       ADDITIONAL PREMIUM STYLES (PORTAL SISWA, MODALS, DYNAMIC ACTIONS)
+       ========================================================================== */
+    .auth-toggle-container {
+      display: flex;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 25px;
+      border: 1px solid var(--border-glass);
+    }
+    .auth-toggle-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .auth-toggle-btn.active {
+      background: var(--bg-slate);
+      color: var(--text-light);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    #toggle-siswa-btn.active {
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      color: var(--accent-cyan);
+    }
+    #toggle-guru-btn.active {
+      border: 1px solid rgba(216, 34, 108, 0.2);
+      color: var(--accent-ruby);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(5, 11, 20, 0.85);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      box-shadow: var(--shadow-premium);
+      animation: modalSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .modal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .modal-close:hover {
+      color: var(--accent-ruby);
+    }
+    .modal-body {
+      padding-top: 10px;
+    }
+
+    .student-dashboard .profile-avatar {
+      background: var(--accent-cyan) !important;
+      box-shadow: 0 0 15px var(--accent-cyan-glow) !important;
+    }
+    .student-dashboard .nav-item.active {
+      background: rgba(0, 245, 255, 0.08) !important;
+      border-left: 4px solid var(--accent-cyan) !important;
+    }
+    .student-dashboard .nav-item.active a {
+      color: var(--accent-cyan) !important;
+    }
+    .student-card-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+    .status-waiting {
+      background: rgba(255, 159, 28, 0.15);
+      color: var(--accent-orange);
+      border: 1px solid rgba(255, 159, 28, 0.2);
+    }
+    .status-approved {
+      background: rgba(57, 255, 20, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(57, 255, 20, 0.2);
+    }
+    .status-rejected {
+      background: rgba(216, 34, 108, 0.15);
+      color: var(--accent-ruby);
+      border: 1px solid rgba(216, 34, 108, 0.2);
+    }
+
+    .exam-sheet-paper {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #generator-modal, #generator-modal * {
+        visibility: visible;
+      }
+      #exam-sheet-content, #exam-sheet-content * {
+        visibility: visible;
+      }
+      #exam-sheet-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .modal-close, .modal-header, .btn-action, .generator-setup, div[style*="display: flex"] {
+        display: none !important;
+      }
+    }
+    .btn-danger-action {
+      background: rgba(216, 34, 108, 0.1) !important;
+      border-color: rgba(216, 34, 108, 0.2) !important;
+      color: var(--accent-ruby) !important;
+    }
+    .btn-danger-action:hover {
+      background: var(--accent-ruby) !important;
+      color: #fff !important;
+    }
+</style>
 </head>
 <body>
 
@@ -1398,7 +1566,13 @@
           <div class="verify-subtext" id="verify-subtext">Mencocokkan database dapodik...</div>
         </div>
 
-        <div class="auth-logo">
+        <div class="auth-toggle-container">
+          <button type="button" class="auth-toggle-btn active" id="toggle-guru-btn" onclick="toggleRole('guru')">Akses Guru</button>
+          <button type="button" class="auth-toggle-btn" id="toggle-siswa-btn" onclick="toggleRole('siswa')">Portal Siswa</button>
+        </div>
+
+        <div id="guru-form-container">
+          <div class="auth-logo">
           <span class="auth-logo-dot"></span>
           INFODESK<span style="color: var(--accent-ruby);">234</span>
         </div>
@@ -1457,7 +1631,105 @@
             <i class="fa fa-id-card"></i> Daftar &amp; Masuk Portal
           </button>
         </form>
+        </div>
+
+        <!-- SISWA LOGIN FORM -->
+        <div id="siswa-form-container" style="display: none;">
+          <div class="auth-logo">
+            <span class="auth-logo-dot" style="background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan-glow);"></span>
+            INFODESK<span style="color: var(--accent-cyan);">234</span>
+          </div>
+          <h2 class="auth-title">Portal Jurnal Siswa PKL</h2>
+          <p class="auth-subtitle">Tulis laporan jurnal harian PKL dan kirim rekap aktivitas ke Guru melalui WhatsApp.</p>
+
+          <form id="siswa-login-form" onsubmit="handleStudentLogin(event)">
+            <div class="form-group">
+              <label class="form-label" for="siswa-select">Pilih Nama Anda</label>
+              <select class="form-control" id="siswa-select" required>
+                <!-- Injected dynamically based on students list -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="siswa-nisn">NISN / Nomor WhatsApp Siswa</label>
+              <input class="form-control" type="text" id="siswa-nisn" required placeholder="Contoh: 0812345678">
+            </div>
+            <button class="btn-auth" type="submit" style="background: linear-gradient(135deg, var(--accent-cyan) 0%, #0088cc 100%); box-shadow: 0 4px 15px rgba(0, 245, 255, 0.2); border: none;">
+              <i class="fa fa-user-graduate"></i> Masuk Sebagai Siswa
+            </button>
+          </form>
+        </div>
       </div>
+    </div>
+
+    <!-- ==========================================================================
+         PHASE 3: STUDENT DASHBOARD PAGE
+         ========================================================================== -->
+    <div class="dashboard-page student-dashboard" id="student-section" style="display: none;">
+      <!-- SIDEBAR -->
+      <aside class="sidebar" style="border-right: 1px solid var(--accent-cyan-glow);">
+        <div class="profile-card">
+          <div class="profile-avatar" id="student-avatar-initial" style="background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan-glow);">S</div>
+          <h4 class="profile-name" id="student-profile-name">Nama Siswa</h4>
+          <span class="profile-meta" id="student-profile-meta">NISN / Nomor WA</span>
+          <span class="profile-meta" id="student-profile-dudi" style="color: var(--accent-cyan); font-weight: 600; margin-top: 5px;">Toyota Auto2000</span>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item active">
+            <a><i class="fa fa-pen-to-square" style="color: var(--accent-cyan);"></i> Jurnal Harian</a>
+          </li>
+        </ul>
+
+        <div class="sidebar-footer">
+          <button class="btn-logout" onclick="handleLogout()">
+            <i class="fa fa-right-from-bracket"></i> Keluar Sesi
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT AREA -->
+      <main class="main-content">
+        <header class="dashboard-header" style="border-bottom: 1px solid var(--accent-cyan-glow);">
+          <div>
+            <h2 class="header-info-title" style="color: var(--accent-cyan);">Portal Jurnal Harian Siswa</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="student-school-title">Sekolah SMK</p>
+          </div>
+        </header>
+
+        <div class="dashboard-tab-content active">
+          <div class="pkl-grid">
+            <!-- Form to Add Journal -->
+            <div class="card-panel">
+              <div class="card-panel-title" style="color: var(--accent-cyan);">
+                <i class="fa fa-pen-nib"></i> Tulis Jurnal Aktivitas PKL Baru
+              </div>
+              <form id="add-journal-form" onsubmit="addStudentJournal(event)">
+                <div class="form-group">
+                  <label class="form-label" for="jour-date">Tanggal Kegiatan</label>
+                  <input class="form-control" type="date" id="jour-date" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="jour-content">Deskripsi Kegiatan Praktik / Magang</label>
+                  <textarea class="form-control" id="jour-content" required rows="6" placeholder="Jelaskan secara detail pekerjaan Anda hari ini. Contoh: Melakukan tune-up mesin K3-VE Avanza. Memeriksa tekanan kompresi, membersihkan busi, dan menyetel celah katup. Hasil: mesin berjalan normal."></textarea>
+                </div>
+                <button class="btn-auth" type="submit" style="background: linear-gradient(135deg, var(--accent-cyan) 0%, #0088cc 100%); margin-top: 15px; box-shadow: 0 4px 15px rgba(0, 245, 255, 0.15); border: none;">
+                  <i class="fa fa-circle-check"></i> Simpan Jurnal Lokal
+                </button>
+              </form>
+            </div>
+
+            <!-- List of Student Journals -->
+            <div class="card-panel">
+              <div class="card-panel-title">
+                <i class="fa fa-list-check"></i> Riwayat Jurnal Harian Anda
+              </div>
+              <div id="student-journals-list" style="display: flex; flex-direction: column; gap: 15px; max-height: 550px; overflow-y: auto; padding-right: 5px;">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- ==========================================================================
@@ -1505,17 +1777,8 @@
             <h2 class="header-info-title" id="page-tab-title">Monitoring Siswa PKL</h2>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="teacher-school-title">Sekolah SMK</p>
           </div>
-          <div class="header-actions">
-            <button class="btn-action" onclick="exportToExcel()">
-              <i class="fa fa-file-excel" style="color: #28a745;"></i> Ekspor Excel
-            </button>
-            <button class="btn-action" onclick="exportDataBackup()">
-              <i class="fa fa-download"></i> Backup JSON
-            </button>
-            <button class="btn-action btn-primary-action" onclick="triggerImportDialog()">
-              <i class="fa fa-upload"></i> Restore Data
-            </button>
-            <input type="file" id="import-file-selector" style="display: none;" onchange="importDataBackup(event)">
+          <div class="header-actions" id="header-tab-actions">
+            <!-- Injected dynamically by JS -->
           </div>
         </header>
 
@@ -1820,6 +2083,771 @@
 
   <script>
     // ==========================================================================
+    // SINKRONISASI & GENERATOR BANK SOAL - PRESET DATABASE
+    // ==========================================================================
+    const QUESTION_BANK = [
+      {
+        id: 1,
+        subject: "Engine Tune-up & EFI",
+        question: "Apa fungsi utama dari sensor MAP (Manifold Absolute Pressure) pada mesin EFI?",
+        options: [
+          "A. Mengatur tekanan bahan bakar di delivery pipe",
+          "B. Mengukur jumlah aliran udara yang masuk secara mekanis",
+          "C. Mengukur tekanan udara di dalam intake manifold sebagai dasar penentuan jumlah injeksi bensin",
+          "D. Mendeteksi kandungan oksigen pada gas buang mesin",
+          "E. Mendeteksi suhu cairan pendingin mesin radiator"
+        ],
+        answer: "C"
+      },
+      {
+        id: 2,
+        subject: "Engine Tune-up & EFI",
+        question: "Berapa celah katup renggang standar untuk katup masuk (inlet valve) pada mesin Toyota seri K (contoh: 5K/7K) dalam kondisi dingin?",
+        options: [
+          "A. 0.10 mm",
+          "B. 0.20 mm",
+          "C. 0.30 mm",
+          "D. 0.40 mm",
+          "E. 0.50 mm"
+        ],
+        answer: "B"
+      },
+      {
+        id: 3,
+        subject: "Engine Tune-up & EFI",
+        question: "Berikut ini adalah penyebab utama mesin diesel mengalami 'runaway' (mesin berputar liar tanpa terkontrol), kecuali...",
+        options: [
+          "A. Kebocoran oli mesin dari turbocharger ke saluran masuk",
+          "B. Kerusakan governor plunger pada pompa injeksi",
+          "C. Terlalu banyak oli di dalam bak engkol",
+          "D. Tekanan bahan bakar masuk dari feed pump terlalu tinggi",
+          "E. Kerusakan pada katup solenoid bahan bakar"
+        ],
+        answer: "D"
+      },
+      {
+        id: 4,
+        subject: "Engine Tune-up & EFI",
+        question: "Komponen sistem EFI yang bertugas mengatur tekanan bahan bakar di dalam pipa penyalur (fuel delivery pipe) agar tetap konstan dibanding tekanan manifold adalah...",
+        options: [
+          "A. Pressure Regulator",
+          "B. Fuel Pulsation Damper",
+          "C. Injector valve",
+          "D. Electric Fuel Pump",
+          "E. Check Valve"
+        ],
+        answer: "A"
+      },
+      {
+        id: 5,
+        subject: "Engine Tune-up & EFI",
+        question: "Pada saat melakukan perawatan baterai (aki) dalam rangkaian tune-up, pengukuran tegangan baterai tanpa beban dalam kondisi penuh yang normal adalah sebesar...",
+        options: [
+          "A. 10.0 V - 11.5 V",
+          "B. 11.8 V - 12.0 V",
+          "C. 12.4 V - 12.6 V",
+          "D. 13.8 V - 14.2 V",
+          "E. 14.5 V - 15.0 V"
+        ],
+        answer: "C"
+      },
+      {
+        id: 6,
+        subject: "Kelistrikan Otomotif",
+        question: "Jika salah satu lampu kepala redup sebelah ketika saklar lampu utama dinyalakan, kemungkinan penyebab kerusakan yang paling tepat adalah...",
+        options: [
+          "A. Tahanan kabel massa (grounding) lampu tersebut longgar atau korosi",
+          "B. Saklar lampu kepala rusak total",
+          "C. Sekering lampu kepala putus kedua belah pihak",
+          "D. Tegangan baterai melebihi batas pengisian alternator",
+          "E. Relay lampu kepala terbakar pada terminal 87"
+        ],
+        answer: "A"
+      },
+      {
+        id: 7,
+        subject: "Kelistrikan Otomotif",
+        question: "Komponen sistem starter elektrik yang berfungsi mencegah poros armature berputar terlalu cepat akibat terbawa putaran mesin saat mesin telah hidup adalah...",
+        options: [
+          "A. Magnetic Switch",
+          "B. Drive Lever",
+          "C. Overrunning Clutch (Kopling Starter)",
+          "D. Pinion Gear",
+          "E. Brush Spring"
+        ],
+        answer: "C"
+      },
+      {
+        id: 8,
+        subject: "Kelistrikan Otomotif",
+        question: "Ketika menggunakan multimeter digital untuk mengukur kontinuitas kabel kelistrikan bodi yang terputus di tengah, layar alat ukur akan menampilkan nilai...",
+        options: [
+          "A. 0.00 Ohm / Suara buzzer berbunyi terus-menerus",
+          "B. 12.6 Volt arus searah",
+          "C. OL (Over Limit) / Nilai tahanan tak terhingga",
+          "D. 0.5 Ampere arus AC",
+          "E. 5.0 Mega Ohm"
+        ],
+        answer: "C"
+      },
+      {
+        id: 9,
+        subject: "Kelistrikan Otomotif",
+        question: "Fungsi utama dari diode/rectifier yang terpasang di dalam alternator pada sistem pengisian baterai kendaraan adalah...",
+        options: [
+          "A. Menyearahkan arus listrik bolak-balik (AC) induksi stator menjadi arus searah (DC) untuk baterai",
+          "B. Mengatur besar kecilnya arus kemagnitan pada rotor coil",
+          "C. Membatasi tegangan pengisian agar tidak terjadi overcharging",
+          "D. Mengubah energi mekanik mesin menjadi energi listrik dinamis",
+          "E. Menstabilkan putaran puli alternator"
+        ],
+        answer: "A"
+      },
+      {
+        id: 10,
+        subject: "Kelistrikan Otomotif",
+        question: "Sekering (fuse) tipe blade berwarna biru yang sering digunakan pada instalasi kelistrikan instrumen mobil memiliki kapasitas arus maksimal sebesar...",
+        options: [
+          "A. 10 Ampere",
+          "B. 15 Ampere",
+          "C. 20 Ampere",
+          "D. 25 Ampere",
+          "E. 30 Ampere"
+        ],
+        answer: "B"
+      },
+      {
+        id: 11,
+        subject: "Sasis & Sistem Rem",
+        question: "Gejala pedal rem terasa membal (spongey pedal) saat ditekan ketika kendaraan berjalan disebabkan oleh...",
+        options: [
+          "A. Adanya kebocoran oli mesin di bak transmisi",
+          "B. Kampas rem cakram mengalami keausan sebelah",
+          "C. Udara palsu yang terjebak di dalam sistem pipa hidrolik minyak rem",
+          "D. Kerusakan booster rem akibat selang vakum sobek",
+          "E. Tromol rem berkarat akibat genangan air hujan"
+        ],
+        answer: "C"
+      },
+      {
+        id: 12,
+        subject: "Sasis & Sistem Rem",
+        question: "Pada rem cakram tipe floating caliper, komponen piston caliper bertugas menekan brake pad secara langsung pada...",
+        options: [
+          "A. Kedua sisi cakram secara bersamaan dengan dua piston terpisah",
+          "B. Sisi piston saja, sementara sisi pad luar ditarik oleh geseran caliper body",
+          "C. Sisi luar pad rem menggunakan tuas mekanik parkir",
+          "D. Poros axle shaft secara magnetik induksi",
+          "E. Bagian tengah piringan rem cakram ventilasi"
+        ],
+        answer: "B"
+      },
+      {
+        id: 13,
+        subject: "Sasis & Sistem Rem",
+        question: "Pola keausan ban yang terjadi secara tidak merata hanya pada bagian bahu luar (outer shoulder) biasanya disebabkan oleh penyimpangan kelurusan roda...",
+        options: [
+          "A. Sudut camber terlalu negatif",
+          "B. Sudut camber terlalu positif",
+          "C. Caster terlalu negatif",
+          "D. Toe-out terlalu ekstrim",
+          "E. Run-out pelek roda berlebihan"
+        ],
+        answer: "B"
+      },
+      {
+        id: 14,
+        subject: "Sasis & Sistem Rem",
+        question: "Booster rem udara/vakum pada mobil penumpang bensin mengambil sumber vakum penekan piston silinder master dari...",
+        options: [
+          "A. Saluran gas buang knalpot (exhaust pipe)",
+          "B. Putaran rotor alternator pengisian listrik",
+          "C. Kevakuman di dalam intake manifold setelah throttle valve",
+          "D. Kompresor AC kelistrikan kendaraan",
+          "E. Pompa power steering hidrolik"
+        ],
+        answer: "C"
+      },
+      {
+        id: 15,
+        subject: "Sasis & Sistem Rem",
+        question: "Minyak rem otomotif bersertifikasi standar DOT 4 wajib memiliki titik didih kering (dry boiling point) minimal sebesar...",
+        options: [
+          "A. 150 derajat Celcius",
+          "B. 180 derajat Celcius",
+          "C. 205 derajat Celcius",
+          "D. 230 derajat Celcius",
+          "E. 260 derajat Celcius"
+        ],
+        answer: "D"
+      },
+      {
+        id: 16,
+        subject: "Koding Dasar & IoT Otomotif",
+        question: "Manakah sintaks bahasa C++ yang benar untuk menuliskan logika percabangan 'jika suhu air pendingin melebihi 90 derajat celcius' pada mikrokontroler Arduino?",
+        options: [
+          "A. if suhu > 90 then { digitalWrite(13, HIGH); }",
+          "B. if (suhu > 90) { digitalWrite(13, HIGH); }",
+          "C. if suhu > 90: digitalWrite(13, HIGH)",
+          "D. select case (suhu > 90) case true: digitalWrite(13, HIGH);",
+          "E. while (suhu > 90) do { digitalWrite(13, HIGH); }"
+        ],
+        answer: "B"
+      },
+      {
+        id: 17,
+        subject: "Koding Dasar & IoT Otomotif",
+        question: "Fungsi bawaan Arduino `analogRead(A0)` digunakan untuk membaca sinyal analog dari sensor suhu oli. Nilai pembacaan tersebut dikonversi ADC internal chip AVR menjadi rentang angka...",
+        options: [
+          "A. 0 sampai 255",
+          "B. 0 sampai 512",
+          "C. 0 sampai 1023",
+          "D. 0 sampai 4095",
+          "E. -128 sampai 127"
+        ],
+        answer: "C"
+      },
+      {
+        id: 18,
+        subject: "Koding Dasar & IoT Otomotif",
+        question: "Pada bahasa pemrograman Python, sintaks yang tepat digunakan untuk membuat/mendefinisikan suatu modul fungsi baru adalah...",
+        options: [
+          "A. function namaFungsi():",
+          "B. void namaFungsi() { }",
+          "C. def nama_fungsi():",
+          "D. create nama_fungsi:",
+          "E. sub nama_fungsi()"
+        ],
+        answer: "C"
+      },
+      {
+        id: 19,
+        subject: "Koding Dasar & IoT Otomotif",
+        question: "Sensor suhu cairan pendingin mesin (water temperature sensor) yang bertipe digital 1-Wire dan sering digunakan pada pemantauan mesin IoT adalah...",
+        options: [
+          "A. LM35DZ TO-92",
+          "B. DS18B20 Water-proof Probe",
+          "C. LDR GL5528",
+          "D. HC-SR04 Ultrasonic",
+          "E. Thermistor NTC 10K Ohm"
+        ],
+        answer: "B"
+      },
+      {
+        id: 20,
+        subject: "Koding Dasar & IoT Otomotif",
+        question: "Manakah dari tipe data berikut ini yang digunakan untuk menyimpan nilai logika kebenaran True atau False pada bahasa Python?",
+        options: [
+          "A. String (str)",
+          "B. Integer (int)",
+          "C. Boolean (bool)",
+          "D. Float (float)",
+          "E. List (list)"
+        ],
+        answer: "C"
+      }
+    ];
+
+    let activeDownloadModuleId = null;
+    let activeDownloadModuleTitle = null;
+    let generatedQuestions = [];
+
+    // Toggling Guru / Siswa roles on Login card
+    function toggleRole(role) {
+      if (role === 'guru') {
+        document.getElementById("toggle-guru-btn").classList.add("active");
+        document.getElementById("toggle-siswa-btn").classList.remove("active");
+        document.getElementById("guru-form-container").style.display = "block";
+        document.getElementById("siswa-form-container").style.display = "none";
+      } else {
+        document.getElementById("toggle-guru-btn").classList.remove("active");
+        document.getElementById("toggle-siswa-btn").classList.add("active");
+        document.getElementById("guru-form-container").style.display = "none";
+        document.getElementById("siswa-form-container").style.display = "block";
+        populateStudentLoginDropdown();
+      }
+    }
+
+    // Populate dropdown with registered student names
+    function populateStudentLoginDropdown() {
+      const select = document.getElementById("siswa-select");
+      if (!select) return;
+      select.innerHTML = "";
+      
+      const list = appState.students.length > 0 ? appState.students : DEFAULT_STUDENTS;
+      list.forEach(student => {
+        const opt = document.createElement("option");
+        opt.value = student.name;
+        opt.innerText = student.name + " (" + (student.dudi || "Magang PKL") + ")";
+        select.appendChild(opt);
+      });
+    }
+
+    // Handle student login
+    function handleStudentLogin(event) {
+      event.preventDefault();
+      const selectedName = document.getElementById("siswa-select").value;
+      const nisn = document.getElementById("siswa-nisn").value.trim();
+      
+      if (!selectedName || !nisn) {
+        showToast("Error Login", "Harap pilih nama Anda dan isi NISN/WhatsApp.", "error");
+        return;
+      }
+
+      // Check if student details match state
+      const studentsList = appState.students.length > 0 ? appState.students : DEFAULT_STUDENTS;
+      const matched = studentsList.find(s => s.name === selectedName);
+      
+      appState.student = {
+        name: selectedName,
+        nisn: nisn,
+        dudi: matched ? matched.dudi : "Mitra Industri",
+        supervisor: matched ? matched.supervisor : "Penyelia DUDI"
+      };
+
+      // Save student session
+      localStorage.setItem("infodesk_active_student", JSON.stringify(appState.student));
+      
+      // Spinner verifikasi
+      const overlay = document.getElementById("verify-overlay");
+      overlay.querySelector(".verify-text").innerText = "Verifikasi Akses Siswa";
+      overlay.querySelector("#verify-subtext").innerText = "Memeriksa status penempatan PKL...";
+      overlay.style.display = "flex";
+
+      setTimeout(() => {
+        overlay.style.display = "none";
+        showStudentDashboard();
+        showToast("Login Siswa Sukses", "Selamat datang di Portal Jurnal Harian PKL.");
+      }, 2000);
+    }
+
+    // Render Student Dashboard UI
+    function showStudentDashboard() {
+      document.getElementById("auth-section").style.display = "none";
+      document.getElementById("dashboard-section").style.display = "none";
+      document.getElementById("student-section").style.display = "grid";
+
+      const student = appState.student;
+      document.getElementById("student-profile-name").innerText = student.name;
+      document.getElementById("student-profile-meta").innerText = "NISN/WA: " + student.nisn;
+      document.getElementById("student-profile-dudi").innerText = "DUDI: " + student.dudi;
+      
+      const teacherName = (appState.teacher && appState.teacher.name) || "Guru Pamong";
+      const teacherSchool = (appState.teacher && appState.teacher.school) || "SMK InfoDesk234";
+      document.getElementById("student-school-title").innerText = teacherSchool + " | Pembimbing: " + teacherName;
+
+      let initial = "S";
+      if (student.name) initial = student.name.charAt(0).toUpperCase();
+      document.getElementById("student-avatar-initial").innerText = initial;
+
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("jour-date").value = today;
+
+      renderStudentJournals();
+    }
+
+    // Render list of journals written by student
+    function renderStudentJournals() {
+      const container = document.getElementById("student-journals-list");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const student = appState.student;
+      // Filter journals matching this student's name
+      const filtered = appState.journals.filter(j => j.studentName.toLowerCase() === student.name.toLowerCase());
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+          <i class="fa fa-notes-medical" style="font-size: 28px; margin-bottom: 10px; color: var(--accent-cyan);"></i><br/>
+          Belum ada jurnal ditulis. Silakan tulis jurnal pertama Anda di samping!
+        </div>`;
+        return;
+      }
+
+      // Sort newest first
+      filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      filtered.forEach(j => {
+        const div = document.createElement("div");
+        div.className = "journal-card";
+        div.style.background = "rgba(255, 255, 255, 0.02)";
+        div.style.border = "1px solid var(--border-glass)";
+        div.style.borderRadius = "12px";
+        div.style.padding = "16px";
+        div.style.display = "flex";
+        div.style.flexDirection = "column";
+        div.style.gap = "8px";
+
+        // Get status badge
+        let statusClass = "status-waiting";
+        let statusText = "Menunggu Verifikasi";
+        if (j.status === "approved" || j.status === "APPROVED") {
+          statusClass = "status-approved";
+          statusText = "Disetujui Guru";
+        } else if (j.status === "rejected" || j.status === "REJECTED") {
+          statusClass = "status-rejected";
+          statusText = "Ditolak / Butuh Revisi";
+        }
+
+        // Generate the Base64 WhatsApp Sync Code
+        const syncObj = {
+          studentName: student.name,
+          date: j.date,
+          content: j.content,
+          dudi: student.dudi
+        };
+        const syncCode = "JRNAL-" + btoa(unescape(encodeURIComponent(JSON.stringify(syncObj))));
+
+        const waMessageText = `*JURNAL HARIAN PKL*\n` +
+          `*Nama:* ${student.name}\n` +
+          `*DUDI:* ${student.dudi}\n` +
+          `*Tanggal:* ${j.date}\n` +
+          `*Kegiatan:* ${j.content}\n\n` +
+          `*KODE SINKRONISASI JURNAL GURU (Salin teks di bawah ini):*\n` +
+          `\`\`\`${syncCode}\`\`\``;
+
+        const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(waMessageText);
+
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="color: var(--accent-cyan); font-size:13.5px;"><i class="fa fa-calendar-day"></i> ${j.date}</strong>
+            <span class="student-card-status ${statusClass}">${statusText}</span>
+          </div>
+          <p style="font-size:12.5px; line-height:1.5; color: var(--text-light); white-space: pre-wrap;">${j.content}</p>
+          ${j.feedback ? `<div style="font-size:11.5px; color: var(--accent-ruby); background: rgba(216,34,108,0.06); padding: 8px; border-radius: 6px; border-left: 2px solid var(--accent-ruby);"><i class="fa fa-comment-dots"></i> <strong>Masukan Guru:</strong> ${j.feedback}</div>` : ""}
+          
+          <div style="display:flex; gap:10px; margin-top:8px;">
+            <a class="btn-action" href="${waUrl}" target="_blank" style="background: #25d366; color: #fff; font-size:11px; padding: 6px 12px; border:none; display:flex; align-items:center; gap:5px;">
+              <i class="fab fa-whatsapp"></i> Kirim ke Guru via WA
+            </a>
+            <button class="btn-action" onclick="copyJournalSyncCode('${syncCode}')" style="font-size:11px; padding: 6px 12px; display:flex; align-items:center; gap:5px;">
+              <i class="fa fa-copy"></i> Salin Kode Sinkronisasi
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Copy Sync Code Helper
+    function copyJournalSyncCode(code) {
+      navigator.clipboard.writeText(code).then(() => {
+        showToast("Salin Sukses", "Kode sinkronisasi jurnal berhasil disalin ke papan klip. Kirimkan ke WhatsApp guru pamong Anda.");
+      }).catch(err => {
+        console.error("Copy error:", err);
+      });
+    }
+
+    // Add Student Journal Local
+    function addStudentJournal(event) {
+      event.preventDefault();
+      const date = document.getElementById("jour-date").value;
+      const content = document.getElementById("jour-content").value.trim();
+      const student = appState.student;
+
+      if (!date || !content) return;
+
+      const newJournal = {
+        id: "jrnl-" + Date.now(),
+        studentName: student.name,
+        dudi: student.dudi,
+        date: date,
+        content: content,
+        status: "waiting",
+        feedback: ""
+      };
+
+      appState.journals.push(newJournal);
+      localStorage.setItem("infodesk_journals", JSON.stringify(appState.journals));
+      
+      document.getElementById("jour-content").value = "";
+      renderStudentJournals();
+      showToast("Jurnal Disimpan", "Jurnal berhasil disimpan di browser lokal ini. Harap kirimkan kode sinkronisasi ke WhatsApp guru Anda.");
+    }
+
+    // ----------------- TEACHER IMPORT JOURNAL FROM WA -----------------
+    function triggerImportJournalDialog() {
+      document.getElementById("import-journal-text").value = "";
+      document.getElementById("import-journal-modal").classList.add("active");
+    }
+
+    function closeImportJournalModal() {
+      document.getElementById("import-journal-modal").classList.remove("active");
+    }
+
+    function processImportJournal() {
+      const text = document.getElementById("import-journal-text").value.trim();
+      if (!text) {
+        showToast("Impor Gagal", "Teks impor kosong.", "error");
+        return;
+      }
+
+      // Search for JRNAL- code block
+      const match = text.match(/JRNAL-[A-Za-z0-9+/=]+/);
+      if (!match) {
+        showToast("Format Tidak Valid", "Kode sinkronisasi jurnal tidak ditemukan di dalam teks yang Anda tempel.", "error");
+        return;
+      }
+
+      const rawCode = match[0].replace("JRNAL-", "");
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(rawCode))));
+        if (!decoded.studentName || !decoded.date || !decoded.content) {
+          throw new Error("Missing fields in decoded JSON");
+        }
+
+        // Add to teacher's database
+        // Check if matching journal already exists to prevent duplicate
+        const exists = appState.journals.some(j => j.studentName.toLowerCase() === decoded.studentName.toLowerCase() && j.date === decoded.date);
+        
+        if (exists) {
+          showToast("Jurnal Sudah Ada", `Jurnal milik ${decoded.studentName} tanggal ${decoded.date} sudah terimpor sebelumnya.`, "warning");
+          closeImportJournalModal();
+          return;
+        }
+
+        const newJournal = {
+          id: "jrnl-imported-" + Date.now(),
+          studentName: decoded.studentName,
+          dudi: decoded.dudi || "Mitra Industri",
+          date: decoded.date,
+          content: decoded.content,
+          status: "waiting",
+          feedback: ""
+        };
+
+        appState.journals.push(newJournal);
+        localStorage.setItem("infodesk_journals", JSON.stringify(appState.journals));
+
+        // Rerender Teacher PKL elements
+        renderJournalFeed();
+        updateAnalyticsDashboard();
+        
+        closeImportJournalModal();
+        showToast("Impor Sukses", `Jurnal harian milik "${decoded.studentName}" tanggal ${decoded.date} berhasil ditambahkan!`);
+      } catch (err) {
+        console.error("Decode error:", err);
+        showToast("Impor Gagal", "Kode jurnal rusak atau tidak dapat didekripsi.", "error");
+      }
+    }
+
+    // ----------------- PASSWORD LOCK FOR GOOGLE DRIVE -----------------
+    function openMainGoogleDrive() {
+      window.open("https://drive.google.com/drive/folders/1V6eHG5uepW97dAx0jmi4CMczQl1DBTWL?usp=sharing", "_blank");
+    }
+
+    function showPasswordRequestInfo() {
+      alert("Untuk mendapatkan Kata Sandi Akses Modul Ajar, silakan hubungi Admin Kurikulum melalui WhatsApp di nomor resmi (+62 812-3456-7890).");
+    }
+
+    function closePasswordModal() {
+      document.getElementById("password-modal").classList.remove("active");
+    }
+
+    function verifyModulePassword() {
+      const pwd = document.getElementById("mod-pwd").value.trim();
+      if (pwd === "INFODESK-TKR") {
+        document.getElementById("password-modal").classList.remove("active");
+        
+        const moduleId = activeDownloadModuleId;
+        const title = activeDownloadModuleTitle;
+        
+        const bar = document.getElementById(`progress-${moduleId}`);
+        const btn = document.getElementById(`btn-dl-${moduleId}`);
+        if (!bar || !btn) return;
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Loading`;
+        
+        let width = 0;
+        const interval = setInterval(() => {
+          width += 10;
+          bar.style.width = width + "%";
+          
+          if (width >= 100) {
+            clearInterval(interval);
+            btn.innerHTML = `<i class="fa fa-circle-check" style="color:var(--accent-green);"></i> Selesai`;
+            bar.style.width = "0%";
+            
+            // Increment downloads count in state
+            const m = appState.modules.find(mod => mod.id === moduleId);
+            if (m) m.downloads++;
+            
+            updateAnalyticsDashboard();
+            showToast("Unduhan Selesai", `Modul "${title}" berhasil diunduh.`);
+            
+            // Open Google Drive download link!
+            window.open("https://drive.google.com/drive/folders/1V6eHG5uepW97dAx0jmi4CMczQl1DBTWL?usp=sharing", "_blank");
+            
+            setTimeout(() => {
+              btn.disabled = false;
+              btn.innerHTML = `<i class="fa fa-download"></i> Unduh`;
+            }, 3000);
+          }
+        }, 150);
+      } else {
+        showToast("Akses Ditolak", "Kata sandi salah! Silakan hubungi Admin.", "error");
+      }
+    }
+
+    // ----------------- AI QUESTION GENERATOR LOGIC -----------------
+    function openQuestionGenerator() {
+      document.getElementById("generator-setup-view").style.display = "block";
+      document.getElementById("generator-result-view").style.display = "none";
+      document.getElementById("generator-modal").classList.add("active");
+    }
+
+    function closeGeneratorModal() {
+      document.getElementById("generator-modal").classList.remove("active");
+    }
+
+    function generateQuestions() {
+      const subject = document.getElementById("gen-subject").value;
+      const keyword = document.getElementById("gen-keyword").value.trim().toLowerCase();
+      const count = parseInt(document.getElementById("gen-count").value);
+
+      const spinner = document.getElementById("gen-spinner");
+      const icon = document.getElementById("gen-icon");
+      if (spinner) spinner.style.display = "inline-block";
+      if (icon) icon.style.display = "none";
+
+      setTimeout(() => {
+        if (spinner) spinner.style.display = "none";
+        if (icon) icon.style.display = "inline-block";
+
+        // Filter question bank
+        let filtered = QUESTION_BANK;
+        if (subject !== "all") {
+          filtered = QUESTION_BANK.filter(q => q.subject === subject);
+        }
+
+        if (keyword) {
+          filtered = filtered.filter(q => 
+            q.question.toLowerCase().includes(keyword) || 
+            q.options.some(opt => opt.toLowerCase().includes(keyword))
+          );
+        }
+
+        // Fallback if keyword results are too empty, grab subject pool
+        if (filtered.length === 0) {
+          filtered = subject !== "all" ? QUESTION_BANK.filter(q => q.subject === subject) : QUESTION_BANK;
+        }
+
+        // Shuffle questions
+        const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+        generatedQuestions = shuffled.slice(0, count);
+
+        // Display results
+        document.getElementById("exam-meta-subject").innerText = ": " + (subject === "all" ? "Ujian Kompetensi Otomotif TKR" : subject);
+        const taughtClass = (appState.teacher && appState.teacher.school) || "SMK InfoDesk234";
+        document.getElementById("exam-meta-class").innerText = ": Kelas XI TKR / Ganjil";
+
+        const qListContainer = document.getElementById("exam-questions-list");
+        qListContainer.innerHTML = "";
+
+        const keyContent = document.getElementById("exam-answer-key-content");
+        keyContent.innerHTML = "";
+
+        generatedQuestions.forEach((q, index) => {
+          // Question container
+          const qDiv = document.createElement("div");
+          qDiv.style.marginBottom = "18px";
+          qDiv.innerHTML = `
+            <div style="font-weight: bold; margin-bottom: 6px; color:#000 !important;">${index+1}. ${q.question}</div>
+            <div style="padding-left: 15px; color:#000 !important;">
+              ${q.options.map(opt => `<div style="margin-bottom: 4px; color:#000 !important;">${opt}</div>`).join("")}
+            </div>
+          `;
+          qListContainer.appendChild(qDiv);
+
+          // Add to key content
+          keyContent.innerHTML += `Soal ${index+1}: ${q.answer} &nbsp;&nbsp;&nbsp; `;
+        });
+
+        // Hide answer key by default
+        document.getElementById("exam-answer-key").style.display = "none";
+        
+        document.getElementById("generator-setup-view").style.display = "none";
+        document.getElementById("generator-result-view").style.display = "block";
+        showToast("Ujian Terbuat", `Berhasil men-generate ${generatedQuestions.length} butir soal secara instan.`);
+      }, 1500);
+    }
+
+    function toggleAnswerKey() {
+      const el = document.getElementById("exam-answer-key");
+      if (el.style.display === "none") {
+        el.style.display = "block";
+      } else {
+        el.style.display = "none";
+      }
+    }
+
+    function printGeneratedQuestions() {
+      window.print();
+    }
+
+    function exportGeneratedQuestionsToWord() {
+      // Basic MS Word XML/HTML content export
+      let htmlContent = document.getElementById("exam-sheet-content").innerHTML;
+      
+      // Make sure the answer key is visible in the exported word document
+      const answerKeyEl = document.getElementById("exam-answer-key");
+      const isKeyVisible = answerKeyEl && answerKeyEl.style.display !== "none";
+      
+      const fileContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <title>Generated Exam TKR</title>
+          <style>
+            body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000000; }
+            h2, h3 { text-align: center; font-weight: bold; margin: 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+            td { padding: 4px; }
+            hr { border: 0; border-top: 2px solid #000; }
+            .question { margin-bottom: 15px; font-weight: bold; }
+            .option { margin-left: 20px; }
+          </style>
+        </head>
+        <body>
+          ${htmlContent}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + fileContent], {
+        type: 'application/msword'
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Lembar_Ujian_TKR_Generated.doc";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("Ekspor Word Sukses", "Lembar ujian berhasil diekspor sebagai file Word (.doc).");
+    }
+
+    // ----------------- OTHER DYNAMIC TABS ACTIONS -----------------
+    function clearChatHistory() {
+      if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat obrolan dengan asisten AI?")) {
+        const container = document.getElementById("chat-container");
+        if (container) {
+          container.innerHTML = "";
+          // Re-inject default assistant greeting
+          const div = document.createElement("div");
+          div.className = "chat-bubble assistant";
+          div.innerHTML = `
+            <div class="chat-sender">Asisten AI Kurikulum</div>
+            <div class="chat-text">Halo! Saya adalah Asisten Kurikulum AI InfoDesk234. Saya siap membantu Anda mengenai administrasi pengajaran SMK TKR, monitoring jurnal PKL, standard UKK BNSP, atau pembuatan modul ajar. Ada dokumen khusus yang ingin Anda bahas hari ini?</div>
+          `;
+          container.appendChild(div);
+        }
+        showToast("Obrolan Direset", "Riwayat chat telah dibersihkan.");
+      }
+    }
+
+    // ==========================================================================
     // INITIAL SYSTEM DATA STATE
     // ==========================================================================
     const DEFAULT_STUDENTS = [
@@ -1900,6 +2928,7 @@
     // ==========================================================================
     let appState = {
       teacher: null,
+      student: null,
       students: [],
       journals: [],
       approvedJournals: [],
@@ -1908,33 +2937,35 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       try {
-        // Load from localStorage or seed defaults
+        // Load default students & journals anyway
+        const savedStudents = localStorage.getItem("infodesk_students");
+        appState.students = savedStudents ? JSON.parse(savedStudents) : [...DEFAULT_STUDENTS];
+        
+        const savedJournals = localStorage.getItem("infodesk_journals");
+        appState.journals = savedJournals ? JSON.parse(savedJournals) : [...DEFAULT_JOURNALS];
+
+        const savedApproved = localStorage.getItem("infodesk_approved");
+        appState.approvedJournals = savedApproved ? JSON.parse(savedApproved) : [];
+        
+        const savedModules = localStorage.getItem("infodesk_modules");
+        appState.modules = savedModules ? JSON.parse(savedModules) : [...TEACHING_MODULES];
+
+        // Load active session
         const savedTeacher = localStorage.getItem("infodesk_teacher");
+        const savedStudent = localStorage.getItem("infodesk_active_student");
+
         if (savedTeacher) {
           appState.teacher = JSON.parse(savedTeacher);
-          
-          // Load student data
-          const savedStudents = localStorage.getItem("infodesk_students");
-          appState.students = savedStudents ? JSON.parse(savedStudents) : [...DEFAULT_STUDENTS];
-          
-          // Load journals
-          const savedJournals = localStorage.getItem("infodesk_journals");
-          appState.journals = savedJournals ? JSON.parse(savedJournals) : [...DEFAULT_JOURNALS];
-
-          // Load approved journals
-          const savedApproved = localStorage.getItem("infodesk_approved");
-          appState.approvedJournals = savedApproved ? JSON.parse(savedApproved) : [];
-          
-          // Load modules (with unlocked state)
-          const savedModules = localStorage.getItem("infodesk_modules");
-          appState.modules = savedModules ? JSON.parse(savedModules) : [...TEACHING_MODULES];
-
-          // Go to dashboard
           showDashboard();
+        } else if (savedStudent) {
+          appState.student = JSON.parse(savedStudent);
+          showStudentDashboard();
         } else {
           // Show auth page
           document.getElementById("auth-section").style.display = "flex";
           document.getElementById("dashboard-section").style.display = "none";
+          document.getElementById("student-section").style.display = "none";
+          populateStudentLoginDropdown();
         }
       } catch (e) {
         console.error("Initialization error, clearing localStorage:", e);
@@ -2057,7 +3088,7 @@
         localStorage.clear();
         window.location.reload();
       }
-    }
+      updateHeaderActions('tab-pkl');\n      }
 
     // ==========================================================================
     // NAVIGATION & TAB SWITCHING
@@ -2080,6 +3111,7 @@
         'tab-support': "AI Chat Bantuan 24/7"
       };
       document.getElementById("page-tab-title").innerHTML = pageTitles[tabId];
+      updateHeaderActions(tabId);
 
       // Special animation trigger for charts on analytics tab
       if (tabId === 'tab-analytics') {
@@ -2376,7 +3408,154 @@
           "ul, ol {margin-left: 20px; padding-left: 0;}" +
           "li {margin-bottom: 5px;}" +
           "</style></head><body>";
-      var footer = "</body></html>";
+      var footer = "
+  <!-- MODAL: AI GENERATOR SOAL -->
+  <div id="generator-modal" class="modal">
+    <div class="modal-content" style="max-width: 900px; background: var(--bg-slate); border: 1px solid var(--border-glass);">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa fa-magic" style="color: var(--accent-orange);"></i> AI Generator Soal Kejuruan TKR &amp; IoT</h3>
+        <button class="modal-close" onclick="closeGeneratorModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="generator-setup" id="generator-setup-view">
+          <div class="form-group-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="gen-subject">Mata Pelajaran / Kompetensi</label>
+              <select class="form-control" id="gen-subject">
+                <option value="all">Semua Kompetensi (Campuran)</option>
+                <option value="Engine Tune-up &amp; EFI">Pemeliharaan Mesin (PMKR / Tune-up / EFI)</option>
+                <option value="Kelistrikan Otomotif">Pemeliharaan Kelistrikan (PKKR / Bodi / Starter)</option>
+                <option value="Sasis &amp; Sistem Rem">Pemeliharaan Sasis (PSKR / Rem / Camber)</option>
+                <option value="Koding Dasar &amp; IoT Otomotif">Koding Dasar &amp; IoT Otomotif (Arduino / Python)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gen-keyword">Kata Kunci (Opsional)</label>
+              <input class="form-control" type="text" id="gen-keyword" placeholder="Contoh: rem, EFI, katup, sensor, dll.">
+            </div>
+          </div>
+          <div class="form-group-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="gen-count">Jumlah Soal</label>
+              <select class="form-control" id="gen-count">
+                <option value="5">5 Butir Soal</option>
+                <option value="10">10 Butir Soal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gen-level">Tingkat Kesulitan</label>
+              <select class="form-control" id="gen-level">
+                <option value="sedang">Standar / AKM / Kejuruan</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-auth" onclick="generateQuestions()" style="background: linear-gradient(135deg, var(--accent-orange) 0%, #ff5722 100%); box-shadow: 0 4px 15px rgba(255, 159, 28, 0.3); margin-top: 15px; border: none;">
+            <i class="fa fa-cog fa-spin" id="gen-spinner" style="display:none;"></i> <i class="fa fa-wand-magic-sparkles" id="gen-icon"></i> Generate Lembar Soal
+          </button>
+        </div>
+
+        <div class="generator-result" id="generator-result-view" style="display: none; margin-top: 20px;">
+          <div class="exam-sheet-paper" id="exam-sheet-content" style="background: #ffffff; color: #000000; padding: 30px; border-radius: 4px; font-family: 'Inter', 'Times New Roman', serif; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <!-- Exam Header -->
+            <div style="text-align: center; border-bottom: 3px double #000000; padding-bottom: 10px; margin-bottom: 20px;">
+              <h2 style="font-size: 18px; font-weight: bold; margin: 0; text-transform: uppercase; color: #000 !important;">LEMBAR UJIAN KEJURUAN TEKNIK KENDARAAN RINGAN</h2>
+              <h3 style="font-size: 16px; font-weight: bold; margin: 5px 0 0 0; text-transform: uppercase; color: #000 !important;">KOMPETENSI KEAHLIAN TKR &amp; AI OTOMOTIF</h3>
+              <p style="font-size: 11px; margin: 5px 0 0 0; font-style: italic; color: #000 !important;">SMK INFODESK234 - TAHUN PELAJARAN 2026/2027</p>
+            </div>
+
+            <!-- Exam Meta -->
+            <table style="width: 100%; font-size: 12px; margin-bottom: 20px; border-collapse: collapse; color: #000 !important;">
+              <tr>
+                <td style="width: 15%; padding: 3px 0; color: #000 !important;">Mata Pelajaran</td>
+                <td style="width: 35%; padding: 3px 0; color: #000 !important; font-weight: bold;" id="exam-meta-subject">: Pemeliharaan Mesin (EFI)</td>
+                <td style="width: 15%; padding: 3px 0; color: #000 !important;">Nama Siswa</td>
+                <td style="width: 35%; padding: 3px 0; border-bottom: 1px solid #000000; color: #000 !important;">: </td>
+              </tr>
+              <tr>
+                <td style="padding: 3px 0; color: #000 !important;">Kelas / Semester</td>
+                <td style="padding: 3px 0; color: #000 !important; font-weight: bold;" id="exam-meta-class">: XI TKR / Ganjil</td>
+                <td style="padding: 3px 0; color: #000 !important;">Hari / Tanggal</td>
+                <td style="padding: 3px 0; border-bottom: 1px solid #000000; color: #000 !important;">: </td>
+              </tr>
+            </table>
+
+            <hr style="border: 0; border-top: 1px solid #000000; margin-bottom: 20px;"/>
+
+            <!-- Questions Area -->
+            <div id="exam-questions-list" style="font-size: 13px; line-height: 1.6; text-align: left; color: #000 !important;">
+              <!-- Injected by JS -->
+            </div>
+
+            <!-- Answer Key -->
+            <div id="exam-answer-key" style="margin-top: 30px; border-top: 1px dashed #000000; padding-top: 15px; font-size: 12px; display: none; color: #000 !important;">
+              <h4 style="font-weight: bold; margin-bottom: 8px; color: #000 !important;">KUNCI JAWABAN GURU:</h4>
+              <div id="exam-answer-key-content" style="font-family: monospace; color: #000 !important;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 20px;">
+            <button class="btn-action" onclick="toggleAnswerKey()" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-glass);">
+              <i class="fa fa-eye"></i> Kunci Jawaban
+            </button>
+            <button class="btn-action" onclick="exportGeneratedQuestionsToWord()" style="background: #217346; color: #fff; border: none;">
+              <i class="fa fa-file-word"></i> Ekspor Word (.doc)
+            </button>
+            <button class="btn-action btn-primary-action" onclick="printGeneratedQuestions()" style="background: var(--accent-orange); color: #fff; border: none; box-shadow: 0 4px 10px rgba(255, 159, 28, 0.2);">
+              <i class="fa fa-print"></i> Cetak Soal (PDF)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: VERIFIKASI PASSWORD MODUL AJAR -->
+  <div id="password-modal" class="modal">
+    <div class="modal-content" style="max-width: 450px; background: var(--bg-slate); border: 1px solid var(--border-glass);">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa fa-key" style="color: var(--accent-orange);"></i> Verifikasi Akses Modul Ajar</h3>
+        <button class="modal-close" onclick="closePasswordModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 13.5px; color: var(--text-light); line-height: 1.6; margin-bottom: 20px;">
+          Modul ajar ini dikunci. Silakan masukkan kata sandi untuk mengunduh berkas dari Google Drive.
+        </p>
+        <div class="form-group" style="text-align: left; margin-bottom: 15px;">
+          <label class="form-label" for="mod-pwd">Kata Sandi Akses</label>
+          <input class="form-control" type="password" id="mod-pwd" placeholder="Masukkan password...">
+        </div>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 20px;">
+          *Hubungi Admin di WhatsApp untuk mendapatkan sandi.<br/>
+          (Simulasi sandi default: <code style="color: var(--accent-cyan); font-weight: bold;">INFODESK-TKR</code>)
+        </p>
+        <button class="btn-auth" onclick="verifyModulePassword()" style="background: linear-gradient(135deg, var(--accent-cyan) 0%, #0088cc 100%); box-shadow: 0 4px 12px rgba(0, 245, 255, 0.2); border: none;">
+          <i class="fa fa-lock-open"></i> Verifikasi &amp; Unduh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: IMPOR JURNAL SISWA -->
+  <div id="import-journal-modal" class="modal">
+    <div class="modal-content" style="max-width: 500px; background: var(--bg-slate); border: 1px solid var(--border-glass);">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa fa-file-import" style="color: var(--accent-cyan);"></i> Impor Laporan Jurnal Siswa</h3>
+        <button class="modal-close" onclick="closeImportJournalModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13.5px; color: var(--text-light); line-height: 1.6; margin-bottom: 15px;">
+          Tempelkan seluruh teks pesan WhatsApp yang dikirimkan oleh siswa (atau kode sinkronisasi saja) ke dalam kotak di bawah ini:
+        </p>
+        <div class="form-group">
+          <textarea class="form-control" id="import-journal-text" rows="8" placeholder="Tempel pesan WhatsApp di sini... (Mengandung JRNAL-...)"></textarea>
+        </div>
+        <button class="btn-auth" onclick="processImportJournal()" style="background: linear-gradient(135deg, var(--accent-cyan) 0%, #0088cc 100%); margin-top: 15px; box-shadow: 0 4px 12px rgba(0, 245, 255, 0.2); border: none;">
+          <i class="fa fa-circle-check"></i> Proses Impor Jurnal
+        </button>
+      </div>
+    </div>
+  </div>
+</body></html>";
       var sourceHTML = header + htmlContent + footer;
       
       var blob = new Blob(['\ufeff' + sourceHTML], {
@@ -2476,36 +3655,11 @@
     }
 
     function triggerSimulatedDownload(moduleId, title) {
-      const bar = document.getElementById(`progress-${moduleId}`);
-      const btn = document.getElementById(`btn-dl-${moduleId}`);
-      if (!bar || !btn) return;
-
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Loading`;
-      
-      let width = 0;
-      const interval = setInterval(() => {
-        width += 5;
-        bar.style.width = width + "%";
-        
-        if (width >= 100) {
-          clearInterval(interval);
-          btn.innerHTML = `<i class="fa fa-circle-check" style="color:var(--accent-green);"></i> Selesai`;
-          bar.style.width = "0%";
-          
-          // Increment downloads count in state
-          const m = appState.modules.find(mod => mod.id === moduleId);
-          if (m) m.downloads++;
-          
-          updateAnalyticsDashboard();
-          showToast("Unduhan Selesai", `Modul "${title}" berhasil diunduh ke komputer.`);
-          
-          setTimeout(() => {
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa fa-cloud-arrow-down"></i> Unduh`;
-          }, 3000);
-        }
-      }, 80);
+      // Show password modal
+      activeDownloadModuleId = moduleId;
+      activeDownloadModuleTitle = title;
+      document.getElementById("mod-pwd").value = "";
+      document.getElementById("password-modal").classList.add("active");
     }
 
     function previewPremiumModule(moduleId) {
@@ -3013,6 +4167,58 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
         toast.classList.remove("active");
       }, 4000);
     }
-  </script>
+  
+    // Dynamically update header buttons depending on active tab
+    function updateHeaderActions(tabId) {
+      const container = document.getElementById("header-tab-actions");
+      if (!container) return;
+      
+      let html = "";
+      if (tabId === 'tab-pkl') {
+        html = `
+          <button class="btn-action" onclick="exportToExcel()">
+            <i class="fa fa-file-excel" style="color: #28a745;"></i> Ekspor Excel
+          </button>
+          <button class="btn-action btn-secondary-action" onclick="triggerImportJournalDialog()" style="background: rgba(0, 245, 255, 0.1); border-color: rgba(0, 245, 255, 0.2); color: var(--accent-cyan);">
+            <i class="fa fa-file-import"></i> Impor Jurnal Siswa
+          </button>
+          <button class="btn-action" onclick="exportDataBackup()">
+            <i class="fa fa-download"></i> Backup JSON
+          </button>
+          <button class="btn-action btn-primary-action" onclick="triggerImportDialog()">
+            <i class="fa fa-upload"></i> Restore Data
+          </button>
+        `;
+      } else if (tabId === 'tab-modul') {
+        html = `
+          <button class="btn-action" onclick="openMainGoogleDrive()">
+            <i class="fa fa-folder-open" style="color: #ffc107;"></i> Buka Drive Modul
+          </button>
+          <button class="btn-action btn-primary-action" onclick="showPasswordRequestInfo()">
+            <i class="fa fa-key"></i> Dapatkan Password
+          </button>
+        `;
+      } else if (tabId === 'tab-analytics') {
+        html = `
+          <button class="btn-action btn-primary-action" onclick="window.print()">
+            <i class="fa fa-print"></i> Cetak Laporan Analitik
+          </button>
+        `;
+      } else if (tabId === 'tab-banksoal') {
+        html = `
+          <button class="btn-action btn-primary-action" onclick="openQuestionGenerator()">
+            <i class="fa fa-magic"></i> Generator Soal Instan
+          </button>
+        `;
+      } else if (tabId === 'tab-support') {
+        html = `
+          <button class="btn-action btn-danger-action" onclick="clearChatHistory()">
+            <i class="fa fa-trash"></i> Bersihkan Obrolan
+          </button>
+        `;
+      }
+      container.innerHTML = html;
+    }
+</script>
 </body>
 </html>
