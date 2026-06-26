@@ -1414,7 +1414,7 @@
           <div class="form-row-2">
             <div class="form-group">
               <label class="form-label" for="reg-nuptk">NIP / NUPTK</label>
-              <input class="form-control" type="text" id="reg-nuptk" required placeholder="Contoh: 198008122005011002" pattern="\d{12,18}">
+              <input class="form-control" type="text" id="reg-nuptk" required placeholder="Contoh: 198008122005011002">
             </div>
             <div class="form-group">
               <label class="form-label" for="reg-school">Asal Sekolah (SMK)</label>
@@ -1434,7 +1434,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="reg-wa">Nomor WhatsApp Aktif</label>
-              <input class="form-control" type="tel" id="reg-wa" required placeholder="Contoh: 081234567890" pattern="08\d{8,11}">
+              <input class="form-control" type="text" id="reg-wa" required placeholder="Contoh: 081234567890">
             </div>
           </div>
 
@@ -1907,29 +1907,38 @@
     };
 
     document.addEventListener("DOMContentLoaded", function() {
-      // Load from localStorage or seed defaults
-      const savedTeacher = localStorage.getItem("infodesk_teacher");
-      if (savedTeacher) {
-        appState.teacher = JSON.parse(savedTeacher);
-        
-        // Load student data
-        const savedStudents = localStorage.getItem("infodesk_students");
-        appState.students = savedStudents ? JSON.parse(savedStudents) : [...DEFAULT_STUDENTS];
-        
-        // Load journals
-        const savedJournals = localStorage.getItem("infodesk_journals");
-        appState.journals = savedJournals ? JSON.parse(savedJournals) : [...DEFAULT_JOURNALS];
+      try {
+        // Load from localStorage or seed defaults
+        const savedTeacher = localStorage.getItem("infodesk_teacher");
+        if (savedTeacher) {
+          appState.teacher = JSON.parse(savedTeacher);
+          
+          // Load student data
+          const savedStudents = localStorage.getItem("infodesk_students");
+          appState.students = savedStudents ? JSON.parse(savedStudents) : [...DEFAULT_STUDENTS];
+          
+          // Load journals
+          const savedJournals = localStorage.getItem("infodesk_journals");
+          appState.journals = savedJournals ? JSON.parse(savedJournals) : [...DEFAULT_JOURNALS];
 
-        // Load approved journals
-        const savedApproved = localStorage.getItem("infodesk_approved");
-        appState.approvedJournals = savedApproved ? JSON.parse(savedApproved) : [];
-        
-        appState.modules = [...TEACHING_MODULES];
+          // Load approved journals
+          const savedApproved = localStorage.getItem("infodesk_approved");
+          appState.approvedJournals = savedApproved ? JSON.parse(savedApproved) : [];
+          
+          // Load modules (with unlocked state)
+          const savedModules = localStorage.getItem("infodesk_modules");
+          appState.modules = savedModules ? JSON.parse(savedModules) : [...TEACHING_MODULES];
 
-        // Go to dashboard
-        showDashboard();
-      } else {
-        // Show auth page
+          // Go to dashboard
+          showDashboard();
+        } else {
+          // Show auth page
+          document.getElementById("auth-section").style.display = "flex";
+          document.getElementById("dashboard-section").style.display = "none";
+        }
+      } catch (e) {
+        console.error("Initialization error, clearing localStorage:", e);
+        localStorage.clear();
         document.getElementById("auth-section").style.display = "flex";
         document.getElementById("dashboard-section").style.display = "none";
       }
@@ -1995,6 +2004,7 @@
         localStorage.setItem("infodesk_students", JSON.stringify(appState.students));
         localStorage.setItem("infodesk_journals", JSON.stringify(appState.journals));
         localStorage.setItem("infodesk_approved", JSON.stringify(appState.approvedJournals));
+        localStorage.setItem("infodesk_modules", JSON.stringify(appState.modules));
 
         showDashboard();
         showToast("Registrasi Berhasil", "Selamat Datang di Portal Guru InfoDesk234.");
@@ -2011,24 +2021,42 @@
 
     // Show dashboard DOM and render initial modules
     function showDashboard() {
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("dashboard-section").style.display = "grid";
+      try {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("dashboard-section").style.display = "grid";
 
-      // Render profile
-      document.getElementById("teacher-profile-name").innerText = appState.teacher.name;
-      document.getElementById("teacher-profile-meta").innerText = "NIP: " + appState.teacher.nuptk;
-      document.getElementById("teacher-school-title").innerText = appState.teacher.school + " | Kompetensi: " + appState.teacher.subject;
-      
-      // Avatar Initial
-      const initial = appState.teacher.name.replace(/^(drs|dra|ir)\.\s+/i, "").charAt(0).toUpperCase();
-      document.getElementById("avatar-initial").innerText = initial;
+        // Render profile with fallback values
+        const name = (appState.teacher && appState.teacher.name) || "Guru Otomotif";
+        const nuptk = (appState.teacher && appState.teacher.nuptk) || "-";
+        const school = (appState.teacher && appState.teacher.school) || "SMK Negeri";
+        const subject = (appState.teacher && appState.teacher.subject) || "Teknik Kendaraan Ringan";
 
-      // Render all dashboard parts
-      renderStudentsTable();
-      renderJournalFeed();
-      renderModulesList();
-      renderResourcesList();
-      updateAnalyticsDashboard();
+        document.getElementById("teacher-profile-name").innerText = name;
+        document.getElementById("teacher-profile-meta").innerText = "NIP: " + nuptk;
+        document.getElementById("teacher-school-title").innerText = school + " | Kompetensi: " + subject;
+        
+        // Avatar Initial
+        let initial = "G";
+        try {
+          initial = name.replace(/^(drs|dra|ir)\.\s+/i, "").charAt(0).toUpperCase();
+        } catch (e) {
+          console.warn("Avatar initial error:", e);
+        }
+        document.getElementById("avatar-initial").innerText = initial;
+
+        // Render all dashboard parts
+        renderStudentsTable();
+        renderJournalFeed();
+        renderModulesList();
+        renderResourcesList();
+        updateAnalyticsDashboard();
+      } catch (err) {
+        console.error("Error showing dashboard, resetting credentials:", err);
+        // If data is heavily corrupt, clear session and alert
+        alert("Sesi bermasalah atau data corrupt. Mengembalikan ke halaman pendaftaran.");
+        localStorage.clear();
+        window.location.reload();
+      }
     }
 
     // ==========================================================================
@@ -2383,11 +2411,19 @@
         
         let badgeHtml = `<span class="module-card-class-badge">${m.class}</span>`;
         if (m.isPremium) {
-          badgeHtml = `
-            <span class="module-card-class-badge" style="background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.3); color: var(--accent-orange); right: 85px;">Eksklusif</span>
-            <span class="module-card-class-badge">${m.class}</span>
-          `;
-          div.style.borderColor = "rgba(255, 159, 28, 0.25)";
+          if (m.unlocked) {
+            badgeHtml = `
+              <span class="module-card-class-badge" style="background: rgba(57, 255, 20, 0.1); border-color: rgba(57, 255, 20, 0.3); color: var(--accent-green); right: 85px;">Terbuka</span>
+              <span class="module-card-class-badge">${m.class}</span>
+            `;
+            div.style.borderColor = "rgba(57, 255, 20, 0.25)";
+          } else {
+            badgeHtml = `
+              <span class="module-card-class-badge" style="background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.3); color: var(--accent-orange); right: 85px;">Eksklusif</span>
+              <span class="module-card-class-badge">${m.class}</span>
+            `;
+            div.style.borderColor = "rgba(255, 159, 28, 0.25)";
+          }
         }
         
         let buttonHtml = `
@@ -2396,14 +2432,22 @@
           </button>
         `;
         if (m.isPremium) {
-          buttonHtml = `
-            <button class="btn-download-module" style="background: rgba(255, 255, 255, 0.05); border-color: var(--border-glass); color: #ffffff; margin-right: 6px; padding: 6px 10px;" onclick="previewPremiumModule(${m.id})">
-              <i class="fa fa-eye"></i> Preview
-            </button>
-            <button class="btn-download-module" style="background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.3); color: var(--accent-orange); padding: 6px 10px;" onclick="buyPremiumModule(${m.id})">
-              <i class="fa fa-lock"></i> Akses
-            </button>
-          `;
+          if (m.unlocked) {
+            buttonHtml = `
+              <a class="btn-download-module" style="background: rgba(0, 245, 255, 0.1); border-color: rgba(0, 245, 255, 0.3); color: var(--accent-cyan); padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;" href="https://drive.google.com/drive/folders/1V6eHG5uepW97dAx0jmi4CMczQl1DBTWL?usp=sharing" target="_blank">
+                <i class="fa fa-folder-open"></i> Buka Drive
+              </a>
+            `;
+          } else {
+            buttonHtml = `
+              <button class="btn-download-module" style="background: rgba(255, 255, 255, 0.05); border-color: var(--border-glass); color: #ffffff; margin-right: 6px; padding: 6px 10px;" onclick="previewPremiumModule(${m.id})">
+                <i class="fa fa-eye"></i> Preview
+              </button>
+              <button class="btn-download-module" style="background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.3); color: var(--accent-orange); padding: 6px 10px;" onclick="buyPremiumModule(${m.id})">
+                <i class="fa fa-lock"></i> Akses
+              </button>
+            `;
+          }
         }
 
         div.innerHTML = `
@@ -2546,10 +2590,44 @@
               Kembali
             </button>
           </div>
+
+          <div style="margin-top: 15px; border-top: 1px dashed var(--border-glass); padding-top: 15px; text-align: left;">
+            <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 6px;">Sudah mendapatkan Kode Aktivasi?</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="activation-key-input" placeholder="Masukkan kode..." style="flex-grow: 1; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-glass); border-radius: 6px; padding: 8px 12px; color: #ffffff; font-size: 13px;">
+              <button onclick="unlockPremiumModule(${m.id})" style="background: var(--accent-cyan); color: #000000; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12.5px; font-weight: bold; cursor: pointer;">Aktifkan</button>
+            </div>
+          </div>
         </div>
       `;
 
       modal.classList.add("active");
+    }
+
+    function unlockPremiumModule(moduleId) {
+      const input = document.getElementById("activation-key-input");
+      if (!input) return;
+      const code = input.value.trim().toUpperCase();
+      
+      let valid = false;
+      if (moduleId === 7 && (code === "TBSM1-OK" || code === "TBSM1" || code === "INFO-TBSM1" || code === "GURU-TBSM1" || code === "GURU-HEBAT-TBSM")) {
+        valid = true;
+      } else if (moduleId === 8 && (code === "TBSM2-OK" || code === "TBSM2" || code === "INFO-TBSM2" || code === "GURU-TBSM2" || code === "GURU-HEBAT-TBSM")) {
+        valid = true;
+      }
+      
+      if (valid) {
+        const m = appState.modules.find(mod => mod.id === moduleId);
+        if (m) {
+          m.unlocked = true;
+          localStorage.setItem("infodesk_modules", JSON.stringify(appState.modules));
+          closePreviewModal();
+          renderModulesList();
+          showToast("Akses Terbuka", `Materi "${m.title}" berhasil diaktifkan.`);
+        }
+      } else {
+        alert("Kode aktivasi tidak valid. Silakan hubungi admin untuk mendapatkan kode yang benar.");
+      }
     }
 
     // ==========================================================================
@@ -2807,10 +2885,10 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
           <div class="header-title">DATA PORTAL GURU SMK - INFODESK234</div>
           
           <table style="border: none; margin-bottom: 20px;">
-            <tr><td><b>Nama Guru</b></td><td>: \${appState.teacher ? appState.teacher.name : ''}</td></tr>
-            <tr><td><b>NIP / NUPTK</b></td><td>: \${appState.teacher ? appState.teacher.nuptk : ''}</td></tr>
-            <tr><td><b>Asal Sekolah</b></td><td>: \${appState.teacher ? appState.teacher.school : ''}</td></tr>
-            <tr><td><b>Kompetensi</b></td><td>: \${appState.teacher ? appState.teacher.subject : ''}</td></tr>
+            <tr><td><b>Nama Guru</b></td><td>: ${appState.teacher ? appState.teacher.name : ''}</td></tr>
+            <tr><td><b>NIP / NUPTK</b></td><td>: ${appState.teacher ? appState.teacher.nuptk : ''}</td></tr>
+            <tr><td><b>Asal Sekolah</b></td><td>: ${appState.teacher ? appState.teacher.school : ''}</td></tr>
+            <tr><td><b>Kompetensi</b></td><td>: ${appState.teacher ? appState.teacher.subject : ''}</td></tr>
           </table>
 
           <div class="section-title">1. DAFTAR PENEMPATAN SISWA PKL</div>
@@ -2825,7 +2903,7 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
               </tr>
             </thead>
             <tbody>
-              \${studentsRows || '<tr><td colspan="5" style="text-align: center; border: 1px solid #aaaaaa;">Belum ada data penempatan.</td></tr>'}
+              ${studentsRows || '<tr><td colspan="5" style="text-align: center; border: 1px solid #aaaaaa;">Belum ada data penempatan.</td></tr>'}
             </tbody>
           </table>
 
@@ -2842,7 +2920,7 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
               </tr>
             </thead>
             <tbody>
-              \${journalsRows || '<tr><td colspan="6" style="text-align: center; border: 1px solid #aaaaaa;">Belum ada jurnal yang disetujui.</td></tr>'}
+              ${journalsRows || '<tr><td colspan="6" style="text-align: center; border: 1px solid #aaaaaa;">Belum ada jurnal yang disetujui.</td></tr>'}
             </tbody>
           </table>
         </body>
@@ -2854,7 +2932,7 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
       const dlLink = document.createElement("a");
       document.body.appendChild(dlLink);
       dlLink.href = url;
-      dlLink.download = \`Rekap_Portal_Guru_\${appState.teacher ? appState.teacher.name.replace(/\\s+/g, '_') : 'Data'}.xls\`;
+      dlLink.download = `Rekap_Portal_Guru_${appState.teacher ? appState.teacher.name.replace(/\s+/g, '_') : 'Data'}.xls`;
       dlLink.click();
       document.body.removeChild(dlLink);
       URL.revokeObjectURL(url);
