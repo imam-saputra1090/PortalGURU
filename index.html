@@ -1506,8 +1506,11 @@
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="teacher-school-title">Sekolah SMK</p>
           </div>
           <div class="header-actions">
+            <button class="btn-action" onclick="exportToExcel()">
+              <i class="fa fa-file-excel" style="color: #28a745;"></i> Ekspor Excel
+            </button>
             <button class="btn-action" onclick="exportDataBackup()">
-              <i class="fa fa-download"></i> Backup Data
+              <i class="fa fa-download"></i> Backup JSON
             </button>
             <button class="btn-action btn-primary-action" onclick="triggerImportDialog()">
               <i class="fa fa-upload"></i> Restore Data
@@ -2608,9 +2611,107 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
       }, 1000);
     }
 
-    // ==========================================================================
-    // BACKUP & RESTORE DATA (JSON EXPORT/IMPORT LOGIC)
-    // ==========================================================================
+    function exportToExcel() {
+      // 1. Student placements table HTML
+      let studentsRows = "";
+      appState.students.forEach((s, idx) => {
+        studentsRows += `
+          <tr>
+            <td style="text-align: center; border: 1px solid #aaaaaa;">${idx + 1}</td>
+            <td style="border: 1px solid #aaaaaa;">${s.name}</td>
+            <td style="border: 1px solid #aaaaaa;">${s.dudi}</td>
+            <td style="border: 1px solid #aaaaaa; text-align: center;">${s.status}</td>
+            <td style="border: 1px solid #aaaaaa;">${s.supervisor}</td>
+          </tr>
+        `;
+      });
+
+      // 2. Approved journals table HTML
+      let journalsRows = "";
+      appState.approvedJournals.forEach((j, idx) => {
+        journalsRows += `
+          <tr>
+            <td style="text-align: center; border: 1px solid #aaaaaa;">${idx + 1}</td>
+            <td style="border: 1px solid #aaaaaa;">${j.studentName}</td>
+            <td style="border: 1px solid #aaaaaa;">${j.dudi}</td>
+            <td style="border: 1px solid #aaaaaa; text-align: center;">${j.date}</td>
+            <td style="border: 1px solid #aaaaaa;">${j.content}</td>
+            <td style="border: 1px solid #aaaaaa;">Disetujui pada ${j.approvedDate} oleh ${j.verifiedBy}</td>
+          </tr>
+        `;
+      });
+
+      const excelTemplate = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+            th { background-color: #217346; color: #ffffff; font-weight: bold; border: 1px solid #aaaaaa; padding: 8px; }
+            td { padding: 8px; }
+            .header-title { font-size: 16pt; font-weight: bold; color: #217346; text-align: center; margin-bottom: 20px; }
+            .section-title { font-size: 12pt; font-weight: bold; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #217346; padding-bottom: 4px; }
+          </style>
+        </head>
+        <body>
+          <div class="header-title">DATA PORTAL GURU SMK - INFODESK234</div>
+          
+          <table style="border: none; margin-bottom: 20px;">
+            <tr><td><b>Nama Guru</b></td><td>: \${appState.teacher ? appState.teacher.name : ''}</td></tr>
+            <tr><td><b>NIP / NUPTK</b></td><td>: \${appState.teacher ? appState.teacher.nuptk : ''}</td></tr>
+            <tr><td><b>Asal Sekolah</b></td><td>: \${appState.teacher ? appState.teacher.school : ''}</td></tr>
+            <tr><td><b>Kompetensi</b></td><td>: \${appState.teacher ? appState.teacher.subject : ''}</td></tr>
+          </table>
+
+          <div class="section-title">1. DAFTAR PENEMPATAN SISWA PKL</div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px;">No</th>
+                <th>Nama Lengkap Siswa</th>
+                <th>Perusahaan Mitra (DUDI)</th>
+                <th style="width: 120px;">Status</th>
+                <th>Penyelia Industri</th>
+              </tr>
+            </thead>
+            <tbody>
+              \${studentsRows || '<tr><td colspan="5" style="text-align: center; border: 1px solid #aaaaaa;">Belum ada data penempatan.</td></tr>'}
+            </tbody>
+          </table>
+
+          <div class="section-title">2. JURNAL HARIAN SISWA PKL (YANG DISETUJUI)</div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px;">No</th>
+                <th>Nama Siswa</th>
+                <th>Mitra DUDI</th>
+                <th style="width: 100px;">Tanggal</th>
+                <th>Kegiatan Kerja Siswa</th>
+                <th>Status Verifikasi</th>
+              </tr>
+            </thead>
+            <tbody>
+              \${journalsRows || '<tr><td colspan="6" style="text-align: center; border: 1px solid #aaaaaa;">Belum ada jurnal yang disetujui.</td></tr>'}
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([excelTemplate], { type: 'application/vnd.ms-excel' });
+      const url = URL.createObjectURL(blob);
+      const dlLink = document.createElement("a");
+      document.body.appendChild(dlLink);
+      dlLink.href = url;
+      dlLink.download = \`Rekap_Portal_Guru_\${appState.teacher ? appState.teacher.name.replace(/\\s+/g, '_') : 'Data'}.xls\`;
+      dlLink.click();
+      document.body.removeChild(dlLink);
+      URL.revokeObjectURL(url);
+      showToast("Ekspor Excel Sukses", "Data rekap berhasil diekspor sebagai file spreadsheet Excel (.xls).");
+    }
+
     function exportDataBackup() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const dlAnchor = document.createElement('a');
