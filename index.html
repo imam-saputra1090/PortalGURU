@@ -1843,7 +1843,41 @@
       { id: 3, class: "Kelas XI", code: "M.11.1", title: "Modul Sistem Engine Management & sensor EFI", desc: "Membahas sensor EFI (MAP, IAT, ECT, CKP, O2), rangkaian actuator (injector, coil), dan troubleshooting diagnosa OBD-II.", size: "8.1 MB", downloads: 56 },
       { id: 4, class: "Kelas XI", code: "M.11.2", title: "Modul Pemrograman C++ Mikrokontroler Arduino", desc: "Dasar pemrograman logika sensor, membaca sensor analog otomotif, mengontrol motor servo/actuator via Arduino Uno.", size: "6.3 MB", downloads: 42 },
       { id: 5, class: "Kelas XII", code: "M.12.1", title: "Modul IoT Diagnosa Kendaraan Berbasis Web", desc: "Penerapan modul ESP32 / Arduino untuk mengirimkan data diagnostik OBD-II ke dashboard web monitoring sekolah.", size: "9.2 MB", downloads: 18 },
-      { id: 6, class: "Kelas XII", code: "M.12.2", title: "Panduan Laporan Magang PKL dan Presentasi", desc: "Format standard penulisan laporan PKL siswa kejuruan, rubrik penilaian DUDI, dan panduan ujian sidang magang.", size: "3.1 MB", downloads: 27 }
+      { id: 6, class: "Kelas XII", code: "M.12.2", title: "Panduan Laporan Magang PKL dan Presentasi", desc: "Format standard penulisan laporan PKL siswa kejuruan, rubrik penilaian DUDI, dan panduan ujian sidang magang.", size: "3.1 MB", downloads: 27 },
+      { 
+        id: 7, 
+        class: "Kelas XI", 
+        code: "PREM.01", 
+        title: "MATERI TBSM 1: Kelistrikan, Injeksi PGM-FI & BPR Honda/Yamaha (Eksklusif)", 
+        desc: "Buku Pedoman Reparasi (BPR) 18 motor Honda, jobsheet kelistrikan bodi & kopling, materi ajar sistem PGM-FI, serta dokumen instrumen kelistrikan.", 
+        size: "468 MB (120+ File)", 
+        downloads: 145,
+        isPremium: true,
+        price: "Rp 49.000",
+        previewTitle: "Daftar Isi Paket Premium MATERI TBSM 1",
+        previewList: [
+          "Buku Pedoman Reparasi (BPR) Honda: Beat FI, Vario 125, PCX 150, CBR150R, Megapro, Tiger, Scoopy, Supra X, Revo, dll. (18 File PDF)",
+          "Job Sheet Praktik SMK: Injeksi Bensin, Kopling, Listrik Bodi, Overhaul Motor, Geometri Roda. (Lengkap dengan Langkah Kerja)",
+          "Materi Honda Teknologi (Guru Update): Sistem PGM-FI, Sistem Transmisi Otomatis, Wiring Diagram & Warna Kabel, Pengetahuan Produk Baterai, Alat Ukur.",
+          "File Dokumen Tambahan: Perbaikan Sistem Tanda dan Sistem Instrumen (doc - 10MB), Pembelajaran I.docx (5.7MB)."
+        ]
+      },
+      { 
+        id: 8, 
+        class: "Kelas X", 
+        code: "PREM.02", 
+        title: "MATERI TBSM 2: Overhaul Engine & Dasar Kompetensi Kejuruan (Eksklusif)", 
+        desc: "PowerPoint (PPT) dasar-dasar mesin, keselamatan kerja (K3), alat ukur, gambar teknik, serta video demonstrasi overhaul engine sepeda motor.", 
+        size: "185 MB (30+ File)", 
+        downloads: 98,
+        isPremium: true,
+        price: "Rp 39.000",
+        previewTitle: "Daftar Isi Paket Premium MATERI TBSM 2",
+        previewList: [
+          "Dasar Kompetensi Kejuruan (DKK): PPT Dasar-Dasar Mesin, Mesin Konversi Energi, Gambar Teknik, Alat Ukur, Keselamatan Kerja K3 (7 File PPT)",
+          "Engine & Overhaul: PPT Servis Engine, Kepala Silinder, Sistem Pendingin, Sistem Bahan Bakar, dan Video Overhaul Engine Sepeda Motor (.flv)."
+        ]
+      }
     ];
 
     const EXAM_RESOURCES = [
@@ -2347,16 +2381,43 @@
         div.className = "module-card";
         div.id = `module-card-${m.id}`;
         
+        let badgeHtml = `<span class="module-card-class-badge">${m.class}</span>`;
+        if (m.isPremium) {
+          badgeHtml = `
+            <span class="module-card-class-badge" style="background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.3); color: var(--accent-orange); right: 85px;">Eksklusif</span>
+            <span class="module-card-class-badge">${m.class}</span>
+          `;
+          div.style.borderColor = "rgba(255, 159, 28, 0.25)";
+        }
+        
+        let buttonHtml = `
+          <button class="btn-download-module" id="btn-dl-${m.id}" onclick="triggerSimulatedDownload(${m.id}, '${m.title}')">
+            <i class="fa fa-cloud-arrow-down"></i> Unduh
+          </button>
+        `;
+        if (m.isPremium) {
+          buttonHtml = `
+            <button class="btn-download-module" style="background: rgba(255, 255, 255, 0.05); border-color: var(--border-glass); color: #ffffff; margin-right: 6px; padding: 6px 10px;" onclick="previewPremiumModule(${m.id})">
+              <i class="fa fa-eye"></i> Preview
+            </button>
+            <button class="btn-download-module" style="background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.3); color: var(--accent-orange); padding: 6px 10px;" onclick="buyPremiumModule(${m.id})">
+              <i class="fa fa-lock"></i> Akses
+            </button>
+          `;
+        }
+
         div.innerHTML = `
-          <span class="module-card-class-badge">${m.class}</span>
-          <div class="module-card-icon"><i class="fa fa-file-pdf"></i></div>
+          ${badgeHtml}
+          <div class="module-card-icon" style="${m.isPremium ? 'background: rgba(255, 159, 28, 0.1); border-color: rgba(255, 159, 28, 0.2); color: var(--accent-orange);' : ''}">
+            <i class="fa ${m.isPremium ? 'fa-file-shield' : 'fa-file-pdf'}"></i>
+          </div>
           <h4 class="module-card-title">${m.title}</h4>
           <p class="module-card-desc">${m.desc}</p>
           <div class="module-card-meta">
             <span>Kode: ${m.code} (${m.size})</span>
-            <button class="btn-download-module" id="btn-dl-${m.id}" onclick="triggerSimulatedDownload(${m.id}, '${m.title}')">
-              <i class="fa fa-cloud-arrow-down"></i> Unduh
-            </button>
+            <div style="display: flex;">
+              ${buttonHtml}
+            </div>
           </div>
           <div class="download-progress-bar" id="progress-${m.id}"></div>
         `;
@@ -2401,6 +2462,94 @@
           }, 3000);
         }
       }, 80);
+    }
+
+    function previewPremiumModule(moduleId) {
+      const m = appState.modules.find(mod => mod.id === moduleId);
+      if (!m) return;
+
+      const modal = document.getElementById("preview-modal");
+      const modalTitle = document.getElementById("preview-modal-title");
+      const modalBody = document.getElementById("preview-modal-body");
+
+      modalTitle.innerText = "Pratinjau: " + m.title;
+
+      let listHtml = "";
+      m.previewList.forEach(item => {
+        listHtml += `<li style="margin-bottom: 10px; color: var(--text-light); line-height: 1.5; text-align: left;">${item}</li>`;
+      });
+
+      modalBody.innerHTML = `
+        <div style="padding: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px dashed var(--border-glass); padding-bottom: 10px;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-orange); font-weight: bold;">Kategori: Materi Eksklusif TBSM</span>
+            <span style="background: rgba(255, 159, 28, 0.1); border: 1px solid rgba(255, 159, 28, 0.3); color: var(--accent-orange); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">Harga: ${m.price}</span>
+          </div>
+          <p style="font-weight: bold; margin-bottom: 12px; color: #ffffff; text-align: left;">Materi yang termasuk dalam paket ini:</p>
+          <ul style="margin-left: 20px; margin-bottom: 25px;">
+            ${listHtml}
+          </ul>
+          <div style="background: rgba(0, 245, 255, 0.05); border: 1px dashed var(--accent-cyan); border-radius: 10px; padding: 15px; text-align: center;">
+            <p style="font-size: 13px; color: var(--accent-cyan); font-weight: bold; margin-bottom: 10px;">Ingin mendapatkan akses download seluruh file di atas?</p>
+            <button onclick="closePreviewModal(); buyPremiumModule(${m.id});" style="background: linear-gradient(135deg, var(--accent-ruby) 0%, var(--accent-orange) 100%); color: #ffffff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 12.5px; font-weight: bold; cursor: pointer;">
+              <i class="fa fa-shopping-cart"></i> Beli Akses Sekarang
+            </button>
+          </div>
+        </div>
+      `;
+
+      modal.classList.add("active");
+    }
+
+    function buyPremiumModule(moduleId) {
+      const m = appState.modules.find(mod => mod.id === moduleId);
+      if (!m) return;
+
+      const modal = document.getElementById("preview-modal");
+      const modalTitle = document.getElementById("preview-modal-title");
+      const modalBody = document.getElementById("preview-modal-body");
+
+      modalTitle.innerText = "Pembelian Akses: " + m.title;
+
+      // WhatsApp sales link configuration
+      const waNumber = "6285664236522";
+      const waText = encodeURIComponent(`Halo Admin InfoDesk234, saya ingin membeli akses untuk paket premium "${m.title}" seharga ${m.price}. Mohon info nomor rekening pembayarannya. Terima kasih.`);
+      const waUrl = `https://wa.me/${waNumber}?text=${waText}`;
+
+      modalBody.innerHTML = `
+        <div style="padding: 10px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 40px; color: var(--accent-orange); margin-bottom: 10px;"><i class="fa fa-lock"></i></div>
+            <p style="font-size: 13.5px; color: var(--text-muted);">Anda memilih paket materi ajar eksklusif</p>
+            <h4 style="font-size: 16px; color: #ffffff; margin-top: 5px;">${m.title}</h4>
+          </div>
+
+          <div style="background: rgba(5, 11, 20, 0.6); border: 1px solid var(--border-glass); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13.5px;">
+              <span>Harga Paket:</span>
+              <span style="font-weight: bold; color: var(--accent-orange);">${m.price}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13.5px;">
+              <span>Metode Pembayaran:</span>
+              <span style="font-weight: bold; color: var(--accent-cyan);">Transfer Bank / E-Wallet</span>
+            </div>
+            <div style="border-top: 1px solid var(--border-glass); padding-top: 10px; margin-top: 10px; font-size: 12px; color: var(--text-light); line-height: 1.5; text-align: left;">
+              * Akses unduh akan dibuka secara permanen pada akun guru Anda setelah konfirmasi pembayaran diverifikasi oleh admin.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <a href="${waUrl}" target="_blank" style="background: #25d366; color: #ffffff; text-align: center; padding: 12px; border-radius: 10px; font-size: 13.5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
+              <i class="fab fa-whatsapp" style="font-size: 18px;"></i> Hubungi Admin via WhatsApp
+            </a>
+            <button onclick="closePreviewModal()" style="background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); padding: 10px; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer;">
+              Kembali
+            </button>
+          </div>
+        </div>
+      `;
+
+      modal.classList.add("active");
     }
 
     // ==========================================================================
