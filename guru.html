@@ -3153,57 +3153,39 @@ const DEFAULT_STUDENTS = [
       const overlay = document.getElementById("verify-overlay");
       const subtext = document.getElementById("verify-subtext");
       overlay.querySelector(".verify-text").innerText = "Mendaftarkan Akun Guru";
-      subtext.innerText = "Menyimpan data ke database sekolah...";
+      subtext.innerText = "Menyimpan data lokal...";
       overlay.classList.add("active");
 
       // Build teacher object
       appState.teacher = { name, school, subject, wa, classes };
 
-      try {
-        if (API_URL) {
-          subtext.innerText = "Sinkronisasi ke Google Sheets...";
-          // GAS doesn't support CORS on POST directly; use GET with params
-          const params = new URLSearchParams({
-            action: "registerTeacher",
-            name, school, subject, wa,
-            classes: JSON.stringify(classes)
-          });
-          const response = await fetch(`${API_URL}?${params.toString()}`);
-          const data = await response.json();
-
-          overlay.classList.remove("active");
-
-          if (data.status === "exists" && data.teacher) {
-            // Already registered — auto-login
-            appState.teacher = data.teacher;
-            localStorage.setItem("infodesk_teacher", JSON.stringify(appState.teacher));
-            showDashboard();
-            showToast("Akun Sudah Ada", "Login otomatis. Selamat datang kembali, " + data.teacher.name + "!");
-            return;
-          }
-        }
-      } catch (err) {
-        console.error("Gagal sinkronisasi ke cloud:", err);
-        // Continue with local save even if cloud fails
-        overlay.classList.remove("active");
-      }
-
-      overlay.classList.remove("active");
-
-      // Initialize lists if empty
+      // STEP 1: Simpan lokal DULU agar tidak blocking
       if (appState.students.length === 0) appState.students = [...DEFAULT_STUDENTS];
       if (appState.journals.length === 0) appState.journals = [...DEFAULT_JOURNALS];
       appState.modules = [...TEACHING_MODULES];
 
-      // Persist locally
       localStorage.setItem("infodesk_teacher", JSON.stringify(appState.teacher));
       localStorage.setItem("infodesk_students", JSON.stringify(appState.students));
       localStorage.setItem("infodesk_journals", JSON.stringify(appState.journals));
       localStorage.setItem("infodesk_approved", JSON.stringify(appState.approvedJournals));
       localStorage.setItem("infodesk_modules", JSON.stringify(appState.modules));
 
+      // STEP 2: Tutup overlay & tampilkan dashboard langsung
+      overlay.classList.remove("active");
       showDashboard();
-      showToast("Registrasi Berhasil", "Selamat datang di Portal Guru InfoDesk234, " + name + "!");
+      showToast("Registrasi Berhasil", "Selamat datang, " + name + "! Sesi disimpan lokal.");
+
+      // STEP 3: Kirim ke GAS di background (tidak blocking UI)
+      if (API_URL) {
+        try {
+          const params = new URLSearchParams({
+            action: "registerTeacher",
+            name, school, subject, wa,
+            classes: JSON.stringify(classes)
+          });
+          fetch(API_URL + "?" + params.toString()).catch(() => {});
+        } catch(e) {}
+      }
     }
 
     function handleLogout() {

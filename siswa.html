@@ -2436,61 +2436,76 @@ const DEFAULT_STUDENTS = [
     async function populateStudentLoginDropdown() {
       const select = document.getElementById("siswa-select");
       if (!select) return;
-      select.innerHTML = "<option value=''>Memuat daftar nama...</option>";
-      
+
+      // STEP 1: Isi dulu dari data lokal/default agar dropdown tidak kosong
+      function fillDropdown(studentsList) {
+        select.innerHTML = "";
+        let individualStudents = [];
+        studentsList.forEach(item => {
+          const names = (item.name || "").split(",");
+          names.forEach(nameStr => {
+            const cleanedName = nameStr.trim();
+            if (cleanedName && !individualStudents.some(s => s.name === cleanedName)) {
+              individualStudents.push({
+                name: cleanedName,
+                dudi: item.dudi || "Mitra Industri",
+                supervisor: item.supervisor || "Penyelia DUDI"
+              });
+            }
+          });
+        });
+        individualStudents.sort((a, b) => a.name.localeCompare(b.name));
+        if (individualStudents.length === 0) {
+          select.innerHTML = "<option value=''>-- Belum ada siswa terdaftar --</option>";
+          return;
+        }
+        const defOpt = document.createElement("option");
+        defOpt.value = "";
+        defOpt.innerText = "-- Pilih nama Anda --";
+        select.appendChild(defOpt);
+        individualStudents.forEach(student => {
+          const opt = document.createElement("option");
+          opt.value = student.name;
+          opt.innerText = student.name + " (" + (student.dudi || "PKL") + ")";
+          select.appendChild(opt);
+        });
+      }
+
+      // Isi dari lokal/default terlebih dahulu
+      const localList = appState.students.length > 0 ? appState.students : DEFAULT_STUDENTS;
+      fillDropdown(localList);
+
+      // STEP 2: Coba ambil dari GAS (jika berhasil, update dropdown)
+      if (!API_URL) return;
       try {
-        if (API_URL) {
-          const response = await fetch(API_URL);
-          const data = await response.json();
-          if (data && data.placements) {
-            // Map placements to students
-            appState.students = data.placements.map(p => ({
-              id: p.no,
-              name: p.siswa,
-              dudi: p.bengkel,
-              status: "Aktif",
-              supervisor: p.pembimbing
-            }));
-            localStorage.setItem("infodesk_students", JSON.stringify(appState.students));
-          }
+        select.insertAdjacentHTML("afterbegin", "<option value='' disabled>Memuat dari server...</option>");
+        const response = await fetch(API_URL, { cache: "no-cache" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const data = await response.json();
+        if (data && data.placements && data.placements.length > 0) {
+          appState.students = data.placements.map(p => ({
+            id: p.no,
+            name: p.siswa || "",
+            dudi: p.bengkel || "",
+            status: "Aktif",
+            supervisor: p.pembimbing || ""
+          }));
+          localStorage.setItem("infodesk_students", JSON.stringify(appState.students));
+          fillDropdown(appState.students); // Update dengan data terbaru dari GAS
+        } else {
+          // Hapus "Memuat..." option jika data kosong
+          fillDropdown(localList);
         }
       } catch (err) {
-        console.error("Gagal mengambil data dari Google Sheet:", err);
+        console.warn("Gagal ambil data GAS, pakai lokal:", err.message);
+        fillDropdown(localList); // Kembalikan ke data lokal
       }
-      
-      select.innerHTML = "";
-      const list = appState.students.length > 0 ? appState.students : DEFAULT_STUDENTS;
-      
-      // Filter list to individual student names (since placements might have comma separated names)
-      let individualStudents = [];
-      list.forEach(item => {
-        const names = item.name.split(",");
-        names.forEach(nameStr => {
-          const cleanedName = nameStr.trim();
-          if (cleanedName && !individualStudents.some(s => s.name === cleanedName)) {
-            individualStudents.push({
-              name: cleanedName,
-              dudi: item.dudi || "Mitra Industri",
-              supervisor: item.supervisor || "Penyelia DUDI"
-            });
-          }
-        });
-      });
-      
-      individualStudents.sort((a,b) => a.name.localeCompare(b.name));
-      
-      individualStudents.forEach(student => {
-        const opt = document.createElement("option");
-        opt.value = student.name;
-        opt.innerText = student.name + " (" + student.dudi + ")";
-        select.appendChild(opt);
-      });
     }
 
     // Handle student login
     function handleStudentLogin(event) {
       event.preventDefault();
-      const selectedName = document.getElementById("siswa-select").value;
+      const selectedName = document.getElementById("siswa-select").value.trim();
       const nisn = document.getElementById("siswa-nisn").value.trim();
       
       if (!selectedName || !nisn) {
@@ -2498,15 +2513,19 @@ const DEFAULT_STUDENTS = [
         return;
       }
 
-      // Check if student details match state
+      // Find the matching group entry (nama bisa dalam 1 grup comma-separated)
       const studentsList = appState.students.length > 0 ? appState.students : DEFAULT_STUDENTS;
-      const matched = studentsList.find(s => s.name === selectedName);
+      const matched = studentsList.find(s => {
+        // Check if selectedName is exactly the name, or is part of a comma-separated group
+        if (!s.name) return false;
+        return s.name === selectedName || s.name.split(",").map(n => n.trim()).includes(selectedName);
+      });
       
       appState.student = {
         name: selectedName,
         nisn: nisn,
-        dudi: matched ? matched.dudi : "Mitra Industri",
-        supervisor: matched ? matched.supervisor : "Penyelia DUDI"
+        dudi: matched ? (matched.dudi || "Mitra Industri") : "Mitra Industri",
+        supervisor: matched ? (matched.supervisor || "Penyelia DUDI") : "Penyelia DUDI"
       };
 
       // Save student session
@@ -2521,8 +2540,8 @@ const DEFAULT_STUDENTS = [
       setTimeout(() => {
         overlay.classList.remove("active");
         showStudentDashboard();
-        showToast("Login Siswa Sukses", "Selamat datang di Portal Jurnal Harian PKL, " + selectedName + "!");
-      }, 2000);
+        showToast("Login Siswa Sukses", "Selamat datang, " + selectedName + "!");
+      }, 1500);
     }
 
     // Render Student Dashboard UI
