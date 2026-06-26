@@ -1585,15 +1585,9 @@
             <input class="form-control" type="text" id="reg-name" required placeholder="Contoh: Drs. Budi Santoso, M.T.">
           </div>
 
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="reg-nuptk">NIP / NUPTK</label>
-              <input class="form-control" type="text" id="reg-nuptk" required placeholder="Contoh: 198008122005011002">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="reg-school">Asal Sekolah (SMK)</label>
-              <input class="form-control" type="text" id="reg-school" required placeholder="Contoh: SMK Negeri 2 Jakarta">
-            </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-school">Asal Sekolah (SMK)</label>
+            <input class="form-control" type="text" id="reg-school" required placeholder="Contoh: SMK Negeri 2 Jakarta">
           </div>
 
           <div class="form-row-2">
@@ -2082,6 +2076,79 @@
   </div>
 
   <script>
+const DEFAULT_STUDENTS = [
+      { id: 1, name: "Ahmad Fauzi", dudi: "Toyota Auto2000 Cilandak", status: "Aktif", supervisor: "Joko Susilo (Kepala Bengkel)" },
+      { id: 2, name: "Budi Santoso", dudi: "Honda Astra Motor Center", status: "Aktif", supervisor: "Gunawan Adi (Instruktur)" },
+      { id: 3, name: "Citra Lestari", dudi: "Nissan Indomobil MT Haryono", status: "Aktif", supervisor: "Susanti (HRD & Supervisor)" },
+      { id: 4, name: "Dedi Wijaya", dudi: "Mitsubishi Motors Slipi", status: "Waiting", supervisor: "Hariadi (Penyelia Transmisi)" },
+      { id: 5, name: "Eka Prasetya", dudi: "Bosch Car Service Fatmawati", status: "Aktif", supervisor: "Rudianto (Senior Mekanik)" }
+    ];
+
+    const DEFAULT_JOURNALS = [
+      { id: 101, studentName: "Ahmad Fauzi", dudi: "Toyota Auto2000 Cilandak", date: "2026-06-26", content: "Melakukan tune-up mesin K3-VE Avanza. Langkah meliputi pelepasan dan pembersihan busi, penyetelan celah katup, pembersihan throttle body, dan memeriksa kekencangan drive belt kipas pendingin." },
+      { id: 102, studentName: "Budi Santoso", dudi: "Honda Astra Motor Center", date: "2026-06-25", content: "Mengidentifikasi trouble kelistrikan bodi Honda Brio menggunakan Scanner Diagnostic OBD-II. Membaca kode DTC P0115 (sensor suhu air pendingin / ECT). Melakukan penelusuran kabel wiring dan pembersihan soket sensor." },
+      { id: 103, studentName: "Citra Lestari", dudi: "Nissan Indomobil MT Haryono", date: "2026-06-25", content: "Melakukan praktik perawatan sasis: langkah spooring (penyelarasan roda toe-in/toe-out) dan balancing roda depan Nissan Grand Livina menggunakan mesin balancing komputerisasi." },
+      { id: 104, studentName: "Eka Prasetya", dudi: "Bosch Car Service Fatmawati", date: "2026-06-24", content: "Mengganti komponen pad rem cakram depan Toyota Innova, membersihkan kaliper rem, mengoleskan brake grease, serta melakukan bleeding minyak rem untuk membuang udara palsu." }
+    ];
+
+    const TEACHING_MODULES = [
+      { id: 1, class: "Kelas X", code: "M.10.1", title: "Modul Ajar K3 dan Alat Ukur Otomotif", desc: "Membahas keselamatan kerja bengkel, penggunaan jangka sorong, mikrometer luar, dial indicator, dan multimeter elektronik.", size: "4.2 MB", downloads: 34 },
+      { id: 2, class: "Kelas X", code: "M.10.2", title: "Modul Ajar Gambar Teknik Proyeksi Otomotif", desc: "Membahas standard gambar proyeksi ISO, gambar potongan, proyeksi orthogonal eropa & amerika pada komponen mesin.", size: "5.8 MB", downloads: 21 },
+      { id: 3, class: "Kelas XI", code: "M.11.1", title: "Modul Sistem Engine Management & sensor EFI", desc: "Membahas sensor EFI (MAP, IAT, ECT, CKP, O2), rangkaian actuator (injector, coil), dan troubleshooting diagnosa OBD-II.", size: "8.1 MB", downloads: 56 },
+      { id: 4, class: "Kelas XI", code: "M.11.2", title: "Modul Pemrograman C++ Mikrokontroler Arduino", desc: "Dasar pemrograman logika sensor, membaca sensor analog otomotif, mengontrol motor servo/actuator via Arduino Uno.", size: "6.3 MB", downloads: 42 },
+      { id: 5, class: "Kelas XII", code: "M.12.1", title: "Modul IoT Diagnosa Kendaraan Berbasis Web", desc: "Penerapan modul ESP32 / Arduino untuk mengirimkan data diagnostik OBD-II ke dashboard web monitoring sekolah.", size: "9.2 MB", downloads: 18 },
+      { id: 6, class: "Kelas XII", code: "M.12.2", title: "Panduan Laporan Magang PKL dan Presentasi", desc: "Format standard penulisan laporan PKL siswa kejuruan, rubrik penilaian DUDI, dan panduan ujian sidang magang.", size: "3.1 MB", downloads: 27 },
+      { 
+        id: 7, 
+        class: "Kelas XI", 
+        code: "PREM.01", 
+        title: "MATERI TBSM 1: Kelistrikan, Injeksi PGM-FI & BPR Honda/Yamaha (Eksklusif)", 
+        desc: "Buku Pedoman Reparasi (BPR) 18 motor Honda, jobsheet kelistrikan bodi & kopling, materi ajar sistem PGM-FI, serta dokumen instrumen kelistrikan.", 
+        size: "468 MB (120+ File)", 
+        downloads: 145,
+        isPremium: true,
+        price: "Rp 49.000",
+        previewTitle: "Daftar Isi Paket Premium MATERI TBSM 1",
+        previewList: [
+          "Buku Pedoman Reparasi (BPR) Honda: Beat FI, Vario 125, PCX 150, CBR150R, Megapro, Tiger, Scoopy, Supra X, Revo, dll. (18 File PDF)",
+          "Job Sheet Praktik SMK: Injeksi Bensin, Kopling, Listrik Bodi, Overhaul Motor, Geometri Roda. (Lengkap dengan Langkah Kerja)",
+          "Materi Honda Teknologi (Guru Update): Sistem PGM-FI, Sistem Transmisi Otomatis, Wiring Diagram & Warna Kabel, Pengetahuan Produk Baterai, Alat Ukur.",
+          "File Dokumen Tambahan: Perbaikan Sistem Tanda dan Sistem Instrumen (doc - 10MB), Pembelajaran I.docx (5.7MB)."
+        ]
+      },
+      { 
+        id: 8, 
+        class: "Kelas X", 
+        code: "PREM.02", 
+        title: "MATERI TBSM 2: Overhaul Engine & Dasar Kompetensi Kejuruan (Eksklusif)", 
+        desc: "PowerPoint (PPT) dasar-dasar mesin, keselamatan kerja (K3), alat ukur, gambar teknik, serta video demonstrasi overhaul engine sepeda motor.", 
+        size: "185 MB (30+ File)", 
+        downloads: 98,
+        isPremium: true,
+        price: "Rp 39.000",
+        previewTitle: "Daftar Isi Paket Premium MATERI TBSM 2",
+        previewList: [
+          "Dasar Kompetensi Kejuruan (DKK): PPT Dasar-Dasar Mesin, Mesin Konversi Energi, Gambar Teknik, Alat Ukur, Keselamatan Kerja K3 (7 File PPT)",
+          "Engine & Overhaul: PPT Servis Engine, Kepala Silinder, Sistem Pendingin, Sistem Bahan Bakar, dan Video Overhaul Engine Sepeda Motor (.flv)."
+        ]
+      }
+    ];
+
+    const EXAM_RESOURCES = [
+      { id: 201, title: "Instrumen UKK TKR - Paket 1 (Tune-Up EFI & Electrical)", type: "UKK Mandiri", desc: "Lembar penilaian, rubrik kompetensi siswa, serta daftar alat dan bahan untuk paket tune-up mesin EFI Avanza dan bodi kelistrikan.", file: "ukk_tkr_paket1.pdf" },
+      { id: 202, title: "Instrumen UKK TKR - Paket 2 (Wheel Alignment & Rem)", type: "UKK Mandiri", desc: "Daftar rubrik penilaian spooring, balancing roda, pemeriksaan suspensi, serta perbaikan sistem rem cakram/tromol mobil.", file: "ukk_tkr_paket2.pdf" },
+      { id: 203, title: "Bank Soal US Ujian Sekolah Kejuruan Otomotif TKR", type: "Bank Soal", desc: "Paket soal pilihan ganda (40 butir) dan esai (5 butir) kisi-kisi ujian kelulusan teori otomotif kelas XII lengkap kunci jawaban.", file: "soal_us_tkr_2026.docx" },
+      { id: 204, title: "Bank Soal Logika Pemrograman & Arduino Sensor", type: "Bank Soal", desc: "Kisi-kisi soal evaluasi akhir bab pemrograman C/C++ mikro, loop, percabangan if-else, dan konversi tegangan sensor.", file: "soal_arduino_dasar.docx" }
+    ];
+
+    // AI Chat Responses Mapping
+    const CHAT_RESPONSES = [
+      { keys: ["rpp", "modul", "atp", "kurikulum"], text: "Untuk penyusunan Modul Ajar (RPP) Kurikulum Merdeka, pastikan Anda merujuk pada Capaian Pembelajaran (CP) terbaru Keputusan Kepala BSKAP No. 032/H/2024. Modul ajar harus memuat sekurang-kurangnya: Tujuan Pembelajaran, Langkah Pembelajaran, Asesmen (Awal, Proses, Akhir), serta Media Ajar. Anda juga bisa mengunduh modul siap pakai di tab 'Modul Ajar' di atas atau memformat RPP instan menggunakan generator Word di tab tersebut!" },
+      { keys: ["pkl", "jurnal", "magang", "dudi"], text: "Sesuai Panduan Pembelajaran dan Asesmen PKL Kemendikbudristek, PKL berdurasi minimal 1 semester (di kelas XI atau XII). Penilaian PKL dilakukan oleh penyelia industri (DUDI) mencakup soft skills (karakter kerja) dan hard skills (kompetensi teknis). Laporan jurnal harian siswa wajib diverifikasi guru pamong minimal 1 kali seminggu. Anda dapat mengelola laporan ini pada tab 'Monitor PKL' dan mengekspor hasilnya langsung ke Word!" },
+      { keys: ["soal", "ukk", "asesmen", "ujian"], text: "Rubrik Uji Kompetensi Keahlian (UKK) tahun 2026 menggunakan standard BNSP. Paket 1 (Tune-Up EFI) menuntut siswa terampil memegang alat ukur dial gauge, jangka sorong, membaca wiring diagram, serta mengoperasikan multibrand scan tool OBD-II. Kriteria kelulusan minimal adalah nilai 75.0 (Cukup Kompeten). Lembar instrumen lengkap bisa diunduh di tab 'Bank Soal & UKK'." },
+      { keys: ["halo", "hai", "selamat", "tanya"], text: "Halo! Saya adalah Asisten Kurikulum AI InfoDesk234. Saya siap membantu Anda mengenai administrasi pengajaran SMK TKR, monitoring jurnal PKL, standard UKK BNSP, atau pembuatan modul ajar. Ada dokumen khusus yang ingin Anda bahas hari ini?" }
+    ];
+
     // ==========================================================================
     // SINKRONISASI & GENERATOR BANK SOAL - PRESET DATABASE
     // ==========================================================================
@@ -2499,12 +2566,19 @@
         };
         const syncCode = "JRNAL-" + btoa(unescape(encodeURIComponent(JSON.stringify(syncObj))));
 
-        const waMessageText = `*JURNAL HARIAN PKL*\n` +
-          `*Nama:* ${student.name}\n` +
-          `*DUDI:* ${student.dudi}\n` +
-          `*Tanggal:* ${j.date}\n` +
-          `*Kegiatan:* ${j.content}\n\n` +
-          `*KODE SINKRONISASI JURNAL GURU (Salin teks di bawah ini):*\n` +
+        const waMessageText = `*JURNAL HARIAN PKL*
+` +
+          `*Nama:* ${student.name}
+` +
+          `*DUDI:* ${student.dudi}
+` +
+          `*Tanggal:* ${j.date}
+` +
+          `*Kegiatan:* ${j.content}
+
+` +
+          `*KODE SINKRONISASI JURNAL GURU (Salin teks di bawah ini):*
+` +
           `\`\`\`${syncCode}\`\`\``;
 
         const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(waMessageText);
@@ -2850,78 +2924,7 @@
     // ==========================================================================
     // INITIAL SYSTEM DATA STATE
     // ==========================================================================
-    const DEFAULT_STUDENTS = [
-      { id: 1, name: "Ahmad Fauzi", dudi: "Toyota Auto2000 Cilandak", status: "Aktif", supervisor: "Joko Susilo (Kepala Bengkel)" },
-      { id: 2, name: "Budi Santoso", dudi: "Honda Astra Motor Center", status: "Aktif", supervisor: "Gunawan Adi (Instruktur)" },
-      { id: 3, name: "Citra Lestari", dudi: "Nissan Indomobil MT Haryono", status: "Aktif", supervisor: "Susanti (HRD & Supervisor)" },
-      { id: 4, name: "Dedi Wijaya", dudi: "Mitsubishi Motors Slipi", status: "Waiting", supervisor: "Hariadi (Penyelia Transmisi)" },
-      { id: 5, name: "Eka Prasetya", dudi: "Bosch Car Service Fatmawati", status: "Aktif", supervisor: "Rudianto (Senior Mekanik)" }
-    ];
-
-    const DEFAULT_JOURNALS = [
-      { id: 101, studentName: "Ahmad Fauzi", dudi: "Toyota Auto2000 Cilandak", date: "2026-06-26", content: "Melakukan tune-up mesin K3-VE Avanza. Langkah meliputi pelepasan dan pembersihan busi, penyetelan celah katup, pembersihan throttle body, dan memeriksa kekencangan drive belt kipas pendingin." },
-      { id: 102, studentName: "Budi Santoso", dudi: "Honda Astra Motor Center", date: "2026-06-25", content: "Mengidentifikasi trouble kelistrikan bodi Honda Brio menggunakan Scanner Diagnostic OBD-II. Membaca kode DTC P0115 (sensor suhu air pendingin / ECT). Melakukan penelusuran kabel wiring dan pembersihan soket sensor." },
-      { id: 103, studentName: "Citra Lestari", dudi: "Nissan Indomobil MT Haryono", date: "2026-06-25", content: "Melakukan praktik perawatan sasis: langkah spooring (penyelarasan roda toe-in/toe-out) dan balancing roda depan Nissan Grand Livina menggunakan mesin balancing komputerisasi." },
-      { id: 104, studentName: "Eka Prasetya", dudi: "Bosch Car Service Fatmawati", date: "2026-06-24", content: "Mengganti komponen pad rem cakram depan Toyota Innova, membersihkan kaliper rem, mengoleskan brake grease, serta melakukan bleeding minyak rem untuk membuang udara palsu." }
-    ];
-
-    const TEACHING_MODULES = [
-      { id: 1, class: "Kelas X", code: "M.10.1", title: "Modul Ajar K3 dan Alat Ukur Otomotif", desc: "Membahas keselamatan kerja bengkel, penggunaan jangka sorong, mikrometer luar, dial indicator, dan multimeter elektronik.", size: "4.2 MB", downloads: 34 },
-      { id: 2, class: "Kelas X", code: "M.10.2", title: "Modul Ajar Gambar Teknik Proyeksi Otomotif", desc: "Membahas standard gambar proyeksi ISO, gambar potongan, proyeksi orthogonal eropa & amerika pada komponen mesin.", size: "5.8 MB", downloads: 21 },
-      { id: 3, class: "Kelas XI", code: "M.11.1", title: "Modul Sistem Engine Management & sensor EFI", desc: "Membahas sensor EFI (MAP, IAT, ECT, CKP, O2), rangkaian actuator (injector, coil), dan troubleshooting diagnosa OBD-II.", size: "8.1 MB", downloads: 56 },
-      { id: 4, class: "Kelas XI", code: "M.11.2", title: "Modul Pemrograman C++ Mikrokontroler Arduino", desc: "Dasar pemrograman logika sensor, membaca sensor analog otomotif, mengontrol motor servo/actuator via Arduino Uno.", size: "6.3 MB", downloads: 42 },
-      { id: 5, class: "Kelas XII", code: "M.12.1", title: "Modul IoT Diagnosa Kendaraan Berbasis Web", desc: "Penerapan modul ESP32 / Arduino untuk mengirimkan data diagnostik OBD-II ke dashboard web monitoring sekolah.", size: "9.2 MB", downloads: 18 },
-      { id: 6, class: "Kelas XII", code: "M.12.2", title: "Panduan Laporan Magang PKL dan Presentasi", desc: "Format standard penulisan laporan PKL siswa kejuruan, rubrik penilaian DUDI, dan panduan ujian sidang magang.", size: "3.1 MB", downloads: 27 },
-      { 
-        id: 7, 
-        class: "Kelas XI", 
-        code: "PREM.01", 
-        title: "MATERI TBSM 1: Kelistrikan, Injeksi PGM-FI & BPR Honda/Yamaha (Eksklusif)", 
-        desc: "Buku Pedoman Reparasi (BPR) 18 motor Honda, jobsheet kelistrikan bodi & kopling, materi ajar sistem PGM-FI, serta dokumen instrumen kelistrikan.", 
-        size: "468 MB (120+ File)", 
-        downloads: 145,
-        isPremium: true,
-        price: "Rp 49.000",
-        previewTitle: "Daftar Isi Paket Premium MATERI TBSM 1",
-        previewList: [
-          "Buku Pedoman Reparasi (BPR) Honda: Beat FI, Vario 125, PCX 150, CBR150R, Megapro, Tiger, Scoopy, Supra X, Revo, dll. (18 File PDF)",
-          "Job Sheet Praktik SMK: Injeksi Bensin, Kopling, Listrik Bodi, Overhaul Motor, Geometri Roda. (Lengkap dengan Langkah Kerja)",
-          "Materi Honda Teknologi (Guru Update): Sistem PGM-FI, Sistem Transmisi Otomatis, Wiring Diagram & Warna Kabel, Pengetahuan Produk Baterai, Alat Ukur.",
-          "File Dokumen Tambahan: Perbaikan Sistem Tanda dan Sistem Instrumen (doc - 10MB), Pembelajaran I.docx (5.7MB)."
-        ]
-      },
-      { 
-        id: 8, 
-        class: "Kelas X", 
-        code: "PREM.02", 
-        title: "MATERI TBSM 2: Overhaul Engine & Dasar Kompetensi Kejuruan (Eksklusif)", 
-        desc: "PowerPoint (PPT) dasar-dasar mesin, keselamatan kerja (K3), alat ukur, gambar teknik, serta video demonstrasi overhaul engine sepeda motor.", 
-        size: "185 MB (30+ File)", 
-        downloads: 98,
-        isPremium: true,
-        price: "Rp 39.000",
-        previewTitle: "Daftar Isi Paket Premium MATERI TBSM 2",
-        previewList: [
-          "Dasar Kompetensi Kejuruan (DKK): PPT Dasar-Dasar Mesin, Mesin Konversi Energi, Gambar Teknik, Alat Ukur, Keselamatan Kerja K3 (7 File PPT)",
-          "Engine & Overhaul: PPT Servis Engine, Kepala Silinder, Sistem Pendingin, Sistem Bahan Bakar, dan Video Overhaul Engine Sepeda Motor (.flv)."
-        ]
-      }
-    ];
-
-    const EXAM_RESOURCES = [
-      { id: 201, title: "Instrumen UKK TKR - Paket 1 (Tune-Up EFI & Electrical)", type: "UKK Mandiri", desc: "Lembar penilaian, rubrik kompetensi siswa, serta daftar alat dan bahan untuk paket tune-up mesin EFI Avanza dan bodi kelistrikan.", file: "ukk_tkr_paket1.pdf" },
-      { id: 202, title: "Instrumen UKK TKR - Paket 2 (Wheel Alignment & Rem)", type: "UKK Mandiri", desc: "Daftar rubrik penilaian spooring, balancing roda, pemeriksaan suspensi, serta perbaikan sistem rem cakram/tromol mobil.", file: "ukk_tkr_paket2.pdf" },
-      { id: 203, title: "Bank Soal US Ujian Sekolah Kejuruan Otomotif TKR", type: "Bank Soal", desc: "Paket soal pilihan ganda (40 butir) dan esai (5 butir) kisi-kisi ujian kelulusan teori otomotif kelas XII lengkap kunci jawaban.", file: "soal_us_tkr_2026.docx" },
-      { id: 204, title: "Bank Soal Logika Pemrograman & Arduino Sensor", type: "Bank Soal", desc: "Kisi-kisi soal evaluasi akhir bab pemrograman C/C++ mikro, loop, percabangan if-else, dan konversi tegangan sensor.", file: "soal_arduino_dasar.docx" }
-    ];
-
-    // AI Chat Responses Mapping
-    const CHAT_RESPONSES = [
-      { keys: ["rpp", "modul", "atp", "kurikulum"], text: "Untuk penyusunan Modul Ajar (RPP) Kurikulum Merdeka, pastikan Anda merujuk pada Capaian Pembelajaran (CP) terbaru Keputusan Kepala BSKAP No. 032/H/2024. Modul ajar harus memuat sekurang-kurangnya: Tujuan Pembelajaran, Langkah Pembelajaran, Asesmen (Awal, Proses, Akhir), serta Media Ajar. Anda juga bisa mengunduh modul siap pakai di tab 'Modul Ajar' di atas atau memformat RPP instan menggunakan generator Word di tab tersebut!" },
-      { keys: ["pkl", "jurnal", "magang", "dudi"], text: "Sesuai Panduan Pembelajaran dan Asesmen PKL Kemendikbudristek, PKL berdurasi minimal 1 semester (di kelas XI atau XII). Penilaian PKL dilakukan oleh penyelia industri (DUDI) mencakup soft skills (karakter kerja) dan hard skills (kompetensi teknis). Laporan jurnal harian siswa wajib diverifikasi guru pamong minimal 1 kali seminggu. Anda dapat mengelola laporan ini pada tab 'Monitor PKL' dan mengekspor hasilnya langsung ke Word!" },
-      { keys: ["soal", "ukk", "asesmen", "ujian"], text: "Rubrik Uji Kompetensi Keahlian (UKK) tahun 2026 menggunakan standard BNSP. Paket 1 (Tune-Up EFI) menuntut siswa terampil memegang alat ukur dial gauge, jangka sorong, membaca wiring diagram, serta mengoperasikan multibrand scan tool OBD-II. Kriteria kelulusan minimal adalah nilai 75.0 (Cukup Kompeten). Lembar instrumen lengkap bisa diunduh di tab 'Bank Soal & UKK'." },
-      { keys: ["halo", "hai", "selamat", "tanya"], text: "Halo! Saya adalah Asisten Kurikulum AI InfoDesk234. Saya siap membantu Anda mengenai administrasi pengajaran SMK TKR, monitoring jurnal PKL, standard UKK BNSP, atau pembuatan modul ajar. Ada dokumen khusus yang ingin Anda bahas hari ini?" }
-    ];
+    
 
     // ==========================================================================
     // APP INITIALIZATION & LOCAL STORAGE STATE LOAD
@@ -2982,7 +2985,7 @@
       event.preventDefault();
       
       const name = document.getElementById("reg-name").value.trim();
-      const nuptk = document.getElementById("reg-nuptk").value.trim();
+      
       const school = document.getElementById("reg-school").value.trim();
       const subject = document.getElementById("reg-subject").value;
       const wa = document.getElementById("reg-wa").value.trim();
@@ -3003,7 +3006,7 @@
 
       // Stage 1 Verification
       setTimeout(() => {
-        subtext.innerText = "Mengecek validasi NUPTK/NIP di database Pusat...";
+        subtext.innerText = "Menghubungkan ke database sekolah...";
       }, 1000);
 
       // Stage 2 Verification
@@ -3017,7 +3020,6 @@
 
         appState.teacher = {
           name: name,
-          nuptk: nuptk,
           school: school,
           subject: subject,
           wa: wa,
@@ -3058,13 +3060,12 @@
 
         // Render profile with fallback values
         const name = (appState.teacher && appState.teacher.name) || "Guru Otomotif";
-        const nuptk = (appState.teacher && appState.teacher.nuptk) || "-";
         const school = (appState.teacher && appState.teacher.school) || "SMK Negeri";
         const subject = (appState.teacher && appState.teacher.subject) || "Teknik Kendaraan Ringan";
 
         document.getElementById("teacher-profile-name").innerText = name;
-        document.getElementById("teacher-profile-meta").innerText = "NIP: " + nuptk;
-        document.getElementById("teacher-school-title").innerText = school + " | Kompetensi: " + subject;
+        document.getElementById("teacher-profile-meta").innerText = subject;
+        document.getElementById("teacher-school-title").innerText = school;
         
         // Avatar Initial
         let initial = "G";
@@ -3088,7 +3089,8 @@
         localStorage.clear();
         window.location.reload();
       }
-      updateHeaderActions('tab-pkl');\n      }
+      updateHeaderActions('tab-pkl');
+      }
 
     // ==========================================================================
     // NAVIGATION & TAB SWITCHING
@@ -3308,7 +3310,8 @@
       const activitiesText = document.getElementById("rpp-activities").value.trim();
 
       // Format activities into list items
-      const activitiesList = activitiesText.split('\n').map(act => `<li>${act}</li>`).join('');
+      const activitiesList = activitiesText.split('
+').map(act => `<li>${act}</li>`).join('');
 
       const exportContainer = document.getElementById("rpp-export-template");
       exportContainer.innerHTML = `
@@ -3940,7 +3943,9 @@ Dokumen ini berisi materi ajar dan kerangka latihan kejuruan. Silakan klik tombo
     }
 
     function downloadDocResource(title, file) {
-      alert(`Simulasi Pengunduhan Berhasil!\nBerkas: "${file}"\nTelah disimpan ke direktori download.`);
+      alert(`Simulasi Pengunduhan Berhasil!
+Berkas: "${file}"
+Telah disimpan ke direktori download.`);
       showToast("Unduhan Berhasil", `Berkas ${title} berhasil disimpan.`);
     }
 
