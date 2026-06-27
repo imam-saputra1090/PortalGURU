@@ -158,7 +158,7 @@
   function showDash() {
     document.getElementById("auth-section").style.display = "none";
     var dash = document.getElementById("g-dash");
-    dash.style.display = "block";
+    // let CSS class shown handle grid display
     dash.className = "dash-page shown";
     // let CSS handle bottom nav display
     var t = G_teacher;

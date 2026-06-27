@@ -99,7 +99,7 @@
   function showSDash() {
     document.getElementById("s-auth").style.display = "none";
     var dash = document.getElementById("s-dash");
-    dash.style.display = "block";
+    // let CSS class shown handle grid display
     dash.className = "dash-page shown";
     var mnav = document.getElementById("s-mn");
     if (mnav) mnav.style.display = "flex";
