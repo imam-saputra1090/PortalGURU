@@ -6,6 +6,7 @@
   var G_students = [];
   var G_journals = [];
   var G_modules = getDefaultModules();
+  var editingStudentId = null;
 
   document.addEventListener("DOMContentLoaded", function() {
     var saved = localStorage.getItem(conf.KEY_CUR_TEACHER);
@@ -202,7 +203,11 @@
     var rows = "";
     G_students.forEach(function(s, i) {
       var waLink = s.wa ? '<a href="https://wa.me/' + s.wa.replace(/[^0-9]/g,"") + '" target="_blank" style="color:var(--accent-cyan)">' + s.wa + '</a>' : "-";
-      rows += "<tr><td style='color:var(--text-muted)'>" + (i+1) + "</td><td style='font-weight:600'>" + s.name + "</td><td>" + (s.kelas||"-") + "</td><td>" + (s.dudi||"-") + "</td><td>" + (s.supervisor||s.owner||"-") + "</td><td>" + waLink + "</td><td><span class='badge bg'>Aktif</span></td></tr>";
+      var actHtml = "<div style='display:flex;gap:4px;'>" +
+                        "<button class='btn-act bs' style='padding:3px 6px;margin:0;font-size:11px;border-color:rgba(0,245,255,0.3);color:var(--accent-cyan);' onclick='window.editStu(" + s.id + ")'><i class='fa fa-pencil'></i></button>" +
+                        "<button class='btn-act bs' style='padding:3px 6px;margin:0;font-size:11px;border-color:rgba(216,34,108,0.3);color:var(--accent-ruby);' onclick='window.delStu(" + s.id + ")'><i class='fa fa-trash'></i></button>" +
+                      "</div>";
+      rows += "<tr><td style='color:var(--text-muted)'>" + (i+1) + "</td><td style='font-weight:600'>" + s.name + "</td><td>" + (s.kelas||"-") + "</td><td>" + (s.dudi||"-") + "</td><td>" + (s.supervisor||s.owner||"-") + "</td><td>" + waLink + "</td><td><span class='badge bg'>Aktif</span></td><td>" + actHtml + "</td></tr>";
     });
     tb.innerHTML = rows;
     renderStats();
@@ -234,15 +239,82 @@
     var wa    = (document.getElementById("ns-w").value || "").trim();
     var addr  = (document.getElementById("ns-a").value || "").trim();
     if (!name || !dudi) { toast("Data Kurang", "Isi nama siswa dan bengkel.", "err"); return; }
-    G_students.push({ id: Date.now(), name: name, kelas: kelas, dudi: dudi, owner: owner, supervisor: owner, wa: wa, addr: addr });
+    
+    if (editingStudentId !== null) {
+      // EDIT MODE
+      var idx = G_students.findIndex(function(s) { return s.id === editingStudentId; });
+      if (idx >= 0) {
+        var oldName = G_students[idx].name;
+        G_students[idx].name = name;
+        G_students[idx].kelas = kelas;
+        G_students[idx].dudi = dudi;
+        G_students[idx].owner = owner;
+        G_students[idx].supervisor = owner;
+        G_students[idx].wa = wa;
+        G_students[idx].addr = addr;
+        
+        editingStudentId = null;
+        document.querySelector(".af-t").innerHTML = '<i class="fa fa-user-plus"></i> Tambah Data Siswa PKL';
+        document.getElementById("btn-save-stu").innerHTML = '<i class="fa fa-save"></i> Simpan';
+        
+        localStorage.setItem(conf.KEY_STUDENTS, JSON.stringify(G_students));
+        renderStudents(); toggleAF();
+        ["ns-n","ns-d","ns-o","ns-w","ns-a"].forEach(function(id2) { document.getElementById(id2).value = ""; });
+        toast("Diperbarui", name + " berhasil diperbarui.");
+        
+        try {
+          var p = "action=updatePlacement&oldName=" + encodeURIComponent(oldName) + "&siswa=" + encodeURIComponent(name) + "&bengkel=" + encodeURIComponent(dudi) + "&kelas=" + encodeURIComponent(kelas) + "&pemilik=" + encodeURIComponent(owner) + "&wa=" + encodeURIComponent(wa) + "&alamat=" + encodeURIComponent(addr) + "&pembimbing=" + encodeURIComponent(G_teacher.name);
+          fetch(conf.GAS_URL + "?" + p).catch(function() {});
+        } catch(ex) {}
+      }
+    } else {
+      // ADD MODE
+      G_students.push({ id: Date.now(), name: name, kelas: kelas, dudi: dudi, owner: owner, supervisor: owner, wa: wa, addr: addr });
+      localStorage.setItem(conf.KEY_STUDENTS, JSON.stringify(G_students));
+      renderStudents(); toggleAF();
+      ["ns-n","ns-d","ns-o","ns-w","ns-a"].forEach(function(id2) { document.getElementById(id2).value = ""; });
+      toast("Ditambahkan", name + " berhasil ditambahkan.");
+      try {
+        var p = "action=addPlacement&siswa=" + encodeURIComponent(name) + "&bengkel=" + encodeURIComponent(dudi) + "&kelas=" + encodeURIComponent(kelas) + "&pemilik=" + encodeURIComponent(owner) + "&wa=" + encodeURIComponent(wa) + "&alamat=" + encodeURIComponent(addr) + "&pembimbing=" + encodeURIComponent(G_teacher.name);
+        fetch(conf.GAS_URL + "?" + p).catch(function() {});
+      } catch(e4) {}
+    }
+  }
+
+  function editStu(id) {
+    var s = G_students.find(function(x) { return x.id === id; });
+    if (!s) return;
+    
+    editingStudentId = id;
+    document.getElementById("ns-n").value = s.name;
+    document.getElementById("ns-k").value = s.kelas || "XI TKR 1";
+    document.getElementById("ns-d").value = s.dudi;
+    document.getElementById("ns-o").value = s.owner || s.supervisor || "";
+    document.getElementById("ns-w").value = s.wa || "";
+    document.getElementById("ns-a").value = s.addr || "";
+    
+    document.querySelector(".af-t").innerHTML = '<i class="fa fa-pencil"></i> Edit Data Siswa PKL';
+    document.getElementById("btn-save-stu").innerHTML = '<i class="fa fa-save"></i> Perbarui';
+    
+    var f = document.getElementById("add-form");
+    f.style.display = "block";
+  }
+
+  function delStu(id) {
+    var idx = G_students.findIndex(function(x) { return x.id === id; });
+    if (idx === -1) return;
+    var s = G_students[idx];
+    if (!confirm("Hapus data penempatan " + s.name + " dari " + s.dudi + "?")) return;
+    
+    G_students.splice(idx, 1);
     localStorage.setItem(conf.KEY_STUDENTS, JSON.stringify(G_students));
-    renderStudents(); toggleAF();
-    ["ns-n","ns-d","ns-o","ns-w","ns-a"].forEach(function(id2) { document.getElementById(id2).value = ""; });
-    toast("Ditambahkan", name + " berhasil ditambahkan.");
+    renderStudents();
+    toast("Dihapus", s.name + " berhasil dihapus.");
+    
     try {
-      var p = "action=addPlacement&siswa=" + encodeURIComponent(name) + "&bengkel=" + encodeURIComponent(dudi) + "&kelas=" + encodeURIComponent(kelas) + "&pemilik=" + encodeURIComponent(owner) + "&wa=" + encodeURIComponent(wa) + "&alamat=" + encodeURIComponent(addr) + "&pembimbing=" + encodeURIComponent(G_teacher.name);
+      var p = "action=deletePlacement&siswa=" + encodeURIComponent(s.name) + "&bengkel=" + encodeURIComponent(s.dudi);
       fetch(conf.GAS_URL + "?" + p).catch(function() {});
-    } catch(e4) {}
+    } catch(ex) {}
   }
 
   function exExcel() {
@@ -561,6 +633,8 @@ window.showPanel = showPanel;
   window.gSwitch = gSwitch;
   window.toggleAF = toggleAF;
   window.addStu = addStu;
+  window.editStu = editStu;
+  window.delStu = delStu;
   window.exExcel = exExcel;
   window.downloadTemplate = downloadTemplate;
   window.triggerExcelUpload = triggerExcelUpload;

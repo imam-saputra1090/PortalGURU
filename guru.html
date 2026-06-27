@@ -174,7 +174,7 @@
             <div class="form-group"><label class="form-label">Alamat Bengkel</label><input class="form-control" id="ns-a" placeholder="Jl. ..."></div>
           </div>
           <div style="display:flex;gap:10px;">
-            <button class="btn-act bp" onclick="addStu()"><i class="fa fa-save"></i> Simpan</button>
+            <button class="btn-act bp" id="btn-save-stu" onclick="addStu()"><i class="fa fa-save"></i> Simpan</button>
             <button class="btn-act bs" onclick="toggleAF()"><i class="fa fa-times"></i> Batal</button>
           </div>
         </div>
@@ -184,7 +184,7 @@
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Bengkel/DUDI</th><th>Penyelia</th><th>WA Bengkel</th><th>Status</th></tr>
+                <tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Bengkel/DUDI</th><th>Penyelia</th><th>WA Bengkel</th><th>Status</th><th>Aksi</th></tr>
               </thead>
               <tbody id="pkl-tb">
                 <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:28px">Belum ada data.</td></tr>
