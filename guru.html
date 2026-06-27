@@ -3,799 +3,943 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Portal Guru | InfoDesk234</title>
-<meta name="description" content="Portal Guru InfoDesk234 - Kelola PKL, Jurnal, Modul dan Bank Soal">
+<title>Portal Guru - InfoDesk234</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
+:root{
+  --bg:#050b14; --card:rgba(13,22,38,0.9); --border:rgba(255,255,255,0.08);
+  --ruby:#d8226c; --cyan:#00f5ff; --gold:#f5c542; --green:#00e676;
+  --txt:#e8eaf0; --muted:#7a8299; --font:'Inter',sans-serif; --r:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--txt);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 50% at 15% 20%,rgba(216,34,108,.13) 0%,transparent 70%),
+             radial-gradient(ellipse 60% 45% at 85% 75%,rgba(0,245,255,.09) 0%,transparent 70%)}
 
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-  :root {
-    --bg-base:      #050b14;
-    --bg-card:      rgba(13,22,38,0.85);
-    --bg-panel:     rgba(18,30,52,0.7);
-    --border:       rgba(255,255,255,0.07);
-    --accent-ruby:  #d8226c;
-    --accent-cyan:  #00f5ff;
-    --accent-gold:  #f5c542;
-    --accent-green: #00e676;
-    --text-main:    #e8eaf0;
-    --text-muted:   #7a8299;
-    --font:         'Inter', sans-serif;
-    --radius:       14px;
-    --transition:   all 0.25s ease;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; font-family: var(--font); background: var(--bg-base); color: var(--text-main); overflow-x: hidden; }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 70% 50% at 15% 20%, rgba(216,34,108,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 45% at 85% 75%, rgba(0,245,255,0.09) 0%, transparent 70%);
-  }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-thumb { background: rgba(216,34,108,0.4); border-radius: 3px; }
-  /* AUTH */
-  .auth-page { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .auth-card {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 22px;
-    padding: 40px 36px; width: 100%; max-width: 490px; backdrop-filter: blur(20px);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
-    position: relative; overflow: hidden;
-  }
-  .auth-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-  .auth-logo { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-  .auth-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  .auth-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-  .auth-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
-  /* TABS */
-  .tab-row { display: flex; gap: 8px; margin-bottom: 22px; }
-  .tab-btn { flex: 1; padding: 10px; font-family: var(--font); font-weight: 700; font-size: 13px; border-radius: 10px; cursor: pointer; transition: var(--transition); border: 1px solid rgba(255,255,255,0.1); }
-  .tab-btn.on-ruby { background: linear-gradient(135deg,#d8226c,#a0184f); color:#fff; border-color:transparent; }
-  .tab-btn.on-cyan  { background: linear-gradient(135deg,var(--accent-cyan),#0088cc); color:#fff; border-color:transparent; }
-  .tab-btn.off { background: transparent; color: var(--text-muted); }
-  /* FORM */
-  .form-group { margin-bottom: 16px; }
-  .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .form-control { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-family: var(--font); font-size: 14px; transition: var(--transition); outline: none; }
-  .form-control:focus { border-color: var(--accent-ruby); box-shadow: 0 0 0 3px rgba(216,34,108,0.15); }
-  .form-control::placeholder { color: var(--text-muted); }
-  .form-control option { background: #0d1626; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .chk-row { display: flex; gap: 16px; flex-wrap: wrap; }
-  .chk-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
-  .chk-item input { accent-color: var(--accent-ruby); }
-  .btn-submit { width: 100%; padding: 14px; border: none; border-radius: 12px; font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--transition); margin-top: 8px; }
-  .btn-ruby { background: linear-gradient(135deg,#d8226c,#a0184f); color:#fff; box-shadow: 0 4px 20px rgba(216,34,108,0.35); }
-  .btn-ruby:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(216,34,108,0.5); }
-  .btn-cyan { background: linear-gradient(135deg,var(--accent-cyan),#0088cc); color:#fff; box-shadow: 0 4px 20px rgba(0,245,255,0.25); }
-  .btn-cyan:hover  { transform: translateY(-1px); }
-  .link-sm { text-align: center; margin-top: 14px; font-size: 12px; color: var(--text-muted); }
-  .link-sm a { color: var(--accent-cyan); font-weight: 600; text-decoration: none; }
-  /* DASHBOARD */
-  .dash-page { position: relative; z-index: 1; display: none; min-height: 100vh; }
-  .dash-page.shown { display: grid; grid-template-columns: 240px 1fr; }
-  .sidebar { background: rgba(13,22,38,0.95); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; overflow-y: auto; backdrop-filter: blur(20px); }
-  .sb-logo { padding: 22px 20px 16px; font-size: 18px; font-weight: 800; letter-spacing: 1px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-  .sb-profile { padding: 18px 20px; border-bottom: 1px solid var(--border); }
-  .sb-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-  .sb-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-  .sb-meta { font-size: 11px; color: var(--text-muted); }
-  .nav-menu { padding: 12px 10px; flex: 1; }
-  .nav-item { display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-radius: 10px; margin-bottom: 3px; cursor: pointer; transition: var(--transition); font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; width: 100%; text-align: left; font-family: var(--font); }
-  .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-  .nav-item.active { background: rgba(216,34,108,0.15); color: var(--accent-ruby); font-weight: 600; }
-  .nav-item i { width: 18px; text-align: center; }
-  .sb-footer { padding: 16px 10px; border-top: 1px solid var(--border); }
-  .btn-logout { width: 100%; padding: 10px; background: transparent; border: 1px solid rgba(216,34,108,0.3); border-radius: 10px; color: var(--accent-ruby); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .btn-logout:hover { background: rgba(216,34,108,0.1); }
-  /* MAIN */
-  .main { padding: 28px 32px; overflow-y: auto; }
-  .ph { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-  .ph-title { font-size: 22px; font-weight: 800; }
-  .ph-sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-  .action-bar { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn-act { padding: 9px 18px; border-radius: 10px; border: none; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); }
-  .bp { background: linear-gradient(135deg,#d8226c,#a0184f); color:#fff; }
-  .bp:hover { transform:translateY(-1px); box-shadow:0 4px 15px rgba(216,34,108,0.4); }
-  .bs { background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border); }
-  .bs:hover { background: rgba(255,255,255,0.1); }
-  .bc { background: linear-gradient(135deg,var(--accent-cyan),#0088cc); color:#fff; }
-  /* CARD */
-  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 20px; backdrop-filter: blur(10px); }
-  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 9px; }
-  /* STATS */
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(165px,1fr)); gap: 14px; margin-bottom: 24px; }
-  .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; position: relative; overflow: hidden; }
-  .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-  .s-ruby::before  { background: var(--accent-ruby); }
-  .s-cyan::before  { background: var(--accent-cyan); }
-  .s-gold::before  { background: var(--accent-gold); }
-  .s-green::before { background: var(--accent-green); }
-  .stat-val { font-size: 30px; font-weight: 800; margin-bottom: 4px; }
-  .stat-label { font-size: 12px; color: var(--text-muted); }
-  .stat-icon { position:absolute; top:14px; right:16px; font-size:22px; opacity:0.15; }
-  /* TABLE */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  tbody td { padding: 13px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
-  tbody tr:hover { background: rgba(255,255,255,0.02); }
-  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
-  .bg { background:rgba(0,230,118,0.15); color:var(--accent-green); }
-  .br { background:rgba(216,34,108,0.15); color:var(--accent-ruby); }
-  .bo { background:rgba(245,197,66,0.15); color:var(--accent-gold); }
-  /* JOURNAL */
-  .j-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-  .j-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:8px; }
-  .j-name { font-weight:700; font-size:14px; }
-  .j-date { font-size:11px; color:var(--text-muted); margin-top:2px; }
-  .j-body { font-size:13px; color:var(--text-muted); line-height:1.6; }
-  .j-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-  .btn-ok { padding:5px 12px; border-radius:7px; font-size:12px; font-weight:600; border:none; cursor:pointer; transition:var(--transition); }
-  /* MODULE */
-  .mod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:16px; }
-  .mod-card { background: var(--bg-panel); border:1px solid var(--border); border-radius:12px; padding:18px; transition:var(--transition); }
-  .mod-card:hover { border-color:rgba(216,34,108,0.3); transform:translateY(-2px); }
-  .mod-kelas { font-size:11px; font-weight:700; color:var(--accent-ruby); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
-  .mod-title { font-size:14px; font-weight:700; margin-bottom:6px; }
-  .mod-desc { font-size:12px; color:var(--text-muted); line-height:1.5; margin-bottom:12px; }
-  .mod-foot { display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--text-muted); }
-  /* SOAL */
-  .soal-item { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:10px; }
-  .soal-num { font-size:11px; font-weight:700; color:var(--accent-ruby); margin-bottom:4px; }
-  .soal-q { font-size:14px; font-weight:600; margin-bottom:10px; }
-  .soal-opts { list-style:none; display:flex; flex-direction:column; gap:6px; }
-  .soal-opts li { font-size:13px; color:var(--text-muted); padding:4px 8px; border-radius:6px; }
-  .soal-opts li.ans { color:var(--accent-green); font-weight:600; background:rgba(0,230,118,0.07); }
-  /* CHAT */
-  .chat-box { height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding:14px; background:rgba(255,255,255,0.02); border-radius:10px; margin-bottom:14px; border:1px solid var(--border); }
-  .chat-msg { display:flex; gap:10px; }
-  .chat-msg.user { flex-direction:row-reverse; }
-  .chat-bubble { max-width:76%; padding:11px 14px; border-radius:14px; font-size:13px; line-height:1.5; }
-  .chat-msg.bot .chat-bubble  { background:rgba(255,255,255,0.06); border-radius:4px 14px 14px 14px; }
-  .chat-msg.user .chat-bubble { background:linear-gradient(135deg,#d8226c,#a0184f); color:#fff; border-radius:14px 4px 14px 14px; }
-  .chat-row { display:flex; gap:10px; }
-  /* TOAST */
-  .toast { position:fixed; bottom:24px; right:24px; z-index:99999; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:14px 18px; display:flex; align-items:center; gap:12px; max-width:360px; backdrop-filter:blur(20px); transform:translateY(80px); opacity:0; transition:all 0.35s ease; pointer-events:none; box-shadow:0 20px 50px rgba(0,0,0,0.4); }
-  .toast.show { transform:translateY(0); opacity:1; pointer-events:auto; }
-  .t-title { font-size:13px; font-weight:700; margin-bottom:2px; }
-  .t-msg   { font-size:12px; color:var(--text-muted); }
-  /* ADD FORM */
-  .add-form { display:none; background:rgba(216,34,108,0.05); border:1px solid rgba(216,34,108,0.2); border-radius:12px; padding:18px; margin-bottom:20px; }
-  .add-form-title { font-weight:700; color:var(--accent-ruby); margin-bottom:14px; }
-  /* MOBILE */
-  @media(max-width:768px) {
-    .dash-page.shown { grid-template-columns:1fr; }
-    .sidebar { display:none; }
-    .m-nav { display:flex !important; }
-    .main { padding:16px; padding-bottom:80px; }
-    .form-row { grid-template-columns:1fr; }
-    .stat-grid { grid-template-columns:1fr 1fr; }
-    .mod-grid { grid-template-columns:1fr; }
-    .ph { flex-direction:column; }
-  }
-  .m-nav { display:none; position:fixed; bottom:0; left:0; right:0; z-index:999; background:rgba(13,22,38,0.97); border-top:1px solid var(--border); padding:10px 8px; gap:4px; justify-content:space-around; backdrop-filter:blur(20px); }
-  .m-btn { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; font-weight:600; color:var(--text-muted); background:none; border:none; cursor:pointer; padding:6px 10px; border-radius:8px; font-family:var(--font); }
-  .m-btn.active { color:var(--accent-ruby); }
-  .m-btn i { font-size:18px; }
+/* ─ AUTH ─ */
+#auth-section{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card-auth{background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:40px 36px;width:100%;max-width:480px;backdrop-filter:blur(20px);
+  box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+  position:relative;overflow:hidden}
+.card-auth::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--ruby),var(--cyan))}
+.logo{font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--ruby);box-shadow:0 0 10px var(--ruby);display:inline-block}
+h2.title{font-size:20px;font-weight:700;margin-bottom:5px}
+p.sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.5}
 
-  .auth-card::before { background: linear-gradient(90deg,var(--accent-ruby),var(--accent-cyan)); }
-  .auth-dot-g { background:var(--accent-ruby); box-shadow:0 0 10px var(--accent-ruby); }
-  .sb-avatar-g { background:linear-gradient(135deg,#d8226c,#a0184f); box-shadow:0 0 15px rgba(216,34,108,0.4); }
+/* ─ TAB ROW ─ */
+.tab-row{display:flex;gap:8px;margin-bottom:22px}
+.tb{flex:1;padding:10px;font-family:var(--font);font-weight:700;font-size:13px;
+  border-radius:10px;cursor:pointer;transition:all .25s;border:1px solid rgba(255,255,255,.1)}
+.tb.on{background:linear-gradient(135deg,var(--ruby),#a0184f);color:#fff;border-color:transparent}
+.tb.off{background:transparent;color:var(--muted)}
+
+/* ─ FORM ─ */
+.fg{margin-bottom:15px}
+.fl{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:.5px}
+.fc{width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:10px;color:var(--txt);font-family:var(--font);font-size:14px;outline:none;transition:all .25s}
+.fc:focus{border-color:var(--ruby);box-shadow:0 0 0 3px rgba(216,34,108,.15)}
+.fc::placeholder{color:var(--muted)}
+.fc option{background:#0d1626}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chk-row{display:flex;gap:14px;flex-wrap:wrap}
+.chk{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);cursor:pointer}
+.chk input{accent-color:var(--ruby)}
+.btn-full{width:100%;padding:14px;border:none;border-radius:12px;font-family:var(--font);
+  font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:all .25s;
+  background:linear-gradient(135deg,var(--ruby),#a0184f);color:#fff;
+  box-shadow:0 4px 20px rgba(216,34,108,.35)}
+.btn-full:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(216,34,108,.5)}
+.hint{text-align:center;margin-top:14px;font-size:12px;color:var(--muted)}
+.hint a{color:var(--cyan);font-weight:600;text-decoration:none;cursor:pointer}
+
+/* ─ DASHBOARD ─ */
+#g-dash{position:relative;z-index:1;display:none;min-height:100vh}
+#g-dash.on{display:grid;grid-template-columns:240px 1fr}
+.sb{background:rgba(13,22,38,.95);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;height:100vh;position:sticky;top:0;
+  overflow-y:auto;backdrop-filter:blur(20px)}
+.sb-logo{padding:22px 20px 16px;font-size:18px;font-weight:800;letter-spacing:1px;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sb-prof{padding:16px 20px;border-bottom:1px solid var(--border)}
+.av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:20px;font-weight:700;margin-bottom:8px;
+  background:linear-gradient(135deg,var(--ruby),#a0184f);color:#fff;
+  box-shadow:0 0 15px rgba(216,34,108,.4)}
+.sb-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.sb-sub{font-size:11px;color:var(--muted)}
+.nav-m{padding:12px 10px;flex:1}
+.ni{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:10px;
+  margin-bottom:3px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);
+  border:none;background:none;width:100%;text-align:left;font-family:var(--font);
+  transition:all .25s}
+.ni:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.ni.on{background:rgba(216,34,108,.15);color:var(--ruby);font-weight:600}
+.ni i{width:18px;text-align:center}
+.sb-foot{padding:14px 10px;border-top:1px solid var(--border)}
+.btn-out{width:100%;padding:10px;background:transparent;border:1px solid rgba(216,34,108,.3);
+  border-radius:10px;color:var(--ruby);font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s}
+.btn-out:hover{background:rgba(216,34,108,.1)}
+.main-c{padding:28px 32px;overflow-y:auto}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.ph h1{font-size:22px;font-weight:800}
+.ph p{font-size:13px;color:var(--muted);margin-top:3px}
+.tc{display:none}
+.tc.on{display:block}
+.action-bar{display:flex;gap:10px;flex-wrap:wrap}
+.ba{padding:9px 18px;border-radius:10px;border:none;font-family:var(--font);
+  font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;
+  gap:7px;transition:all .25s}
+.bp{background:linear-gradient(135deg,var(--ruby),#a0184f);color:#fff}
+.bp:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(216,34,108,.4)}
+.bs{background:rgba(255,255,255,.06);color:var(--txt);border:1px solid var(--border)}
+.bs:hover{background:rgba(255,255,255,.1)}
+
+/* ─ CARD ─ */
+.cd{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:22px;margin-bottom:18px;backdrop-filter:blur(10px)}
+.cd-t{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+
+/* ─ STAT GRID ─ */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px;margin-bottom:20px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px 20px;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sr::before{background:var(--ruby)} .sg2::before{background:var(--cyan)}
+.so::before{background:var(--gold)} .sn::before{background:var(--green)}
+.sc-v{font-size:30px;font-weight:800;margin-bottom:3px}
+.sc-l{font-size:12px;color:var(--muted)}
+.sc-i{position:absolute;top:14px;right:16px;font-size:22px;opacity:.15}
+
+/* ─ TABLE ─ */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+tbody td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.bg2{background:rgba(0,230,118,.15);color:var(--green)}
+.br2{background:rgba(216,34,108,.15);color:var(--ruby)}
+.bo2{background:rgba(245,197,66,.15);color:var(--gold)}
+
+/* ─ ADD FORM ─ */
+.af{display:none;background:rgba(216,34,108,.05);border:1px solid rgba(216,34,108,.2);
+  border-radius:12px;padding:18px;margin-bottom:20px}
+.af-t{font-weight:700;color:var(--ruby);margin-bottom:12px}
+
+/* ─ JOURNAL ─ */
+.ji{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.jh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.jn{font-weight:700;font-size:14px}
+.jd{font-size:11px;color:var(--muted);margin-top:2px}
+.jb{font-size:13px;color:var(--muted);line-height:1.6}
+.ja{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.bsm{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .25s}
+
+/* ─ MODULE ─ */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px}
+.mc{background:rgba(18,30,52,.7);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .25s}
+.mc:hover{border-color:rgba(216,34,108,.3);transform:translateY(-2px)}
+.mk{font-size:11px;font-weight:700;color:var(--ruby);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.mt2{font-size:14px;font-weight:700;margin-bottom:5px}
+.md{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.mf{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+/* ─ SOAL ─ */
+.si{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.sn2{font-size:11px;font-weight:700;color:var(--ruby);margin-bottom:4px}
+.sq{font-size:14px;font-weight:600;margin-bottom:10px}
+.sopts{list-style:none;display:flex;flex-direction:column;gap:6px}
+.sopts li{font-size:13px;color:var(--muted);padding:4px 8px;border-radius:6px}
+.sopts li.ans{color:var(--green);font-weight:600;background:rgba(0,230,118,.07)}
+
+/* ─ CHAT ─ */
+.cb{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:14px;
+  background:rgba(255,255,255,.02);border-radius:10px;margin-bottom:14px;border:1px solid var(--border)}
+.cm{display:flex;gap:10px}
+.cm.user{flex-direction:row-reverse}
+.cb2{max-width:76%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.5}
+.cm.bot .cb2{background:rgba(255,255,255,.06);border-radius:4px 14px 14px 14px}
+.cm.user .cb2{background:linear-gradient(135deg,var(--ruby),#a0184f);color:#fff;border-radius:14px 4px 14px 14px}
+.crow{display:flex;gap:10px}
+
+/* ─ TOAST ─ */
+.toast{position:fixed;bottom:24px;right:24px;z-index:99999;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;padding:14px 18px;
+  display:flex;align-items:center;gap:12px;max-width:360px;backdrop-filter:blur(20px);
+  transform:translateY(80px);opacity:0;transition:all .35s;pointer-events:none;
+  box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.toast.show{transform:translateY(0);opacity:1;pointer-events:auto}
+.tt{font-size:13px;font-weight:700;margin-bottom:2px}
+.tm{font-size:12px;color:var(--muted)}
+
+/* ─ MOBILE ─ */
+@media(max-width:768px){
+  #g-dash.on{grid-template-columns:1fr}
+  .sb{display:none}
+  .mn{display:flex!important}
+  .main-c{padding:16px;padding-bottom:80px}
+  .frow{grid-template-columns:1fr}
+  .sg{grid-template-columns:1fr 1fr}
+  .mg{grid-template-columns:1fr}
+}
+.mn{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;
+  background:rgba(13,22,38,.97);border-top:1px solid var(--border);
+  padding:10px 8px;gap:4px;justify-content:space-around;backdrop-filter:blur(20px)}
+.mb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;
+  font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;
+  padding:6px 10px;border-radius:8px;font-family:var(--font)}
+.mb.on{color:var(--ruby)}
+.mb i{font-size:18px}
 </style>
 </head>
 <body>
 
-<!-- ===================== AUTH ===================== -->
-<div class="auth-page" id="auth-section">
-<div class="auth-card">
-  <div class="auth-logo">
-    <span class="auth-dot auth-dot-g" style="width:10px;height:10px;border-radius:50%;background:var(--accent-ruby);box-shadow:0 0 10px var(--accent-ruby);display:inline-block;"></span>
-    INFODESK<span style="color:var(--accent-ruby)">234</span>
+<!-- AUTH PAGE -->
+<div id="auth-section">
+<div class="card-auth">
+  <div class="logo">
+    <span class="dot"></span>
+    INFODESK<span style="color:var(--ruby)">234</span>
   </div>
-  <h2 class="auth-title">Portal Guru</h2>
-  <p class="auth-subtitle">Akses kelola siswa PKL, modul ajar digital, bank soal kejuruan, dan AI kurikulum.</p>
+  <h2 class="title">Portal Guru</h2>
+  <p class="sub">Akses kelola siswa PKL, modul ajar digital, bank soal kejuruan, dan AI kurikulum.</p>
 
   <div class="tab-row">
-    <button class="tab-btn on-ruby" id="tbtn-masuk"  onclick="gTab('masuk')"><i class="fa fa-right-to-bracket"></i> Masuk</button>
-    <button class="tab-btn off"      id="tbtn-daftar" onclick="gTab('daftar')"><i class="fa fa-user-plus"></i> Daftar Baru</button>
+    <button class="tb on" id="tb-masuk"  onclick="showPanel('masuk')">
+      <i class="fa fa-right-to-bracket"></i> Masuk
+    </button>
+    <button class="tb off" id="tb-daftar" onclick="showPanel('daftar')">
+      <i class="fa fa-user-plus"></i> Daftar Baru
+    </button>
   </div>
 
-  <!-- LOGIN -->
-  <div id="p-masuk">
-    <form id="login-form" onsubmit="doLogin(event)">
-      <div class="form-group">
-        <label class="form-label">Nama Lengkap</label>
-        <input class="form-control" id="l-name" type="text" placeholder="Nama sesuai saat pendaftaran" autocomplete="name">
+  <!-- PANEL MASUK -->
+  <div id="pn-masuk">
+    <form onsubmit="doLogin(event)">
+      <div class="fg">
+        <label class="fl">Nama Lengkap</label>
+        <input class="fc" id="l-name" type="text" placeholder="Nama sesuai saat pendaftaran">
       </div>
-      <div class="form-group">
-        <label class="form-label">Nomor WhatsApp</label>
-        <input class="form-control" id="l-wa" type="tel" placeholder="08xxxxxxxxxx" autocomplete="tel">
+      <div class="fg">
+        <label class="fl">Nomor WhatsApp</label>
+        <input class="fc" id="l-wa" type="tel" placeholder="08xxxxxxxxxx">
       </div>
-      <button class="btn-submit btn-ruby" type="submit"><i class="fa fa-right-to-bracket"></i> Masuk Portal Guru</button>
+      <button class="btn-full" type="submit">
+        <i class="fa fa-right-to-bracket"></i> Masuk Portal Guru
+      </button>
     </form>
-    <p class="link-sm">Belum punya akun? <a href="#" onclick="gTab('daftar');return false;">Daftar di sini</a></p>
+    <p class="hint">Belum punya akun? <a onclick="showPanel('daftar')">Daftar di sini</a></p>
   </div>
 
-  <!-- REGISTER -->
-  <div id="p-daftar" style="display:none;">
-    <form id="reg-form" onsubmit="doRegister(event)">
-      <div class="form-group">
-        <label class="form-label">Nama Lengkap (dengan gelar)</label>
-        <input class="form-control" id="r-name" type="text" placeholder="Contoh: Drs. Budi Santoso, M.T." required>
+  <!-- PANEL DAFTAR -->
+  <div id="pn-daftar" style="display:none">
+    <form onsubmit="doRegister(event)">
+      <div class="fg">
+        <label class="fl">Nama Lengkap (dengan gelar)</label>
+        <input class="fc" id="r-name" type="text" placeholder="Contoh: Drs. Budi Santoso, M.T." required>
       </div>
-      <div class="form-group">
-        <label class="form-label">Asal Sekolah (SMK)</label>
-        <input class="form-control" id="r-school" type="text" placeholder="Contoh: SMKN 2 Bandar Lampung" required>
+      <div class="fg">
+        <label class="fl">Asal Sekolah (SMK)</label>
+        <input class="fc" id="r-school" type="text" placeholder="Contoh: SMKN 2 Bandar Lampung" required>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Kompetensi Keahlian</label>
-          <select class="form-control" id="r-subject">
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Kompetensi Keahlian</label>
+          <select class="fc" id="r-subj">
             <option value="TKR">Teknik Kendaraan Ringan (TKR)</option>
             <option value="TSM">Teknik Sepeda Motor (TSM)</option>
             <option value="TBO">Teknik Bodi Otomotif</option>
             <option value="RPL">Rekayasa Perangkat Lunak</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Nomor WhatsApp</label>
-          <input class="form-control" id="r-wa" type="tel" placeholder="08xxxxxxxxxx" required>
+        <div class="fg">
+          <label class="fl">Nomor WhatsApp</label>
+          <input class="fc" id="r-wa" type="tel" placeholder="08xxxxxxxxxx" required>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Kelas yang Diajar</label>
+      <div class="fg">
+        <label class="fl">Kelas yang Diajar</label>
         <div class="chk-row">
-          <label class="chk-item"><input type="checkbox" name="cls" value="X" checked> Kelas X</label>
-          <label class="chk-item"><input type="checkbox" name="cls" value="XI"> Kelas XI</label>
-          <label class="chk-item"><input type="checkbox" name="cls" value="XII"> Kelas XII</label>
+          <label class="chk"><input type="checkbox" name="cls" value="X" checked> Kelas X</label>
+          <label class="chk"><input type="checkbox" name="cls" value="XI"> Kelas XI</label>
+          <label class="chk"><input type="checkbox" name="cls" value="XII"> Kelas XII</label>
         </div>
       </div>
-      <button class="btn-submit btn-ruby" type="submit"><i class="fa fa-id-card"></i> Daftar &amp; Masuk Portal</button>
+      <button class="btn-full" type="submit">
+        <i class="fa fa-id-card"></i> Daftar &amp; Masuk Portal
+      </button>
     </form>
-    <p class="link-sm">Sudah punya akun? <a href="#" onclick="gTab('masuk');return false;">Masuk di sini</a></p>
+    <p class="hint">Sudah punya akun? <a onclick="showPanel('masuk')">Masuk di sini</a></p>
   </div>
 </div>
 </div>
 
-<!-- ===================== DASHBOARD ===================== -->
-<div class="dash-page" id="g-dash">
-  <aside class="sidebar">
+<!-- DASHBOARD -->
+<div id="g-dash">
+  <aside class="sb">
     <div class="sb-logo">
-      <span style="width:9px;height:9px;border-radius:50%;background:var(--accent-ruby);box-shadow:0 0 8px var(--accent-ruby);display:inline-block;"></span>
-      INFODESK<span style="color:var(--accent-ruby)">234</span>
+      <span style="width:9px;height:9px;border-radius:50%;background:var(--ruby);box-shadow:0 0 8px var(--ruby);display:inline-block"></span>
+      INFODESK<span style="color:var(--ruby)">234</span>
     </div>
-    <div class="sb-profile">
-      <div class="sb-avatar sb-avatar-g" id="g-avatar" style="background:linear-gradient(135deg,#d8226c,#a0184f);box-shadow:0 0 15px rgba(216,34,108,0.4);color:#fff;">G</div>
+    <div class="sb-prof">
+      <div class="av" id="g-av">G</div>
       <div class="sb-name" id="g-name">Guru</div>
-      <div class="sb-meta" id="g-school">SMK InfoDesk234</div>
-      <div class="sb-meta" id="g-subject" style="margin-top:2px;color:var(--accent-ruby);font-size:10px;"></div>
+      <div class="sb-sub" id="g-school">SMK InfoDesk234</div>
+      <div class="sb-sub" id="g-subj" style="color:var(--ruby);font-size:10px;margin-top:2px"></div>
     </div>
-    <nav class="nav-menu">
-      <button class="nav-item active" id="nv-pkl"    onclick="gSwitch('pkl')">   <i class="fa fa-clipboard-list"></i> Monitor PKL</button>
-      <button class="nav-item"         id="nv-jurnal" onclick="gSwitch('jurnal')"><i class="fa fa-book-open"></i>      Jurnal Harian</button>
-      <button class="nav-item"         id="nv-modul"  onclick="gSwitch('modul')"> <i class="fa fa-folder-open"></i>   Modul Ajar</button>
-      <button class="nav-item"         id="nv-soal"   onclick="gSwitch('soal')">  <i class="fa fa-circle-question"></i> Bank Soal</button>
-      <button class="nav-item"         id="nv-ai"     onclick="gSwitch('ai')">    <i class="fa fa-robot"></i>         AI Kurikulum</button>
+    <nav class="nav-m">
+      <button class="ni on" id="nv-pkl"    onclick="gSwitch('pkl')">   <i class="fa fa-clipboard-list"></i> Monitor PKL</button>
+      <button class="ni"    id="nv-jurnal" onclick="gSwitch('jurnal')"><i class="fa fa-book-open"></i> Jurnal Harian</button>
+      <button class="ni"    id="nv-modul"  onclick="gSwitch('modul')"> <i class="fa fa-folder-open"></i> Modul Ajar</button>
+      <button class="ni"    id="nv-soal"   onclick="gSwitch('soal')">  <i class="fa fa-circle-question"></i> Bank Soal</button>
+      <button class="ni"    id="nv-ai"     onclick="gSwitch('ai')">    <i class="fa fa-robot"></i> AI Kurikulum</button>
     </nav>
-    <div class="sb-footer">
-      <button class="btn-logout" onclick="doLogout()"><i class="fa fa-right-from-bracket"></i> Keluar Sesi</button>
+    <div class="sb-foot">
+      <button class="btn-out" onclick="doLogout()"><i class="fa fa-right-from-bracket"></i> Keluar Sesi</button>
     </div>
   </aside>
 
-  <main class="main" id="g-main">
-
-    <!-- ─── PKL ─── -->
-    <div class="tab-content active" id="tc-pkl">
+  <main class="main-c">
+    <!-- PKL -->
+    <div class="tc on" id="tc-pkl">
       <div class="ph">
-        <div><h1 class="ph-title"><i class="fa fa-clipboard-list" style="color:var(--accent-ruby)"></i> Monitor PKL</h1>
-        <p class="ph-sub" id="g-school-head">SMK InfoDesk234 | Penempatan Prakerin Siswa</p></div>
+        <div>
+          <h1><i class="fa fa-clipboard-list" style="color:var(--ruby)"></i> Monitor PKL</h1>
+          <p id="g-school-h">SMK InfoDesk234 | Penempatan Prakerin Siswa</p>
+        </div>
         <div class="action-bar">
-          <button class="btn-act bp" onclick="toggleAddForm()"><i class="fa fa-plus"></i> Tambah Siswa</button>
-          <button class="btn-act bs" onclick="exExcel()"><i class="fa fa-file-excel"></i> Ekspor Excel</button>
-          <button class="btn-act bs" onclick="window.print()"><i class="fa fa-print"></i> Cetak</button>
+          <button class="ba bp" onclick="toggleAF()"><i class="fa fa-plus"></i> Tambah Siswa</button>
+          <button class="ba bs" onclick="exExcel()"><i class="fa fa-file-excel"></i> Ekspor Excel</button>
+          <button class="ba bs" onclick="window.print()"><i class="fa fa-print"></i> Cetak</button>
         </div>
       </div>
-      <div class="stat-grid" id="pkl-stats"></div>
-      <!-- ADD FORM -->
-      <div class="add-form" id="add-form">
-        <div class="add-form-title"><i class="fa fa-user-plus"></i> Tambah Data Siswa PKL</div>
-        <div class="form-row" style="margin-bottom:12px;">
-          <div class="form-group"><label class="form-label">Nama Siswa</label><input class="form-control" id="ns-name" placeholder="Nama1, Nama2 (bisa >1, pisah koma)"></div>
-          <div class="form-group"><label class="form-label">Kelas</label>
-            <select class="form-control" id="ns-class">
+      <div class="sg" id="pkl-stats"></div>
+      <div class="af" id="add-form">
+        <div class="af-t"><i class="fa fa-user-plus"></i> Tambah Data Siswa PKL</div>
+        <div class="frow" style="margin-bottom:12px">
+          <div class="fg"><label class="fl">Nama Siswa</label><input class="fc" id="ns-n" placeholder="Nama siswa"></div>
+          <div class="fg"><label class="fl">Kelas</label>
+            <select class="fc" id="ns-k">
               <option>XI TKR 1</option><option>XI TKR 2</option><option>XI TSM 1</option><option>XI TSM 2</option>
               <option>X TKR 1</option><option>X TKR 2</option><option>XII TKR 1</option><option>XII TKR 2</option>
             </select>
           </div>
         </div>
-        <div class="form-row" style="margin-bottom:12px;">
-          <div class="form-group"><label class="form-label">Nama Bengkel / DUDI</label><input class="form-control" id="ns-dudi" placeholder="Bengkel Pak Eko"></div>
-          <div class="form-group"><label class="form-label">Penyelia / Pemilik</label><input class="form-control" id="ns-owner" placeholder="Nama penyelia"></div>
+        <div class="frow" style="margin-bottom:12px">
+          <div class="fg"><label class="fl">Bengkel / DUDI</label><input class="fc" id="ns-d" placeholder="Nama bengkel"></div>
+          <div class="fg"><label class="fl">Penyelia</label><input class="fc" id="ns-o" placeholder="Nama penyelia"></div>
         </div>
-        <div class="form-row" style="margin-bottom:14px;">
-          <div class="form-group"><label class="form-label">WA Bengkel</label><input class="form-control" id="ns-wa" placeholder="08xxxxxxxxxx"></div>
-          <div class="form-group"><label class="form-label">Alamat DUDI</label><input class="form-control" id="ns-addr" placeholder="Jl. ..."></div>
+        <div class="frow" style="margin-bottom:14px">
+          <div class="fg"><label class="fl">WA Bengkel</label><input class="fc" id="ns-w" placeholder="08xxxxxxxxxx"></div>
+          <div class="fg"><label class="fl">Alamat DUDI</label><input class="fc" id="ns-a" placeholder="Jl. ..."></div>
         </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-act bp" onclick="addStudent()"><i class="fa fa-save"></i> Simpan</button>
-          <button class="btn-act bs" onclick="toggleAddForm()"><i class="fa fa-times"></i> Batal</button>
+        <div style="display:flex;gap:10px">
+          <button class="ba bp" onclick="addStu()"><i class="fa fa-save"></i> Simpan</button>
+          <button class="ba bs" onclick="toggleAF()"><i class="fa fa-times"></i> Batal</button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title"><i class="fa fa-table" style="color:var(--accent-ruby)"></i> Daftar Penempatan Siswa PKL</div>
-        <div class="table-wrap">
+      <div class="cd">
+        <div class="cd-t"><i class="fa fa-table" style="color:var(--ruby)"></i> Daftar Penempatan Siswa PKL</div>
+        <div class="tw">
           <table>
             <thead><tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Bengkel/DUDI</th><th>Penyelia</th><th>WA Bengkel</th><th>Status</th></tr></thead>
-            <tbody id="pkl-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px">Belum ada data. Klik "Tambah Siswa".</td></tr></tbody>
+            <tbody id="pkl-tb"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">Belum ada data. Klik "Tambah Siswa".</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ─── JURNAL ─── -->
-    <div class="tab-content" id="tc-jurnal">
+    <!-- JURNAL -->
+    <div class="tc" id="tc-jurnal">
       <div class="ph">
-        <div><h1 class="ph-title"><i class="fa fa-book-open" style="color:var(--accent-ruby)"></i> Jurnal Harian PKL</h1>
-        <p class="ph-sub">Pantau dan setujui laporan harian siswa prakerin</p></div>
+        <div><h1><i class="fa fa-book-open" style="color:var(--ruby)"></i> Jurnal Harian PKL</h1>
+        <p>Pantau dan setujui laporan harian siswa prakerin</p></div>
         <div class="action-bar">
-          <button class="btn-act bs" onclick="exJurnalWord()"><i class="fa fa-file-word"></i> Ekspor Word</button>
-          <button class="btn-act bs" onclick="clearJurnals()"><i class="fa fa-trash"></i> Hapus Semua</button>
+          <button class="ba bs" onclick="exJurWord()"><i class="fa fa-file-word"></i> Ekspor Word</button>
+          <button class="ba bs" onclick="clearJur()"><i class="fa fa-trash"></i> Hapus Semua</button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title"><i class="fa fa-file-import" style="color:var(--accent-ruby)"></i> Impor Jurnal Siswa (Kode Sinkronisasi dari WA)</div>
-        <div style="display:flex;gap:10px;margin-bottom:20px;">
-          <textarea class="form-control" id="sync-in" rows="3" placeholder="Paste kode sinkronisasi dari WhatsApp siswa di sini..." style="flex:1;resize:vertical;font-family:monospace;font-size:12px;"></textarea>
-          <button class="btn-act bp" onclick="importSync()" style="align-self:flex-end;white-space:nowrap;"><i class="fa fa-download"></i> Impor</button>
+      <div class="cd">
+        <div class="cd-t"><i class="fa fa-file-import" style="color:var(--ruby)"></i> Impor Kode Sync Jurnal Siswa</div>
+        <div style="display:flex;gap:10px;margin-bottom:18px">
+          <textarea class="fc" id="sync-in" rows="3" placeholder="Paste kode JURNAL_SYNC: dari WhatsApp siswa di sini..." style="flex:1;resize:vertical;font-size:12px;font-family:monospace"></textarea>
+          <button class="ba bp" onclick="importSync()" style="align-self:flex-end;white-space:nowrap"><i class="fa fa-download"></i> Impor</button>
         </div>
-        <div id="jurnal-feed"><p style="color:var(--text-muted);text-align:center;padding:28px;">Belum ada jurnal. Minta siswa kirim kode sync via WA.</p></div>
+        <div id="jur-feed"><p style="color:var(--muted);text-align:center;padding:24px">Belum ada jurnal masuk.</p></div>
       </div>
     </div>
 
-    <!-- ─── MODUL ─── -->
-    <div class="tab-content" id="tc-modul">
+    <!-- MODUL -->
+    <div class="tc" id="tc-modul">
       <div class="ph">
-        <div><h1 class="ph-title"><i class="fa fa-folder-open" style="color:var(--accent-ruby)"></i> Modul Ajar Digital</h1>
-        <p class="ph-sub">Materi pembelajaran kejuruan TKR &amp; TSM</p></div>
+        <div><h1><i class="fa fa-folder-open" style="color:var(--ruby)"></i> Modul Ajar Digital</h1>
+        <p>Materi pembelajaran kejuruan TKR &amp; TSM</p></div>
         <div class="action-bar">
-          <button class="btn-act bp" onclick="addModul()"><i class="fa fa-plus"></i> Tambah Modul</button>
+          <button class="ba bp" onclick="addModul()"><i class="fa fa-plus"></i> Tambah Modul</button>
         </div>
       </div>
-      <div class="mod-grid" id="mod-grid"></div>
+      <div class="mg" id="mod-grid"></div>
     </div>
 
-    <!-- ─── SOAL ─── -->
-    <div class="tab-content" id="tc-soal">
+    <!-- SOAL -->
+    <div class="tc" id="tc-soal">
       <div class="ph">
-        <div><h1 class="ph-title"><i class="fa fa-circle-question" style="color:var(--accent-ruby)"></i> Bank Soal Generator</h1>
-        <p class="ph-sub">Generate soal otomatis berdasarkan materi / kata kunci</p></div>
+        <div><h1><i class="fa fa-circle-question" style="color:var(--ruby)"></i> Bank Soal Generator</h1>
+        <p>Generate soal otomatis berdasarkan kata kunci materi</p></div>
         <div class="action-bar">
-          <button class="btn-act bs" onclick="exSoalWord()"><i class="fa fa-file-word"></i> Ekspor Word</button>
-          <button class="btn-act bs" onclick="document.getElementById('soal-out').innerHTML=''"><i class="fa fa-trash"></i> Bersihkan</button>
+          <button class="ba bs" onclick="exSoalWord()"><i class="fa fa-file-word"></i> Ekspor Word</button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title"><i class="fa fa-wand-magic-sparkles" style="color:var(--accent-gold)"></i> Generator Soal</div>
-        <div class="form-row" style="margin-bottom:12px;">
-          <div class="form-group"><label class="form-label">Kata Kunci / Materi</label><input class="form-control" id="sk-kw" placeholder="Contoh: sistem rem cakram, tune-up EFI..."></div>
-          <div class="form-group"><label class="form-label">Jumlah Soal</label>
-            <select class="form-control" id="sk-jml">
+      <div class="cd">
+        <div class="cd-t"><i class="fa fa-wand-magic-sparkles" style="color:var(--gold)"></i> Generator Soal</div>
+        <div class="frow" style="margin-bottom:12px">
+          <div class="fg"><label class="fl">Kata Kunci / Materi</label><input class="fc" id="sk-kw" placeholder="Contoh: sistem rem cakram, tune-up EFI..."></div>
+          <div class="fg"><label class="fl">Jumlah Soal</label>
+            <select class="fc" id="sk-jml">
               <option value="5">5 Soal</option><option value="10" selected>10 Soal</option>
               <option value="15">15 Soal</option><option value="20">20 Soal</option>
             </select>
           </div>
         </div>
-        <div class="form-row" style="margin-bottom:16px;">
-          <div class="form-group"><label class="form-label">Jenis Soal</label>
-            <select class="form-control" id="sk-type">
+        <div class="frow" style="margin-bottom:14px">
+          <div class="fg"><label class="fl">Jenis Soal</label>
+            <select class="fc" id="sk-type">
               <option value="pg">Pilihan Ganda (A-D)</option>
               <option value="essay">Essay / Uraian</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Tingkat Kesulitan</label>
-            <select class="form-control" id="sk-lvl">
+          <div class="fg"><label class="fl">Tingkat Kesulitan</label>
+            <select class="fc" id="sk-lvl">
               <option>Mudah (C1-C2)</option><option selected>Sedang (C3-C4)</option><option>Sulit (C5-C6)</option>
             </select>
           </div>
         </div>
-        <button class="btn-act bp" onclick="genSoal()"><i class="fa fa-bolt"></i> Generate Soal Sekarang</button>
+        <button class="ba bp" onclick="genSoal()"><i class="fa fa-bolt"></i> Generate Soal</button>
       </div>
       <div id="soal-out"></div>
     </div>
 
-    <!-- ─── AI ─── -->
-    <div class="tab-content" id="tc-ai">
+    <!-- AI -->
+    <div class="tc" id="tc-ai">
       <div class="ph">
-        <div><h1 class="ph-title"><i class="fa fa-robot" style="color:var(--accent-ruby)"></i> AI Asisten Kurikulum</h1>
-        <p class="ph-sub">Tanya apa saja seputar kurikulum, RPP, modul, dan kejuruan TKR</p></div>
+        <div><h1><i class="fa fa-robot" style="color:var(--ruby)"></i> AI Asisten Kurikulum</h1>
+        <p>Tanya seputar kurikulum, RPP, modul, dan materi TKR/TSM</p></div>
         <div class="action-bar">
-          <button class="btn-act bs" onclick="clearChat()"><i class="fa fa-eraser"></i> Reset</button>
+          <button class="ba bs" onclick="clrChat()"><i class="fa fa-eraser"></i> Reset</button>
         </div>
       </div>
-      <div class="card">
-        <div class="chat-box" id="chat-box">
-          <div class="chat-msg bot"><div class="chat-bubble"><b>Halo Guru!</b><br>Saya AI asisten kurikulum TKR/TSM. Tanya apa saja: RPP, modul ajar, soal, metode pembelajaran, dll.</div></div>
+      <div class="cd">
+        <div class="cb" id="chat-box">
+          <div class="cm bot"><div class="cb2"><b>Halo Guru!</b><br>Saya AI asisten kurikulum TKR/TSM. Tanya apa saja: RPP, modul ajar, soal, metode, dll.</div></div>
         </div>
-        <div class="chat-row">
-          <input class="form-control" id="chat-in" placeholder="Ketik pertanyaan..." onkeydown="if(event.key==='Enter')sendChat()">
-          <button class="btn-act bp" onclick="sendChat()"><i class="fa fa-paper-plane"></i></button>
+        <div class="crow">
+          <input class="fc" id="chat-in" placeholder="Ketik pertanyaan..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="ba bp" onclick="sendChat()"><i class="fa fa-paper-plane"></i></button>
         </div>
       </div>
     </div>
-
   </main>
 </div>
 
 <!-- MOBILE NAV -->
-<nav class="m-nav" id="g-mnav" style="display:none;">
-  <button class="m-btn active" id="mn-pkl"    onclick="gSwitch('pkl')">   <i class="fa fa-clipboard-list"></i>PKL</button>
-  <button class="m-btn"        id="mn-jurnal" onclick="gSwitch('jurnal')"><i class="fa fa-book-open"></i>Jurnal</button>
-  <button class="m-btn"        id="mn-modul"  onclick="gSwitch('modul')"> <i class="fa fa-folder-open"></i>Modul</button>
-  <button class="m-btn"        id="mn-soal"   onclick="gSwitch('soal')">  <i class="fa fa-circle-question"></i>Soal</button>
-  <button class="m-btn"        id="mn-ai"     onclick="gSwitch('ai')">    <i class="fa fa-robot"></i>AI</button>
+<nav class="mn" id="g-mn">
+  <button class="mb on" id="mn-pkl"    onclick="gSwitch('pkl')">   <i class="fa fa-clipboard-list"></i>PKL</button>
+  <button class="mb"    id="mn-jurnal" onclick="gSwitch('jurnal')"><i class="fa fa-book-open"></i>Jurnal</button>
+  <button class="mb"    id="mn-modul"  onclick="gSwitch('modul')"> <i class="fa fa-folder-open"></i>Modul</button>
+  <button class="mb"    id="mn-soal"   onclick="gSwitch('soal')">  <i class="fa fa-circle-question"></i>Soal</button>
+  <button class="mb"    id="mn-ai"     onclick="gSwitch('ai')">    <i class="fa fa-robot"></i>AI</button>
 </nav>
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <span id="t-icon" style="font-size:20px;">ok</span>
-  <div><div class="t-title" id="t-title">-</div><div class="t-msg" id="t-msg">-</div></div>
+  <span id="t-icon" style="font-size:20px">&#10003;</span>
+  <div><div class="tt" id="t-title">-</div><div class="tm" id="t-msg">-</div></div>
 </div>
 
 <script>
-var GAS = "https://script.google.com/macros/s/AKfycbwkrQiPi02Y9anDQ92b8_2mV-dqJ6sRcXTy3lA5kr7ShvA7PrSYEf0tVvfBp_uEaB8WZw/exec";
-var KT="id234_teachers", KC="id234_cur_teacher", KS="id234_students", KJ="id234_journals";
+// ── CONFIG ──
+var GAS_URL = "https://script.google.com/macros/s/AKfycbwkrQiPi02Y9anDQ92b8_2mV-dqJ6sRcXTy3lA5kr7ShvA7PrSYEf0tVvfBp_uEaB8WZw/exec";
+var KEY_T = "id234_teachers";
+var KEY_C = "id234_cur";
+var KEY_S = "id234_students";
+var KEY_J = "id234_journals";
 
-var G = { teacher:null, students:[], journals:[], modules:defModules() };
+// ── STATE ──
+var G_teacher = null;
+var G_students = [];
+var G_journals = [];
+var G_modules  = getDefaultModules();
 
-document.addEventListener("DOMContentLoaded",function(){
-  var c = localStorage.getItem(KC);
-  if(c){ G.teacher=JSON.parse(c); loadStorage(); showDash(); }
-  syncGAS();
+// ── INIT ──
+document.addEventListener("DOMContentLoaded", function() {
+  var saved = localStorage.getItem(KEY_C);
+  if (saved) {
+    try {
+      G_teacher = JSON.parse(saved);
+      loadData();
+      showDash();
+    } catch(e) {
+      localStorage.removeItem(KEY_C);
+    }
+  }
+  // Sync GAS in background - don't block UI
+  setTimeout(bgSync, 2000);
 });
 
-function loadStorage(){
-  var s=localStorage.getItem(KS), j=localStorage.getItem(KJ);
-  if(s) G.students=JSON.parse(s);
-  if(j) G.journals=JSON.parse(j);
+function loadData() {
+  try { G_students = JSON.parse(localStorage.getItem(KEY_S) || "[]"); } catch(e) { G_students = []; }
+  try { G_journals = JSON.parse(localStorage.getItem(KEY_J) || "[]"); } catch(e) { G_journals = []; }
 }
 
-function syncGAS(){
-  if(!GAS) return;
-  fetch(GAS).then(function(r){return r.json();}).then(function(d){
-    if(!d) return;
-    if(d.placements && d.placements.length){
-      d.placements.forEach(function(p){
-        if(!G.students.some(function(s){return s.dudi===p.bengkel && s.name===p.siswa;})){
-          G.students.push({id:Date.now()+Math.random(),name:p.siswa,kelas:p.kelas||"",dudi:p.bengkel,owner:p.pemilik||"",wa:p.wa||"",addr:p.alamat||"",supervisor:p.pembimbing||""});
+function bgSync() {
+  if (!GAS_URL || GAS_URL === "https://script.google.com/macros/s/AKfycbwkrQiPi02Y9anDQ92b8_2mV-dqJ6sRcXTy3lA5kr7ShvA7PrSYEf0tVvfBp_uEaB8WZw/exec") return;
+  try {
+    fetch(GAS_URL)
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (!d) return;
+        if (d.placements && d.placements.length) {
+          d.placements.forEach(function(p) {
+            var exists = G_students.some(function(s) {
+              return s.name === p.siswa && s.dudi === p.bengkel;
+            });
+            if (!exists) {
+              G_students.push({
+                id: Date.now() + Math.random(),
+                name: p.siswa || "",
+                kelas: p.kelas || "",
+                dudi: p.bengkel || "",
+                owner: p.pemilik || "",
+                wa: p.wa || "",
+                addr: p.alamat || "",
+                supervisor: p.pembimbing || ""
+              });
+            }
+          });
+          localStorage.setItem(KEY_S, JSON.stringify(G_students));
+          if (G_teacher) renderStudents();
         }
-      });
-      localStorage.setItem(KS,JSON.stringify(G.students));
-      if(G.teacher) renderStudents();
-    }
-    if(d.jurnal && d.jurnal.length){
-      d.jurnal.forEach(function(j){
-        if(!G.journals.some(function(x){return x.id===j.id;})) G.journals.push(j);
-      });
-      localStorage.setItem(KJ,JSON.stringify(G.journals));
-      if(G.teacher) renderJurnals();
-    }
-  }).catch(function(e){console.warn("GAS:",e.message);});
+      })
+      .catch(function(err) { console.log("GAS sync skip:", err.message); });
+  } catch(e) {}
 }
 
-// ─ AUTH TAB ─
-function gTab(t){
-  document.getElementById("p-masuk").style.display  = t==="masuk"  ? "block":"none";
-  document.getElementById("p-daftar").style.display = t==="daftar" ? "block":"none";
-  document.getElementById("tbtn-masuk").className   = "tab-btn "+(t==="masuk" ?"on-ruby":"off");
-  document.getElementById("tbtn-daftar").className  = "tab-btn "+(t==="daftar"?"on-ruby":"off");
-}
-
-// ─ LOGIN ─
-function doLogin(e){
-  e.preventDefault();
-  var name = document.getElementById("l-name").value.trim();
-  var wa   = document.getElementById("l-wa").value.trim();
-  if(!name||!wa){ toast("Lengkapi Data","Isi nama dan nomor WA.","err"); return; }
-  var list = JSON.parse(localStorage.getItem(KT)||"[]");
-  var found = list.find(function(t){
-    return t.name.toLowerCase()===name.toLowerCase() && t.wa.replace(/\D/g,"")===wa.replace(/\D/g,"");
-  });
-  if(found){
-    G.teacher=found;
-    localStorage.setItem(KC,JSON.stringify(found));
-    loadStorage(); showDash();
-    toast("Login Berhasil","Selamat datang, "+found.name+"!");
+// ── SHOW/HIDE AUTH PANELS ──
+function showPanel(which) {
+  var masuk  = document.getElementById("pn-masuk");
+  var daftar = document.getElementById("pn-daftar");
+  var tbM    = document.getElementById("tb-masuk");
+  var tbD    = document.getElementById("tb-daftar");
+  if (which === "masuk") {
+    masuk.style.display  = "block";
+    daftar.style.display = "none";
+    tbM.className = "tb on";
+    tbD.className = "tb off";
   } else {
-    toast("Akun Tidak Ditemukan","Nama/WA tidak cocok. Cek ejaan atau buat akun baru via tab Daftar Baru.","err");
+    masuk.style.display  = "none";
+    daftar.style.display = "block";
+    tbM.className = "tb off";
+    tbD.className = "tb on";
   }
 }
 
-// ─ REGISTER ─
-function doRegister(e){
+// ── LOGIN ──
+function doLogin(e) {
   e.preventDefault();
-  var name   = document.getElementById("r-name").value.trim();
-  var school = document.getElementById("r-school").value.trim();
-  var subj   = document.getElementById("r-subject").value;
-  var wa     = document.getElementById("r-wa").value.trim();
-  var cls    = Array.from(document.querySelectorAll("input[name=cls]:checked")).map(function(x){return x.value;});
-  if(!name||!school||!wa){ toast("Data Kurang","Isi nama, sekolah, dan WA.","err"); return; }
-  var t={name:name,school:school,subject:subj,wa:wa,classes:cls};
-  var list=JSON.parse(localStorage.getItem(KT)||"[]");
-  var idx=list.findIndex(function(x){return x.wa.replace(/\D/g,"")===wa.replace(/\D/g,"");});
-  if(idx>=0) list[idx]=t; else list.push(t);
-  localStorage.setItem(KT,JSON.stringify(list));
-  localStorage.setItem(KC,JSON.stringify(t));
-  G.teacher=t;
-  loadStorage(); showDash();
-  toast("Registrasi Berhasil","Selamat datang, "+name+"!");
-  try{ fetch(GAS+"?action=registerTeacher&name="+encodeURIComponent(name)+"&wa="+encodeURIComponent(wa)+"&school="+encodeURIComponent(school)).catch(function(){}); }catch(ex){}
+  var name = (document.getElementById("l-name").value || "").trim();
+  var wa   = (document.getElementById("l-wa").value   || "").trim();
+  if (!name || !wa) { toast("Lengkapi Data", "Isi nama dan nomor WA.", "err"); return; }
+
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem(KEY_T) || "[]"); } catch(e2) {}
+
+  var waClean = wa.replace(/[^0-9]/g, "");
+  var found = null;
+  for (var i = 0; i < list.length; i++) {
+    var t = list[i];
+    var tWa = (t.wa || "").replace(/[^0-9]/g, "");
+    if (t.name && t.name.toLowerCase() === name.toLowerCase() && tWa === waClean) {
+      found = t; break;
+    }
+  }
+
+  if (found) {
+    G_teacher = found;
+    localStorage.setItem(KEY_C, JSON.stringify(found));
+    loadData(); showDash();
+    toast("Selamat Datang", "Halo " + found.name + "!");
+  } else {
+    toast("Akun Tidak Ditemukan", "Nama/WA tidak cocok. Cek ejaan atau buat akun baru lewat tab Daftar Baru.", "err");
+  }
 }
 
-function doLogout(){
-  if(!confirm("Keluar dari sesi ini?")) return;
-  localStorage.removeItem(KC); location.reload();
+// ── REGISTER ──
+function doRegister(e) {
+  e.preventDefault();
+  var name   = (document.getElementById("r-name").value   || "").trim();
+  var school = (document.getElementById("r-school").value || "").trim();
+  var subj   = document.getElementById("r-subj").value;
+  var wa     = (document.getElementById("r-wa").value     || "").trim();
+
+  if (!name || !school || !wa) { toast("Data Kurang", "Isi nama, sekolah, dan WA.", "err"); return; }
+
+  var cls = [];
+  var boxes = document.querySelectorAll("input[name='cls']:checked");
+  for (var i = 0; i < boxes.length; i++) { cls.push(boxes[i].value); }
+
+  var teacher = { name: name, school: school, subject: subj, wa: wa, classes: cls };
+
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem(KEY_T) || "[]"); } catch(e2) {}
+
+  var waClean = wa.replace(/[^0-9]/g, "");
+  var idx = -1;
+  for (var i2 = 0; i2 < list.length; i2++) {
+    if ((list[i2].wa || "").replace(/[^0-9]/g, "") === waClean) { idx = i2; break; }
+  }
+  if (idx >= 0) { list[idx] = teacher; } else { list.push(teacher); }
+
+  localStorage.setItem(KEY_T, JSON.stringify(list));
+  localStorage.setItem(KEY_C, JSON.stringify(teacher));
+  G_teacher = teacher;
+  loadData(); showDash();
+  toast("Registrasi Berhasil", "Selamat datang, " + name + "!");
+
+  // Background sync to GAS - non-blocking
+  try {
+    var url = GAS_URL + "?action=registerTeacher&name=" + encodeURIComponent(name) + "&wa=" + encodeURIComponent(wa) + "&school=" + encodeURIComponent(school);
+    fetch(url).catch(function() {});
+  } catch(e3) {}
 }
 
-// ─ DASHBOARD ─
-function showDash(){
-  document.getElementById("auth-section").style.display="none";
-  document.getElementById("g-dash").classList.add("shown");
-  document.getElementById("g-mnav").style.display="flex";
-  var t=G.teacher;
-  var init=(t.name||"G").replace(/^(drs|dra|ir)\.\s*/i,"").charAt(0).toUpperCase();
-  document.getElementById("g-avatar").innerText=init;
-  document.getElementById("g-name").innerText=t.name;
-  document.getElementById("g-school").innerText=t.school||"SMK InfoDesk234";
-  document.getElementById("g-subject").innerText=t.subject||"";
-  document.getElementById("g-school-head").innerText=(t.school||"SMK InfoDesk234")+" | Pembimbing: "+t.name;
-  renderStudents(); renderJurnals(); renderModules(); renderStats();
+function doLogout() {
+  if (!confirm("Keluar dari sesi ini?")) return;
+  localStorage.removeItem(KEY_C);
+  location.reload();
 }
 
-// ─ TAB SWITCH ─
-var GTABS=["pkl","jurnal","modul","soal","ai"];
-function gSwitch(id){
-  GTABS.forEach(function(t){
-    document.getElementById("tc-"+t).classList.toggle("active",t===id);
-    var n=document.getElementById("nv-"+t); if(n) n.classList.toggle("active",t===id);
-    var m=document.getElementById("mn-"+t); if(m) m.classList.toggle("active",t===id);
+// ── SHOW DASHBOARD ──
+function showDash() {
+  document.getElementById("auth-section").style.display = "none";
+  document.getElementById("g-dash").className = "on";
+  document.getElementById("g-mn").style.display = "flex";
+  var t = G_teacher;
+  var init = (t.name || "G").replace(/^(drs|dra|ir)\.\s*/i, "").charAt(0).toUpperCase();
+  document.getElementById("g-av").textContent   = init;
+  document.getElementById("g-name").textContent  = t.name || "Guru";
+  document.getElementById("g-school").textContent = t.school || "SMK InfoDesk234";
+  document.getElementById("g-subj").textContent   = t.subject || "";
+  document.getElementById("g-school-h").textContent = (t.school || "SMK InfoDesk234") + " | Pembimbing: " + t.name;
+  renderStudents();
+  renderJurnals();
+  renderModules();
+}
+
+// ── DASHBOARD TAB SWITCH ──
+var TABS = ["pkl","jurnal","modul","soal","ai"];
+function gSwitch(id) {
+  TABS.forEach(function(t) {
+    var tc = document.getElementById("tc-" + t);
+    var nv = document.getElementById("nv-" + t);
+    var mn = document.getElementById("mn-" + t);
+    if (tc) tc.className = "tc" + (t === id ? " on" : "");
+    if (nv) nv.className = "ni" + (t === id ? " on" : "");
+    if (mn) mn.className = "mb" + (t === id ? " on" : "");
   });
 }
 
-// ─ STUDENTS ─
-function renderStudents(){
-  var tb=document.getElementById("pkl-tbody");
-  if(!G.students.length){
-    tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px">Belum ada siswa. Klik "Tambah Siswa".</td></tr>';
-    return;
+// ── STUDENTS ──
+function renderStudents() {
+  var tb = document.getElementById("pkl-tb");
+  if (!G_students.length) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">Belum ada siswa.</td></tr>';
+    return renderStats();
   }
-  tb.innerHTML=G.students.map(function(s,i){
-    return '<tr><td style="color:var(--text-muted)">'+(i+1)+'</td><td style="font-weight:600">'+s.name+'</td><td>'+(s.kelas||"-")+'</td><td>'+(s.dudi||"-")+'</td><td>'+(s.supervisor||s.owner||"-")+'</td><td>'+(s.wa?'<a href="https://wa.me/'+s.wa.replace(/\D/g,"")+'" target="_blank" style="color:var(--accent-cyan)">'+s.wa+'</a>':"-")+'</td><td><span class="badge bg">Aktif</span></td></tr>';
-  }).join("");
+  var rows = "";
+  G_students.forEach(function(s, i) {
+    var waLink = s.wa ? '<a href="https://wa.me/' + s.wa.replace(/[^0-9]/g,"") + '" target="_blank" style="color:var(--cyan)">' + s.wa + '</a>' : "-";
+    rows += "<tr><td style='color:var(--muted)'>" + (i+1) + "</td><td style='font-weight:600'>" + s.name + "</td><td>" + (s.kelas||"-") + "</td><td>" + (s.dudi||"-") + "</td><td>" + (s.supervisor||s.owner||"-") + "</td><td>" + waLink + "</td><td><span class='badge bg2'>Aktif</span></td></tr>";
+  });
+  tb.innerHTML = rows;
   renderStats();
 }
 
-function renderStats(){
-  var dudis=[...new Set(G.students.map(function(s){return s.dudi;}))].length;
-  document.getElementById("pkl-stats").innerHTML=
-    '<div class="stat-card s-ruby"><div class="stat-val">'+G.students.length+'</div><div class="stat-label">Total Siswa PKL</div><i class="fa fa-users stat-icon"></i></div>'+
-    '<div class="stat-card s-green"><div class="stat-val">'+G.students.length+'</div><div class="stat-label">Status Aktif</div><i class="fa fa-check-circle stat-icon"></i></div>'+
-    '<div class="stat-card s-cyan"><div class="stat-val">'+G.journals.length+'</div><div class="stat-label">Jurnal Masuk</div><i class="fa fa-book-open stat-icon"></i></div>'+
-    '<div class="stat-card s-gold"><div class="stat-val">'+dudis+'</div><div class="stat-label">DUDI/Bengkel</div><i class="fa fa-industry stat-icon"></i></div>';
+function renderStats() {
+  var dudis = {};
+  G_students.forEach(function(s) { if (s.dudi) dudis[s.dudi] = 1; });
+  document.getElementById("pkl-stats").innerHTML =
+    "<div class='sc sr'><div class='sc-v'>" + G_students.length + "</div><div class='sc-l'>Total Siswa PKL</div><i class='fa fa-users sc-i'></i></div>" +
+    "<div class='sc sn'><div class='sc-v'>" + G_students.length + "</div><div class='sc-l'>Status Aktif</div><i class='fa fa-check-circle sc-i'></i></div>" +
+    "<div class='sc sg2'><div class='sc-v'>" + G_journals.length + "</div><div class='sc-l'>Jurnal Masuk</div><i class='fa fa-book-open sc-i'></i></div>" +
+    "<div class='sc so'><div class='sc-v'>" + Object.keys(dudis).length + "</div><div class='sc-l'>DUDI/Bengkel</div><i class='fa fa-industry sc-i'></i></div>";
 }
 
-function toggleAddForm(){
-  var f=document.getElementById("add-form");
-  f.style.display = f.style.display==="none"||f.style.display===""?"block":"none";
+function toggleAF() {
+  var f = document.getElementById("add-form");
+  f.style.display = (f.style.display === "block") ? "none" : "block";
 }
 
-function addStudent(){
-  var name =document.getElementById("ns-name").value.trim();
-  var kelas=document.getElementById("ns-class").value;
-  var dudi =document.getElementById("ns-dudi").value.trim();
-  var owner=document.getElementById("ns-owner").value.trim();
-  var wa   =document.getElementById("ns-wa").value.trim();
-  var addr =document.getElementById("ns-addr").value.trim();
-  if(!name||!dudi){ toast("Data Kurang","Isi nama siswa dan bengkel.","err"); return; }
-  var entry={id:Date.now(),name:name,kelas:kelas,dudi:dudi,owner:owner,wa:wa,addr:addr,supervisor:owner};
-  G.students.push(entry);
-  localStorage.setItem(KS,JSON.stringify(G.students));
-  renderStudents(); toggleAddForm();
-  ["ns-name","ns-dudi","ns-owner","ns-wa","ns-addr"].forEach(function(id){document.getElementById(id).value="";});
-  toast("Ditambahkan",name+" berhasil ditambahkan ke daftar PKL.");
-  try{
-    var p=new URLSearchParams({action:"addPlacement",siswa:name,bengkel:dudi,kelas:kelas,pemilik:owner,wa:wa,alamat:addr,pembimbing:G.teacher.name});
-    fetch(GAS+"?"+p.toString()).catch(function(){});
-  }catch(ex){}
+function addStu() {
+  var name  = (document.getElementById("ns-n").value || "").trim();
+  var kelas = document.getElementById("ns-k").value;
+  var dudi  = (document.getElementById("ns-d").value || "").trim();
+  var owner = (document.getElementById("ns-o").value || "").trim();
+  var wa    = (document.getElementById("ns-w").value || "").trim();
+  var addr  = (document.getElementById("ns-a").value || "").trim();
+  if (!name || !dudi) { toast("Data Kurang", "Isi nama siswa dan bengkel.", "err"); return; }
+  G_students.push({ id: Date.now(), name: name, kelas: kelas, dudi: dudi, owner: owner, supervisor: owner, wa: wa, addr: addr });
+  localStorage.setItem(KEY_S, JSON.stringify(G_students));
+  renderStudents(); toggleAF();
+  ["ns-n","ns-d","ns-o","ns-w","ns-a"].forEach(function(id2) { document.getElementById(id2).value = ""; });
+  toast("Ditambahkan", name + " berhasil ditambahkan ke daftar PKL.");
+  try {
+    var p = "action=addPlacement&siswa=" + encodeURIComponent(name) + "&bengkel=" + encodeURIComponent(dudi) + "&kelas=" + encodeURIComponent(kelas) + "&pemilik=" + encodeURIComponent(owner) + "&wa=" + encodeURIComponent(wa) + "&alamat=" + encodeURIComponent(addr) + "&pembimbing=" + encodeURIComponent(G_teacher.name);
+    fetch(GAS_URL + "?" + p).catch(function() {});
+  } catch(e4) {}
 }
 
-function exExcel(){
-  if(!G.students.length){toast("Kosong","Belum ada data.","err");return;}
-  var html="<table><tr><th>No</th><th>Nama</th><th>Kelas</th><th>DUDI</th><th>Penyelia</th><th>WA</th><th>Alamat</th></tr>";
-  G.students.forEach(function(s,i){html+="<tr><td>"+(i+1)+"</td><td>"+s.name+"</td><td>"+(s.kelas||"")+"</td><td>"+s.dudi+"</td><td>"+(s.supervisor||"")+"</td><td>"+(s.wa||"")+"</td><td>"+(s.addr||"")+"</td></tr>";});
-  html+="</table>";
-  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"application/vnd.ms-excel"}));a.download="DataPKL_InfoDesk234.xls";a.click();
-  toast("Ekspor","File Excel berhasil diunduh.");
-}
-
-// ─ JURNAL ─
-function renderJurnals(){
-  var f=document.getElementById("jurnal-feed");
-  if(!G.journals.length){f.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:28px;">Belum ada jurnal masuk.</p>';return;}
-  f.innerHTML=[...G.journals].reverse().map(function(j){
-    return '<div class="j-item"><div class="j-head"><div><div class="j-name"><i class="fa fa-user-graduate" style="color:var(--accent-ruby)"></i> '+(j.studentName||j.name||"Siswa")+'</div><div class="j-date">'+j.date+' | '+(j.dudi||"DUDI")+'</div></div><span class="badge '+(j.approved?"bg":"bo")+'">'+(j.approved?"Disetujui":"Menunggu")+'</span></div><div class="j-body">'+j.content+'</div><div class="j-actions">'+(!j.approved?'<button class="btn-ok" style="background:rgba(0,230,118,0.15);color:var(--accent-green);" onclick="approveJ('+j.id+')"><i class="fa fa-check"></i> Setujui</button>':'')+'<button class="btn-ok" style="background:rgba(0,245,255,0.1);color:var(--accent-cyan);" onclick="replyWA('+j.id+')"><i class="fa-brands fa-whatsapp"></i> Balas WA</button></div></div>';
-  }).join("");
-}
-
-function approveJ(id){
-  var j=G.journals.find(function(x){return x.id==id;});
-  if(j){j.approved=true;localStorage.setItem(KJ,JSON.stringify(G.journals));renderJurnals();toast("Disetujui","Jurnal berhasil diverifikasi.");}
-}
-
-function replyWA(id){
-  var j=G.journals.find(function(x){return x.id==id;});
-  if(!j) return;
-  var msg=encodeURIComponent("Halo "+j.studentName+", jurnal Anda "+j.date+" sudah diterima. Semangat terus!");
-  window.open("https://wa.me/?text="+msg,"_blank");
-}
-
-function importSync(){
-  var raw=document.getElementById("sync-in").value.trim();
-  if(!raw){toast("Kosong","Paste kode sinkronisasi siswa.","err");return;}
-  try{
-    var mk="JURNAL_SYNC:";
-    var idx=raw.indexOf(mk);
-    if(idx===-1) throw new Error("Marker tidak ada");
-    var b64=raw.slice(idx+mk.length).replace(/\s/g,"");
-    var d=JSON.parse(atob(b64));
-    if(!d.studentName||!d.content) throw new Error("Format tidak valid");
-    if(G.journals.find(function(x){return x.id===d.id;})){toast("Sudah Ada","Jurnal ini sudah diimpor.","warn");return;}
-    G.journals.push(Object.assign({},d,{approved:false}));
-    localStorage.setItem(KJ,JSON.stringify(G.journals));
-    renderJurnals(); renderStats();
-    document.getElementById("sync-in").value="";
-    toast("Impor Sukses","Jurnal "+d.studentName+" berhasil ditambahkan!");
-  }catch(ex){toast("Gagal","Kode tidak valid atau rusak.","err");}
-}
-
-function exJurnalWord(){
-  if(!G.journals.length){toast("Kosong","Belum ada jurnal.","err");return;}
-  var html="<html><body><h2>Laporan Jurnal PKL - "+(G.teacher&&G.teacher.school||"SMK InfoDesk234")+"</h2>";
-  G.journals.forEach(function(j,i){html+="<h3>"+(i+1)+". "+(j.studentName||"Siswa")+" ("+j.date+")</h3><p>DUDI: "+(j.dudi||"-")+"</p><p>"+j.content+"</p><hr>";});
-  html+="</body></html>";
-  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"application/msword"}));a.download="Jurnal_PKL.doc";a.click();
-  toast("Ekspor","File Word berhasil diunduh.");
-}
-
-function clearJurnals(){
-  if(!confirm("Hapus semua jurnal?")) return;
-  G.journals=[]; localStorage.setItem(KJ,"[]"); renderJurnals(); renderStats();
-  toast("Bersih","Semua jurnal dihapus.");
-}
-
-// ─ MODULES ─
-function defModules(){
-  return [
-    {id:1,kelas:"Kelas X",kode:"M.10.1",title:"K3 & Alat Ukur Otomotif",desc:"Keselamatan kerja bengkel, jangka sorong, mikrometer luar, multimeter.",size:"4.2 MB",link:""},
-    {id:2,kelas:"Kelas X",kode:"M.10.2",title:"Gambar Teknik Proyeksi",desc:"Proyeksi ISO, gambar potongan, orthogonal eropa/amerika.",size:"5.8 MB",link:""},
-    {id:3,kelas:"Kelas XI",kode:"M.11.1",title:"Sistem EFI & Sensor Engine",desc:"MAP, IAT, ECT, CKP, O2 sensor, actuator, scan OBD-II.",size:"8.1 MB",link:""},
-    {id:4,kelas:"Kelas XI",kode:"M.11.2",title:"Sistem Rem & Kemudi",desc:"Rem cakram, ABS, power steering, spooring, balancing.",size:"6.3 MB",link:""},
-    {id:5,kelas:"Kelas XII",kode:"M.12.1",title:"Diagnosa Kendaraan & Scanner",desc:"DTC OBD-II, wiring diagram, scanner profesional Autel/Launch.",size:"7.5 MB",link:""},
-    {id:6,kelas:"Kelas XII",kode:"M.12.2",title:"Panduan Laporan PKL & Sidang",desc:"Format laporan magang, rubrik penilaian DUDI, ujian sidang.",size:"3.1 MB",link:""},
-  ];
-}
-
-function renderModules(){
-  document.getElementById("mod-grid").innerHTML=G.modules.map(function(m){
-    return '<div class="mod-card"><div class="mod-kelas"><i class="fa fa-graduation-cap"></i> '+m.kelas+' - '+m.kode+'</div><div class="mod-title">'+m.title+'</div><div class="mod-desc">'+m.desc+'</div><div class="mod-foot"><span><i class="fa fa-file"></i> '+m.size+'</span>'+(m.link?'<button class="btn-act bp" onclick="window.open(''+m.link+'','_blank')" style="padding:5px 12px;font-size:11px;"><i class="fa fa-download"></i> Unduh</button>':'<span style="color:var(--text-muted);font-size:11px;"><i class="fa fa-lock"></i> Hubungi Admin</span>')+'</div></div>';
-  }).join("");
-}
-
-function addModul(){
-  var t=prompt("Judul modul:"); if(!t) return;
-  var l=prompt("Link (kosongkan jika terkunci):") || "";
-  G.modules.push({id:Date.now(),kelas:"Kelas XI",kode:"BARU",title:t,desc:"Modul baru.",size:"-",link:l});
-  renderModules(); toast("Ditambahkan",t+" berhasil ditambahkan.");
-}
-
-// ─ BANK SOAL ─
-var soalDB={
-  "rem":[ {q:"Komponen yang mengubah tekanan hidrolis menjadi gaya mekanis pada rem cakram?",o:["A. Master Silinder","B. Kaliper rem","C. Booster rem","D. Proportioning valve"],a:1},
-    {q:"Bleeding rem bertujuan untuk?",o:["A. Mengganti minyak rem","B. Membuang udara dari sistem rem","C. Menyetel celah rem","D. Membersihkan kaliper"],a:1},
-    {q:"Sistem ABS mencegah?",o:["A. Ban terlalu cepat direm","B. Ban terkunci saat pengereman keras","C. Rem terlalu panas","D. Minyak rem habis"],a:1},
-    {q:"Tebal minimum pad rem cakram?",o:["A. 1 mm","B. 3 mm","C. 5 mm","D. 8 mm"],a:1},
-    {q:"Proportioning valve berfungsi?",o:["A. Mengatur tekanan ke rem belakang","B. Meningkatkan tekanan rem depan","C. Menghubungkan master silinder","D. Mengisi minyak rem"],a:0}],
-  "tune":[ {q:"Celah busi mesin bensin modern idealnya?",o:["A. 0.2-0.3 mm","B. 0.7-1.0 mm","C. 1.5-2.0 mm","D. 2.5-3.0 mm"],a:1},
-    {q:"Putaran stasioner (idle) mesin EFI modern?",o:["A. 400-500 rpm","B. 700-850 rpm","C. 1200-1500 rpm","D. 2000 rpm"],a:1},
-    {q:"Penggantian oli mesin dilakukan setiap?",o:["A. 1000 km","B. 5000-10000 km","C. 25000 km","D. 50000 km"],a:1}],
-  "efi":[ {q:"Sensor yang mengukur massa udara masuk mesin EFI?",o:["A. Sensor ECT","B. Sensor MAF/MAP","C. Sensor O2","D. Sensor TPS"],a:1},
-    {q:"Tekanan bahan bakar sistem EFI berkisar?",o:["A. 0.5-1 bar","B. 2-4 bar","C. 6-8 bar","D. 10-15 bar"],a:1},
-    {q:"Kode DTC P0115 menandakan kerusakan pada?",o:["A. Sensor MAP","B. Sensor ECT (suhu air pendingin)","C. Sensor O2","D. Injector"],a:1}],
-};
-
-var lastSoal=[];
-function genSoal(){
-  var kw=document.getElementById("sk-kw").value.trim().toLowerCase();
-  var jml=parseInt(document.getElementById("sk-jml").value);
-  if(!kw){toast("Kosong","Masukkan kata kunci materi.","err");return;}
-  var pool=[];
-  Object.keys(soalDB).forEach(function(k){
-    if(kw.includes(k)||k.includes(kw.split(" ")[0])) pool=pool.concat(soalDB[k]);
+function exExcel() {
+  if (!G_students.length) { toast("Kosong", "Belum ada data.", "err"); return; }
+  var h = "<table><tr><th>No</th><th>Nama</th><th>Kelas</th><th>DUDI</th><th>Penyelia</th><th>WA</th><th>Alamat</th></tr>";
+  G_students.forEach(function(s, i) {
+    h += "<tr><td>" + (i+1) + "</td><td>" + s.name + "</td><td>" + (s.kelas||"") + "</td><td>" + (s.dudi||"") + "</td><td>" + (s.supervisor||"") + "</td><td>" + (s.wa||"") + "</td><td>" + (s.addr||"") + "</td></tr>";
   });
-  if(!pool.length) pool=genGeneric(kw);
-  pool=pool.sort(function(){return Math.random()-0.5;}).slice(0,jml);
-  lastSoal=pool;
-  var out=document.getElementById("soal-out");
-  out.innerHTML='<div class="card"><div class="card-title"><i class="fa fa-list-check" style="color:var(--accent-gold)"></i> Soal: '+kw.toUpperCase()+' ('+pool.length+' butir)</div>'+
-    pool.map(function(s,i){
-      return '<div class="soal-item"><div class="soal-num">Soal '+(i+1)+'</div><div class="soal-q">'+s.q+'</div>'+
-        (s.o?'<ul class="soal-opts">'+s.o.map(function(o,j){return '<li class="'+(j===s.a?"ans":"")+'">'+o+'</li>';}).join("")+'</ul>':'')+'</div>';
-    }).join("")+'</div>';
-  toast("Generate Selesai",pool.length+" soal berhasil dibuat untuk '"+kw+"'.");
+  h += "</table>";
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([h], {type:"application/vnd.ms-excel"}));
+  a.download = "DataPKL_InfoDesk234.xls"; a.click();
+  toast("Ekspor", "File Excel berhasil diunduh.");
 }
 
-function genGeneric(kw){
+// ── JOURNALS ──
+function renderJurnals() {
+  var f = document.getElementById("jur-feed");
+  if (!G_journals.length) {
+    f.innerHTML = '<p style="color:var(--muted);text-align:center;padding:24px">Belum ada jurnal masuk.</p>';
+    return;
+  }
+  var h = "";
+  var rev = G_journals.slice().reverse();
+  rev.forEach(function(j) {
+    h += "<div class='ji'><div class='jh'><div><div class='jn'><i class='fa fa-user-graduate' style='color:var(--ruby)'></i> " + (j.studentName||"Siswa") + "</div><div class='jd'>" + j.date + " | " + (j.dudi||"DUDI") + "</div></div><span class='badge " + (j.approved ? "bg2" : "bo2") + "'>" + (j.approved ? "Disetujui" : "Menunggu") + "</span></div><div class='jb'>" + j.content + "</div><div class='ja'>" + (!j.approved ? "<button class='bsm' style='background:rgba(0,230,118,.15);color:var(--green)' onclick='apvJ(" + j.id + ")'><i class='fa fa-check'></i> Setujui</button>" : "") + "<button class='bsm' style='background:rgba(0,245,255,.1);color:var(--cyan)' onclick='replyWA(" + j.id + ")'><i class='fa-brands fa-whatsapp'></i> Balas WA</button></div></div>";
+  });
+  f.innerHTML = h;
+}
+
+function apvJ(id) {
+  for (var i = 0; i < G_journals.length; i++) {
+    if (G_journals[i].id == id) { G_journals[i].approved = true; break; }
+  }
+  localStorage.setItem(KEY_J, JSON.stringify(G_journals));
+  renderJurnals(); toast("Disetujui", "Jurnal berhasil diverifikasi.");
+}
+
+function replyWA(id) {
+  var j = null;
+  for (var i = 0; i < G_journals.length; i++) { if (G_journals[i].id == id) { j = G_journals[i]; break; } }
+  if (!j) return;
+  var msg = "Halo " + j.studentName + ", jurnal Anda tanggal " + j.date + " sudah diterima. Semangat terus!";
+  window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+}
+
+function importSync() {
+  var raw = (document.getElementById("sync-in").value || "").trim();
+  if (!raw) { toast("Kosong", "Paste kode sinkronisasi siswa.", "err"); return; }
+  try {
+    var mk = "JURNAL_SYNC:";
+    var idx = raw.indexOf(mk);
+    if (idx === -1) throw new Error("Marker tidak ditemukan");
+    var b64 = raw.slice(idx + mk.length).replace(/\s/g, "");
+    var d = JSON.parse(atob(b64));
+    if (!d.studentName || !d.content) throw new Error("Format tidak valid");
+    var exists = false;
+    for (var i = 0; i < G_journals.length; i++) { if (G_journals[i].id === d.id) { exists = true; break; } }
+    if (exists) { toast("Sudah Ada", "Jurnal ini sudah diimpor.", "warn"); return; }
+    d.approved = false;
+    G_journals.push(d);
+    localStorage.setItem(KEY_J, JSON.stringify(G_journals));
+    renderJurnals(); renderStats();
+    document.getElementById("sync-in").value = "";
+    toast("Impor Sukses", "Jurnal " + d.studentName + " berhasil ditambahkan!");
+  } catch(e5) { toast("Gagal Impor", "Kode tidak valid atau rusak.", "err"); }
+}
+
+function exJurWord() {
+  if (!G_journals.length) { toast("Kosong", "Belum ada jurnal.", "err"); return; }
+  var h = "<html><body><h2>Laporan Jurnal PKL - " + (G_teacher.school||"SMK InfoDesk234") + "</h2>";
+  G_journals.forEach(function(j, i) {
+    h += "<h3>" + (i+1) + ". " + (j.studentName||"Siswa") + " (" + j.date + ")</h3><p>DUDI: " + (j.dudi||"-") + "</p><p>" + j.content + "</p><hr>";
+  });
+  h += "</body></html>";
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([h], {type:"application/msword"}));
+  a.download = "Jurnal_PKL.doc"; a.click();
+  toast("Ekspor", "File Word berhasil diunduh.");
+}
+
+function clearJur() {
+  if (!confirm("Hapus semua jurnal?")) return;
+  G_journals = []; localStorage.setItem(KEY_J, "[]"); renderJurnals(); renderStats();
+  toast("Bersih", "Semua jurnal dihapus.");
+}
+
+// ── MODULES ──
+function getDefaultModules() {
   return [
-    {q:"Jelaskan pengertian "+kw+" pada kendaraan bermotor!",o:["A. Mengubah energi mekanik","B. Mengendalikan arah kendaraan","C. Sistem transmisi tenaga","D. Rangkaian elektronik"],a:0},
-    {q:"Fungsi utama "+kw+" pada kendaraan adalah?",o:["A. Meningkatkan efisiensi BBM","B. Menjaga keselamatan berkendara","C. Mengurangi emisi","D. Semua jawaban benar"],a:3},
-    {q:"Kerusakan "+kw+" dapat menyebabkan?",o:["A. Mesin mati mendadak","B. Performa menurun","C. Konsumsi BBM meningkat","D. Tergantung komponen yang rusak"],a:3},
-    {q:"Alat yang digunakan untuk memeriksa "+kw+"?",o:["A. Multimeter","B. Scanner OBD","C. Tachometer","D. Sesuai spesifikasi kendaraan"],a:3},
-    {q:"Perawatan berkala "+kw+" dilakukan setiap?",o:["A. 5.000 km","B. 10.000 km","C. 20.000 km","D. Sesuai buku manual"],a:3}
+    { id:1, kelas:"Kelas X",   kode:"M.10.1", title:"K3 dan Alat Ukur Otomotif",    desc:"K3 bengkel, jangka sorong, mikrometer, multimeter.", size:"4.2 MB", link:"" },
+    { id:2, kelas:"Kelas X",   kode:"M.10.2", title:"Gambar Teknik Proyeksi",        desc:"Proyeksi ISO, gambar potongan, orthogonal.",            size:"5.8 MB", link:"" },
+    { id:3, kelas:"Kelas XI",  kode:"M.11.1", title:"Sistem EFI dan Sensor Engine",  desc:"MAP, IAT, ECT, CKP, O2 sensor, OBD-II scan.",          size:"8.1 MB", link:"" },
+    { id:4, kelas:"Kelas XI",  kode:"M.11.2", title:"Sistem Rem dan Kemudi",          desc:"Rem cakram, ABS, power steering, balancing.",           size:"6.3 MB", link:"" },
+    { id:5, kelas:"Kelas XII", kode:"M.12.1", title:"Diagnosa Kendaraan dan Scanner", desc:"DTC OBD-II, wiring diagram, scanner Autel/Launch.",     size:"7.5 MB", link:"" },
+    { id:6, kelas:"Kelas XII", kode:"M.12.2", title:"Panduan Laporan PKL dan Sidang", desc:"Format laporan, rubrik DUDI, ujian sidang.",            size:"3.1 MB", link:"" }
   ];
 }
 
-function exSoalWord(){
-  if(!lastSoal.length){toast("Kosong","Generate soal dulu.","err");return;}
-  var html="<html><body><h2>Lembar Soal: "+document.getElementById("sk-kw").value+"</h2><ol>";
-  lastSoal.forEach(function(s){html+="<li><p>"+s.q+"</p>"+(s.o?"<ol type='A'>"+s.o.map(function(o){return "<li>"+o.slice(2)+"</li>";}).join("")+"</ol>":"")+"</li><br>";});
-  html+="</ol></body></html>";
-  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"application/msword"}));a.download="Soal_"+Date.now()+".doc";a.click();
-  toast("Ekspor","Lembar soal diunduh.");
+function renderModules() {
+  var h = "";
+  G_modules.forEach(function(m) {
+    h += "<div class='mc'><div class='mk'><i class='fa fa-graduation-cap'></i> " + m.kelas + " - " + m.kode + "</div><div class='mt2'>" + m.title + "</div><div class='md'>" + m.desc + "</div><div class='mf'><span><i class='fa fa-file'></i> " + m.size + "</span>" + (m.link ? "<button class='ba bp' onclick="window.open('" + m.link + "','_blank')" style='padding:5px 12px;font-size:11px'><i class='fa fa-download'></i> Unduh</button>" : "<span style='color:var(--muted);font-size:11px'><i class='fa fa-lock'></i> Hubungi Admin</span>") + "</div></div>";
+  });
+  document.getElementById("mod-grid").innerHTML = h;
 }
 
-// ─ AI CHAT ─
-var aiDB={
-  rpp:"RPP untuk TKR mencakup: Tujuan Pembelajaran (CP/KKNI), Kegiatan (praktik 60%), Penilaian (kognitif, psikomotor, afektif). Durasi praktik minimal 2x45 menit per pertemuan.",
-  modul:"Modul ajar TKR yang baik: KI/KD, peta konsep, teori singkat, jobsheet praktik, lembar kerja, rubrik penilaian. Format digital ideal PDF atau HTML interaktif.",
-  pkl:"PKL minimal 6 bulan (kelas XI). Wajib: jurnal harian, laporan akhir, ujian sidang. Monitoring guru pamong minimal 2x/bulan. Penilaian oleh DUDI dan sekolah.",
-  tkr:"TKR mencakup: sistem engine, transmisi, kemudi, rem, kelistrikan, EFI. Kurikulum Merdeka berbasis project-based learning dan teaching factory.",
-  kurikulum:"Kurikulum Merdeka SMK: berbasis Capaian Pembelajaran (CP), P5 (Projek Penguatan Profil Pelajar Pancasila), integrasi industri, dan asesmen berbasis kompetensi.",
-  default:"Saya siap membantu! Tanya tentang: RPP, modul ajar, bank soal, metode pembelajaran, kurikulum Merdeka, PKL, penilaian, atau materi TKR/TSM lainnya."
+function addModul() {
+  var t = prompt("Judul modul baru:");
+  if (!t) return;
+  var l = prompt("Link Google Drive (kosongkan jika belum ada):") || "";
+  G_modules.push({ id: Date.now(), kelas:"Kelas XI", kode:"BARU", title: t, desc:"Modul baru.", size:"-", link: l });
+  renderModules();
+  toast("Ditambahkan", t + " berhasil ditambahkan.");
+}
+
+// ── BANK SOAL ──
+var soalBase = {
+  rem: [
+    { q:"Komponen yang mengubah tekanan hidrolis menjadi gaya mekanis pada rem cakram?", o:["A. Master Silinder","B. Kaliper rem","C. Booster rem","D. Proportioning valve"], a:1 },
+    { q:"Bleeding rem bertujuan untuk?", o:["A. Mengganti minyak rem","B. Membuang udara dari sistem rem","C. Menyetel celah rem","D. Membersihkan kaliper"], a:1 },
+    { q:"Sistem ABS mencegah?", o:["A. Ban terlalu cepat direm","B. Ban terkunci saat pengereman keras","C. Rem terlalu panas","D. Minyak rem habis"], a:1 },
+    { q:"Tebal minimum pad rem cakram umumnya?", o:["A. 1 mm","B. 3 mm","C. 5 mm","D. 8 mm"], a:1 }
+  ],
+  efi: [
+    { q:"Sensor yang mengukur massa udara masuk mesin EFI?", o:["A. Sensor ECT","B. Sensor MAF/MAP","C. Sensor O2","D. Sensor TPS"], a:1 },
+    { q:"Tekanan bahan bakar sistem EFI umumnya berkisar?", o:["A. 0.5-1 bar","B. 2-4 bar","C. 6-8 bar","D. 10-15 bar"], a:1 },
+    { q:"Kode DTC P0115 menandakan kerusakan pada?", o:["A. Sensor MAP","B. Sensor ECT (suhu air)","C. Sensor O2","D. Injector"], a:1 }
+  ],
+  tune: [
+    { q:"Celah busi mesin bensin modern idealnya?", o:["A. 0.2-0.3 mm","B. 0.7-1.0 mm","C. 1.5-2.0 mm","D. 2.5-3.0 mm"], a:1 },
+    { q:"Putaran stasioner mesin EFI modern?", o:["A. 400-500 rpm","B. 700-850 rpm","C. 1200-1500 rpm","D. 2000 rpm"], a:1 }
+  ]
+};
+var lastSoal = [];
+
+function genSoal() {
+  var kw  = (document.getElementById("sk-kw").value || "").trim().toLowerCase();
+  var jml = parseInt(document.getElementById("sk-jml").value) || 10;
+  if (!kw) { toast("Kosong", "Masukkan kata kunci materi.", "err"); return; }
+  var pool = [];
+  var keys = Object.keys(soalBase);
+  keys.forEach(function(k) {
+    if (kw.indexOf(k) >= 0 || k.indexOf(kw.split(" ")[0]) >= 0) {
+      pool = pool.concat(soalBase[k]);
+    }
+  });
+  if (!pool.length) {
+    pool = [
+      { q:"Jelaskan pengertian " + kw + " pada kendaraan?", o:["A. Sistem tenaga","B. Sistem pengendalian","C. Sistem kelistrikan","D. Sistem transmisi"], a:0 },
+      { q:"Fungsi utama " + kw + " pada kendaraan?", o:["A. Efisiensi BBM","B. Keselamatan berkendara","C. Mengurangi emisi","D. Semua benar"], a:3 },
+      { q:"Alat yang digunakan memeriksa " + kw + "?", o:["A. Multimeter","B. Scanner OBD","C. Tachometer","D. Sesuai spek kendaraan"], a:3 },
+      { q:"Perawatan berkala " + kw + " dilakukan setiap?", o:["A. 5.000 km","B. 10.000 km","C. 20.000 km","D. Sesuai buku manual"], a:3 }
+    ];
+  }
+  pool.sort(function() { return Math.random() - 0.5; });
+  pool = pool.slice(0, jml);
+  lastSoal = pool;
+  var h = "<div class='cd'><div class='cd-t'><i class='fa fa-list-check' style='color:var(--gold)'></i> Soal: " + kw.toUpperCase() + " (" + pool.length + " butir)</div>";
+  pool.forEach(function(s, i) {
+    h += "<div class='si'><div class='sn2'>Soal " + (i+1) + "</div><div class='sq'>" + s.q + "</div>";
+    if (s.o) {
+      h += "<ul class='sopts'>";
+      s.o.forEach(function(o, j) {
+        h += "<li" + (j === s.a ? " class='ans'" : "") + ">" + o + "</li>";
+      });
+      h += "</ul>";
+    }
+    h += "</div>";
+  });
+  h += "</div>";
+  document.getElementById("soal-out").innerHTML = h;
+  toast("Generate Selesai", pool.length + " soal berhasil dibuat.");
+}
+
+function exSoalWord() {
+  if (!lastSoal.length) { toast("Kosong", "Generate soal dulu.", "err"); return; }
+  var h = "<html><body><h2>Lembar Soal: " + document.getElementById("sk-kw").value + "</h2><ol>";
+  lastSoal.forEach(function(s) {
+    h += "<li><p>" + s.q + "</p>";
+    if (s.o) { h += "<ol type='A'>"; s.o.forEach(function(o) { h += "<li>" + o.slice(3) + "</li>"; }); h += "</ol>"; }
+    h += "</li><br>";
+  });
+  h += "</ol></body></html>";
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([h], {type:"application/msword"}));
+  a.download = "Soal_" + Date.now() + ".doc"; a.click();
+  toast("Ekspor", "Lembar soal diunduh.");
+}
+
+// ── AI CHAT ──
+var aiKB = {
+  rpp:    "RPP Kurikulum Merdeka TKR: Tujuan (CP), Kegiatan (praktik 60%), Asesmen (kognitif + psikomotor + afektif). Gunakan model PBL (Project Based Learning).",
+  modul:  "Modul ajar TKR ideal: CP/KD, peta konsep, teori ringkas, jobsheet praktik, rubrik penilaian. Format PDF atau HTML interaktif.",
+  pkl:    "PKL minimal 6 bulan. Wajib: jurnal harian, laporan akhir, ujian sidang. Monitoring guru pamong minimal 2x/bulan.",
+  tkr:    "TKR mencakup: engine, transmisi, kemudi, rem, kelistrikan, EFI. Kurikulum Merdeka berbasis project-based learning.",
+  kurikulum: "Kurikulum Merdeka SMK: Capaian Pembelajaran (CP), P5, integrasi industri, asesmen berbasis kompetensi.",
+  soal:   "Buat soal HOTS level C3-C6 sesuai taksonomi Bloom. Untuk TKR: fokus pada diagnosis, troubleshooting, dan prosedur kerja."
 };
 
-function sendChat(){
-  var inp=document.getElementById("chat-in");
-  var msg=inp.value.trim(); if(!msg) return;
-  inp.value="";
-  var box=document.getElementById("chat-box");
-  box.innerHTML+='<div class="chat-msg user"><div class="chat-bubble">'+msg+'</div></div>';
-  setTimeout(function(){
-    var low=msg.toLowerCase(), rep=aiDB.default;
-    Object.keys(aiDB).forEach(function(k){if(low.includes(k)) rep=aiDB[k];});
-    box.innerHTML+='<div class="chat-msg bot"><div class="chat-bubble"><b>AI Kurikulum</b><br>'+rep+'</div></div>';
-    box.scrollTop=box.scrollHeight;
-  },600);
-  box.scrollTop=box.scrollHeight;
+function sendChat() {
+  var inp = document.getElementById("chat-in");
+  var msg = (inp.value || "").trim();
+  if (!msg) return;
+  inp.value = "";
+  var box = document.getElementById("chat-box");
+  box.innerHTML += "<div class='cm user'><div class='cb2'>" + msg + "</div></div>";
+  setTimeout(function() {
+    var low = msg.toLowerCase();
+    var rep = "Saya siap membantu! Tanya tentang: RPP, modul ajar, bank soal, metode pembelajaran, kurikulum Merdeka, PKL, atau materi TKR/TSM.";
+    Object.keys(aiKB).forEach(function(k) { if (low.indexOf(k) >= 0) rep = aiKB[k]; });
+    box.innerHTML += "<div class='cm bot'><div class='cb2'><b>AI Kurikulum:</b><br>" + rep + "</div></div>";
+    box.scrollTop = box.scrollHeight;
+  }, 600);
+  box.scrollTop = box.scrollHeight;
 }
 
-function clearChat(){
-  document.getElementById("chat-box").innerHTML='<div class="chat-msg bot"><div class="chat-bubble"><b>Halo!</b><br>Chat direset. Ada yang bisa dibantu?</div></div>';
+function clrChat() {
+  document.getElementById("chat-box").innerHTML = "<div class='cm bot'><div class='cb2'><b>Halo!</b><br>Chat direset. Silakan tanya.</div></div>";
 }
 
-// ─ TOAST ─
-function toast(title,msg,type){
-  var el=document.getElementById("toast");
-  document.getElementById("t-title").innerText=title;
-  document.getElementById("t-msg").innerText=msg||"";
-  document.getElementById("t-icon").innerText=type==="err"?"[!]":type==="warn"?"[~]":"[v]";
-  el.style.borderColor=type==="err"?"var(--accent-ruby)":type==="warn"?"var(--accent-gold)":"var(--accent-cyan)";
+// ── TOAST ──
+function toast(title, msg, type) {
+  var el = document.getElementById("toast");
+  document.getElementById("t-title").textContent = title;
+  document.getElementById("t-msg").textContent   = msg || "";
+  var icon = document.getElementById("t-icon");
+  if (type === "err")  { icon.textContent = "!"; el.style.borderColor = "var(--ruby)"; }
+  else if (type === "warn") { icon.textContent = "~"; el.style.borderColor = "var(--gold)"; }
+  else { icon.textContent = "✓"; el.style.borderColor = "var(--cyan)"; }
   el.classList.add("show");
   clearTimeout(el._t);
-  el._t=setTimeout(function(){el.classList.remove("show");},4000);
+  el._t = setTimeout(function() { el.classList.remove("show"); }, 4000);
 }
 </script>
 </body>
