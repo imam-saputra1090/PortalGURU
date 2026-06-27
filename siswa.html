@@ -72,6 +72,11 @@
           <i class="fa fa-right-from-bracket"></i> Keluar Sesi
         </button>
       </div>
+          <div class="sb-footer">
+        <button class="btn-logout" onclick="doSiswaLogout()">
+          <i class="fa fa-right-from-bracket"></i> Keluar Sesi
+        </button>
+      </div>
     </aside>
 
     <main class="main">
@@ -95,9 +100,19 @@
               <label class="form-label">Deskripsi Aktivitas / Pekerjaan</label>
               <textarea class="form-control" id="j-act" rows="5" required placeholder="Jelaskan langkah kerja pengerjaan motor/mobil atau aktivitas magang lainnya secara detail..."></textarea>
             </div>
-            <div class="form-group">
-              <label class="form-label">Kendala Lapangan (Opsional)</label>
-              <input class="form-control" id="j-isu" placeholder="Baut slek, tools kurang lengkap, dll.">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="form-group">
+                <label class="form-label">Kendala Lapangan (Opsional)</label>
+                <input class="form-control" id="j-isu" placeholder="Baut slek, tools kurang lengkap, dll.">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Foto Kegiatan / Bukti (Opsional)</label>
+                <input class="form-control" type="file" id="j-photo" accept="image/*" onchange="previewPhoto(event)">
+                <div id="photo-preview-container" style="display:none; margin-top:10px; position:relative; width:90px; height:90px; border-radius:8px; overflow:hidden; border:1px solid var(--border);">
+                  <img id="photo-preview" style="width:100%; height:100%; object-fit:cover;">
+                  <button type="button" onclick="removePhoto()" style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.6); border:none; color:#fff; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center;">&times;</button>
+                </div>
+              </div>
             </div>
             <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
               <button class="btn-act bp" type="submit"><i class="fa fa-save"></i> Simpan Jurnal</button>

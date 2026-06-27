@@ -3,6 +3,7 @@
   var conf = window.CONFIG;
 
   var SS_student = null;
+  var uploadedPhotoBase64 = "";
   var SS_journals = [];
 
   document.addEventListener("DOMContentLoaded", function() {
@@ -162,6 +163,7 @@
       date: date,
       content: act,
       issue: isu,
+      photo: uploadedPhotoBase64 || "", // Store base64 photo locally
       approved: false
     };
 
@@ -176,18 +178,28 @@
 
     document.getElementById("j-act").value = "";
     document.getElementById("j-isu").value = "";
-    toast("Jurnal Disimpan", "Jurnal tanggal " + date + " tersimpan! Mensinkronkan otomatis...");
+    removePhoto(); // Clear photo input and preview
+    toast("Jurnal Disimpan", "Jurnal tanggal " + date + " tersimpan! Mensinkronkan ke Drive...");
     renderMyJurnal();
 
-    // Auto Sync to GAS in background
+    // Auto Sync to GAS in background via POST (handles large image payload safely)
     try {
-      var p = "action=addJournal&studentName=" + encodeURIComponent(SS_student.name) +
-              "&wa=" + encodeURIComponent(SS_student.wa) +
-              "&dudi=" + encodeURIComponent(dudi) +
-              "&date=" + encodeURIComponent(date) +
-              "&content=" + encodeURIComponent(act) +
-              "&issue=" + encodeURIComponent(isu);
-      fetch(conf.GAS_URL + "?" + p).catch(function(e) {});
+      var payload = {
+        action: "addJournal",
+        studentName: SS_student.name,
+        wa: SS_student.wa,
+        dudi: dudi,
+        date: date,
+        content: act,
+        issue: isu,
+        photo: entry.photo
+      };
+      fetch(conf.GAS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(function(ex) {});
     } catch(e) {}
   }
 
@@ -292,7 +304,29 @@
     el._t = setTimeout(function() { el.classList.remove("show"); }, 4000);
   }
 
+  
+  function previewPhoto(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      uploadedPhotoBase64 = evt.target.result;
+      document.getElementById("photo-preview").src = uploadedPhotoBase64;
+      document.getElementById("photo-preview-container").style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removePhoto() {
+    uploadedPhotoBase64 = "";
+    document.getElementById("j-photo").value = "";
+    document.getElementById("photo-preview-container").style.display = "none";
+    document.getElementById("photo-preview").src = "";
+  }
+
   window.doSiswaLogin = doSiswaLogin;
+  window.previewPhoto = previewPhoto;
+  window.removePhoto = removePhoto;
   window.doSiswaLogout = doSiswaLogout;
   window.sSwitch = sSwitch;
   window.saveJurnal = saveJurnal;
