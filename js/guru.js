@@ -207,7 +207,7 @@
 
     if (!myStudents.length) {
       tb.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:28px">Belum ada siswa bimbingan Anda.</td></tr>';
-      return renderStats();
+      return renderStats([]);
     }
     
     var rows = "";
@@ -220,18 +220,25 @@
       rows += "<tr><td style='color:var(--text-muted)'>" + (i+1) + "</td><td style='font-weight:600'>" + s.name + "</td><td>" + (s.kelas||"-") + "</td><td>" + (s.dudi||"-") + "</td><td>" + (s.owner||"-") + "</td><td>" + (s.pembimbing||"-") + "</td><td>" + waLink + "</td><td><span class='badge bg'>Aktif</span></td><td>" + actHtml + "</td></tr>";
     });
     tb.innerHTML = rows;
-    renderStats();
+    renderStats(myStudents);
   }
 
-  function renderStats() {
+  function renderStats(list) {
+    var sList = list || [];
     var dudis = {};
-    G_students.forEach(function(s) { if (s.dudi) dudis[s.dudi] = 1; });
+    sList.forEach(function(s) { if (s.dudi) dudis[s.dudi] = 1; });
+    
+    // Filter journals for only my students
+    var myJournals = G_journals.filter(function(j) {
+      return sList.some(function(s) { return s.name === j.studentName; });
+    });
+
     var statsEl = document.getElementById("pkl-stats");
     if (statsEl) {
       statsEl.innerHTML =
-        "<div class='stat-card s-ruby'><div class='stat-val'>" + G_students.length + "</div><div class='stat-label'>Total Siswa PKL</div><i class='fa fa-users stat-icon'></i></div>" +
-        "<div class='stat-card s-green'><div class='stat-val'>" + G_students.length + "</div><div class='stat-label'>Status Aktif</div><i class='fa fa-check-circle stat-icon'></i></div>" +
-        "<div class='stat-card s-cyan'><div class='stat-val'>" + G_journals.length + "</div><div class='stat-label'>Jurnal Masuk</div><i class='fa fa-book-open stat-icon'></i></div>" +
+        "<div class='stat-card s-ruby'><div class='stat-val'>" + sList.length + "</div><div class='stat-label'>Total Siswa PKL</div><i class='fa fa-users stat-icon'></i></div>" +
+        "<div class='stat-card s-green'><div class='stat-val'>" + sList.length + "</div><div class='stat-label'>Status Aktif</div><i class='fa fa-check-circle stat-icon'></i></div>" +
+        "<div class='stat-card s-cyan'><div class='stat-val'>" + myJournals.length + "</div><div class='stat-label'>Jurnal Masuk</div><i class='fa fa-book-open stat-icon'></i></div>" +
         "<div class='stat-card s-gold'><div class='stat-val'>" + Object.keys(dudis).length + "</div><div class='stat-label'>DUDI/Bengkel</div><i class='fa fa-industry stat-icon'></i></div>";
     }
   }
