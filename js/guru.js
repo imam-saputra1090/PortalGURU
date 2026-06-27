@@ -160,8 +160,7 @@
     var dash = document.getElementById("g-dash");
     dash.style.display = "block";
     dash.className = "dash-page shown";
-    var mnav = document.getElementById("g-mn");
-    if (mnav) mnav.style.display = "flex";
+    // let CSS handle bottom nav display
     var t = G_teacher;
     var init = (t.name || "G").replace(/^(drs|dra|ir)\.\s*/i, "").charAt(0).toUpperCase();
     document.getElementById("g-av").textContent   = init;
@@ -478,7 +477,84 @@
   }
 
   // Expose functions globally for HTML element event handlers
-  window.showPanel = showPanel;
+  
+  function downloadTemplate() {
+    var data = [
+      ["Nama Siswa", "Kelas", "Bengkel/DUDI", "Penyelia", "WA Bengkel", "Alamat Bengkel"],
+      ["Ahmad Yusuf", "XI TKR 1", "Kharisma Jaya Motor", "SUGI INDRADI, S.T", "082143333209", "Jl. Pramuka No. 12"],
+      ["Farel Valentino", "XI TKR 2", "Bengkel Pak Eko", "IMAM SAPUTRA, S.T", "088268145183", "Jl. Raden Intan No. 4"]
+    ];
+    var ws = XLSX.utils.aoa_to_sheet(data);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Template PKL");
+    XLSX.writeFile(wb, "Template_Data_PKL.xlsx");
+    toast("Template Diunduh", "Gunakan file ini sebagai contoh.");
+  }
+
+  function triggerExcelUpload() {
+    document.getElementById("excel-file").click();
+  }
+
+  function uploadExcel(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        var data = evt.target.result;
+        var workbook = XLSX.read(data, { type: 'binary' });
+        var sheetName = workbook.SheetNames[0];
+        var sheet = workbook.Sheets[sheetName];
+        var rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        
+        // Skip header row
+        var importedCount = 0;
+        for (var i = 1; i < rows.length; i++) {
+          var row = rows[i];
+          if (!row || !row[0] || !row[2]) continue; // Nama Siswa and DUDI are required
+          
+          var name = String(row[0]).trim();
+          var kelas = row[1] ? String(row[1]).trim() : "XI TKR 1";
+          var dudi = String(row[2]).trim();
+          var owner = row[3] ? String(row[3]).trim() : "";
+          var wa = row[4] ? String(row[4]).trim() : "";
+          var addr = row[5] ? String(row[5]).trim() : "";
+          
+          G_students.push({
+            id: Date.now() + Math.random(),
+            name: name,
+            kelas: kelas,
+            dudi: dudi,
+            owner: owner,
+            supervisor: owner,
+            wa: wa,
+            addr: addr
+          });
+          importedCount++;
+
+          // Send to GAS in background
+          try {
+            var p = "action=addPlacement&siswa=" + encodeURIComponent(name) + "&bengkel=" + encodeURIComponent(dudi) + "&kelas=" + encodeURIComponent(kelas) + "&pemilik=" + encodeURIComponent(owner) + "&wa=" + encodeURIComponent(wa) + "&alamat=" + encodeURIComponent(addr) + "&pembimbing=" + encodeURIComponent(G_teacher.name);
+            fetch(conf.GAS_URL + "?" + p).catch(function() {});
+          } catch(ex) {}
+        }
+        
+        if (importedCount > 0) {
+          localStorage.setItem(conf.KEY_STUDENTS, JSON.stringify(G_students));
+          renderStudents();
+          toast("Impor Berhasil", importedCount + " data siswa berhasil ditambahkan.");
+        } else {
+          toast("Gagal Impor", "Format kolom atau data kosong.", "err");
+        }
+      } catch(ex2) {
+        toast("Gagal Impor", "Gagal membaca file Excel.", "err");
+      }
+    };
+    reader.readAsBinaryString(file);
+    e.target.value = ""; // Reset file input
+  }
+
+window.showPanel = showPanel;
   window.doLogin = doLogin;
   window.doRegister = doRegister;
   window.doLogout = doLogout;
@@ -486,6 +562,9 @@
   window.toggleAF = toggleAF;
   window.addStu = addStu;
   window.exExcel = exExcel;
+  window.downloadTemplate = downloadTemplate;
+  window.triggerExcelUpload = triggerExcelUpload;
+  window.uploadExcel = uploadExcel;
   window.apvJ = apvJ;
   window.replyWA = replyWA;
   window.importSync = importSync;

@@ -12,6 +12,7 @@
   <!-- External CSS -->
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/guru.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -143,7 +144,10 @@
           <div class="action-bar">
             <button class="btn-act bp" onclick="toggleAF()"><i class="fa fa-plus"></i> Tambah Siswa</button>
             <button class="btn-act bs" onclick="exExcel()"><i class="fa fa-file-excel"></i> Ekspor Excel</button>
+            <button class="btn-act bs" onclick="downloadTemplate()"><i class="fa fa-download"></i> Template Excel</button>
+            <button class="btn-act bs" onclick="triggerExcelUpload()"><i class="fa fa-file-import"></i> Unggah Excel</button>
             <button class="btn-act bs" onclick="window.print()"><i class="fa fa-print"></i> Cetak</button>
+            <input type="file" id="excel-file" accept=".xlsx, .xls, .csv" style="display:none;" onchange="uploadExcel(event)">
           </div>
         </div>
 
