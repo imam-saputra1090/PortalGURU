@@ -141,7 +141,7 @@
         }
       }
       if (nv) nv.className = "nav-item" + (t === id ? " active" : "");
-      if (mn) mn.className = "m-btn" + (t === id ? " on" : "");
+      if (mn) mn.className = "m-btn" + (t === id ? " active" : "");
     });
     if (id === "riwayat") renderMyJurnal();
   }

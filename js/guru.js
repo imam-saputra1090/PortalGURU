@@ -73,13 +73,13 @@
     if (which === "masuk") {
       masuk.style.display  = "block";
       daftar.style.display = "none";
-      tbM.className = "tb on";
-      tbD.className = "tb off";
+      tbM.className = "tab-btn on-ruby";
+      tbD.className = "tab-btn off";
     } else {
       masuk.style.display  = "none";
       daftar.style.display = "block";
-      tbM.className = "tb off";
-      tbD.className = "tb on";
+      tbM.className = "tab-btn off";
+      tbD.className = "tab-btn on-ruby";
     }
   }
 
@@ -190,7 +190,7 @@
         }
       }
       if (nv) nv.className = "nav-item" + (t === id ? " active" : "");
-      if (mn) mn.className = "m-btn" + (t === id ? " on" : "");
+      if (mn) mn.className = "m-btn" + (t === id ? " active" : "");
     });
   }
 
