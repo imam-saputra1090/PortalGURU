@@ -1,546 +1,158 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Portal Siswa PKL | InfoDesk234</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root{
-  --bg:#050b14; --card:rgba(13,22,38,0.9); --border:rgba(255,255,255,0.08);
-  --ruby:#d8226c; --cyan:#00f5ff; --gold:#f5c542; --green:#00e676;
-  --txt:#e8eaf0; --muted:#7a8299; --font:'Inter',sans-serif; --r:14px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--txt);overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 70% 50% at 15% 20%,rgba(0,245,255,.13) 0%,transparent 70%),
-             radial-gradient(ellipse 60% 45% at 85% 75%,rgba(216,34,108,.09) 0%,transparent 70%)}
-
-/* ─ AUTH ─ */
-#s-auth{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.card-auth{background:var(--card);border:1px solid var(--border);border-radius:22px;
-  padding:40px 36px;width:100%;max-width:480px;backdrop-filter:blur(20px);
-  box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
-  position:relative;overflow:hidden}
-.card-auth::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--cyan),#0088cc)}
-.logo{font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);display:inline-block}
-h2.title{font-size:20px;font-weight:700;margin-bottom:5px}
-p.sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.5}
-
-/* ─ FORM ─ */
-.fg{margin-bottom:15px}
-.fl{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;
-  text-transform:uppercase;letter-spacing:.5px}
-.fc{width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid var(--border);
-  border-radius:10px;color:var(--txt);font-family:var(--font);font-size:14px;outline:none;transition:all .25s}
-.fc:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,245,255,.15)}
-.fc::placeholder{color:var(--muted)}
-.fc option{background:#0d1626}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn-full{width:100%;padding:14px;border:none;border-radius:12px;font-family:var(--font);
-  font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:all .25s;
-  background:linear-gradient(135deg,var(--cyan),#0088cc);color:#fff;
-  box-shadow:0 4px 20px rgba(0,245,255,.25)}
-.btn-full:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,245,255,.4)}
-
-/* ─ DASHBOARD ─ */
-#s-dash{position:relative;z-index:1;display:none;min-height:100vh}
-#s-dash.on{display:grid;grid-template-columns:240px 1fr}
-.sb{background:rgba(13,22,38,.95);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;height:100vh;position:sticky;top:0;
-  overflow-y:auto;backdrop-filter:blur(20px)}
-.sb-logo{padding:22px 20px 16px;font-size:18px;font-weight:800;letter-spacing:1px;
-  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.sb-prof{padding:16px 20px;border-bottom:1px solid var(--border)}
-.av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:20px;font-weight:700;margin-bottom:8px;
-  background:linear-gradient(135deg,var(--cyan),#0088cc);color:#fff;
-  box-shadow:0 0 15px rgba(0,245,255,.2)}
-.sb-name{font-size:14px;font-weight:700;margin-bottom:2px}
-.sb-sub{font-size:11px;color:var(--muted)}
-.nav-m{padding:12px 10px;flex:1}
-.ni{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:10px;
-  margin-bottom:3px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);
-  border:none;background:none;width:100%;text-align:left;font-family:var(--font);
-  transition:all .25s}
-.ni:hover{background:rgba(255,255,255,.05);color:var(--txt)}
-.ni.on{background:rgba(0,245,255,.12);color:var(--cyan);font-weight:600}
-.ni i{width:18px;text-align:center}
-.sb-foot{padding:14px 10px;border-top:1px solid var(--border)}
-.btn-out{width:100%;padding:10px;background:transparent;border:1px solid rgba(0,245,255,.3);
-  border-radius:10px;color:var(--cyan);font-family:var(--font);font-size:13px;font-weight:600;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s}
-.btn-out:hover{background:rgba(0,245,255,.08)}
-.main-c{padding:28px 32px;overflow-y:auto}
-.ph{display:flex;align-items:flex-start;justify-content:space-between;
-  margin-bottom:22px;flex-wrap:wrap;gap:12px}
-.ph h1{font-size:22px;font-weight:800}
-.ph p{font-size:13px;color:var(--muted);margin-top:3px}
-.tc{display:none}
-.tc.on{display:block}
-.action-bar{display:flex;gap:10px;flex-wrap:wrap}
-.ba{padding:9px 18px;border-radius:10px;border:none;font-family:var(--font);
-  font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;
-  gap:7px;transition:all .25s}
-.bp{background:linear-gradient(135deg,var(--cyan),#0088cc);color:#fff}
-.bp:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(0,245,255,.25)}
-.bs{background:rgba(255,255,255,.06);color:var(--txt);border:1px solid var(--border)}
-.bs:hover{background:rgba(255,255,255,.1)}
-
-/* ─ CARD ─ */
-.cd{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:22px;margin-bottom:18px;backdrop-filter:blur(10px)}
-.cd-t{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:9px}
-
-/* ─ JOURNAL ITEM ─ */
-.ji{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
-.jh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
-.jn{font-weight:700;font-size:14px}
-.jd{font-size:11px;color:var(--muted);margin-top:2px}
-.jb{font-size:13px;color:var(--muted);line-height:1.6}
-.ja{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.bsm{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .25s}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.bg2{background:rgba(0,230,118,.15);color:var(--green)}
-.bo2{background:rgba(245,197,66,.15);color:var(--gold)}
-
-/* ─ TOAST ─ */
-.toast{position:fixed;bottom:24px;right:24px;z-index:99999;background:var(--card);
-  border:1px solid var(--border);border-radius:14px;padding:14px 18px;
-  display:flex;align-items:center;gap:12px;max-width:360px;backdrop-filter:blur(20px);
-  transform:translateY(80px);opacity:0;transition:all .35s;pointer-events:none;
-  box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.toast.show{transform:translateY(0);opacity:1;pointer-events:auto}
-.tt{font-size:13px;font-weight:700;margin-bottom:2px}
-.tm{font-size:12px;color:var(--muted)}
-
-/* ─ MOBILE ─ */
-@media(max-width:768px){
-  #s-dash.on{grid-template-columns:1fr}
-  .sb{display:none}
-  .mn{display:flex!important}
-  .main-c{padding:16px;padding-bottom:80px}
-  .frow{grid-template-columns:1fr}
-}
-.mn{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;
-  background:rgba(13,22,38,.97);border-top:1px solid var(--border);
-  padding:10px 8px;gap:4px;justify-content:space-around;backdrop-filter:blur(20px)}
-.mb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;
-  font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;
-  padding:6px 10px;border-radius:8px;font-family:var(--font)}
-.mb.on{color:var(--cyan)}
-.mb i{font-size:18px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Portal Siswa PKL | InfoDesk234</title>
+  <meta name="description" content="Portal Laporan Jurnal Harian Siswa PKL">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/siswa.css">
 </head>
 <body>
 
-<!-- AUTH PAGE -->
-<div id="s-auth">
-<div class="card-auth">
-  <div class="logo">
-    <span class="dot"></span>
-    INFODESK<span style="color:var(--cyan)">234</span>
+  <!-- ===================== AUTH ===================== -->
+  <div class="auth-page" id="s-auth">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="auth-dot auth-dot-g" style="background:var(--accent-cyan);box-shadow:0 0 10px var(--accent-cyan)"></span>
+        INFODESK<span style="color:var(--accent-cyan)">234</span>
+      </div>
+      <h2 class="auth-title">Portal Siswa PKL</h2>
+      <p class="auth-subtitle">Pilih nama Anda dan masukkan nomor WA untuk masuk ke lembar pengisian jurnal harian.</p>
+
+      <form onsubmit="doSiswaLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Pilih Nama Anda</label>
+          <select class="form-control" id="s-select" required>
+            <option value="">-- Memuat daftar nama... --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">WhatsApp / NISN</label>
+          <input class="form-control" id="s-wa" type="tel" placeholder="Contoh: 08xxxxxxxxxx" required>
+        </div>
+        <button class="btn-submit btn-cyan" type="submit">
+          <i class="fa fa-user-graduate"></i> Masuk Sebagai Siswa
+        </button>
+      </form>
+      <p class="link-sm" style="font-size:11px;margin-top:16px;">
+        <i class="fa fa-circle-info"></i> Nama tidak terdaftar? Hubungi Guru Pamong Anda untuk mendaftarkan penempatan PKL.
+      </p>
+    </div>
   </div>
-  <h2 class="title">Portal Jurnal Siswa PKL</h2>
-  <p class="sub">Pilih nama Anda lalu masukkan nomor WhatsApp untuk masuk ke portal jurnal harian.</p>
 
-  <form onsubmit="doSiswaLogin(event)">
-    <div class="fg">
-      <label class="fl">Pilih Nama Anda</label>
-      <select class="fc" id="s-select" required>
-        <option value="">-- Memuat daftar nama... --</option>
-      </select>
-    </div>
-    <div class="fg">
-      <label class="fl">Nomor WhatsApp / NISN</label>
-      <input class="fc" id="s-wa" type="tel" placeholder="Contoh: 08xxxxxxxxxx" required>
-    </div>
-    <button class="btn-full" type="submit">
-      <i class="fa fa-user-graduate"></i> Masuk Sebagai Siswa
-    </button>
-  </form>
-  <p class="hint" style="font-size:11px;margin-top:16px;">
-    <i class="fa fa-circle-info"></i> Nama belum terdaftar? Minta guru Anda mendaftarkannya terlebih dahulu.
-  </p>
-</div>
-</div>
+  <!-- ===================== DASHBOARD ===================== -->
+  <div class="dash-page" id="s-dash">
+    <aside class="sidebar">
+      <div class="sb-logo">
+        <span style="width:9px;height:9px;border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 8px var(--accent-cyan);display:inline-block"></span>
+        INFODESK<span style="color:var(--accent-cyan)">234</span>
+      </div>
+      <div class="sb-profile">
+        <div class="sb-avatar sb-avatar-s" id="ss-av">S</div>
+        <div class="sb-name" id="ss-name">Nama Siswa</div>
+        <div class="sb-meta" id="ss-dudi">DUDI: -</div>
+        <div class="sb-meta" id="ss-wa" style="margin-top:2px;">WA: -</div>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" id="nv-tulis" onclick="sSwitch('tulis')">
+          <i class="fa fa-pen-nib"></i> Tulis Jurnal
+        </button>
+        <button class="nav-item" id="nv-riwayat" onclick="sSwitch('riwayat')">
+          <i class="fa fa-clock-rotate-left"></i> Riwayat Jurnal
+        </button>
+      </nav>
+      <div class="sb-footer">
+        <button class="btn-logout" onclick="doSiswaLogout()">
+          <i class="fa fa-right-from-bracket"></i> Keluar Sesi
+        </button>
+      </div>
+    </aside>
 
-<!-- DASHBOARD -->
-<div id="s-dash">
-  <aside class="sb">
-    <div class="sb-logo">
-      <span style="width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);display:inline-block"></span>
-      INFODESK<span style="color:var(--cyan)">234</span>
-    </div>
-    <div class="sb-prof">
-      <div class="av" id="ss-av">S</div>
-      <div class="sb-name" id="ss-name">Nama Siswa</div>
-      <div class="sb-sub" id="ss-dudi">DUDI: -</div>
-      <div class="sb-sub" id="ss-wa" style="margin-top:2px">WA: -</div>
-    </div>
-    <nav class="nav-m">
-      <button class="ni on" id="nv-tulis"   onclick="sSwitch('tulis')">   <i class="fa fa-pen-nib" style="color:var(--cyan)"></i> Tulis Jurnal</button>
-      <button class="ni"    id="nv-riwayat" onclick="sSwitch('riwayat')"><i class="fa fa-clock-rotate-left"></i> Riwayat Jurnal</button>
-    </nav>
-    <div class="sb-foot">
-      <button class="btn-out" onclick="doSiswaLogout()"><i class="fa fa-right-from-bracket"></i> Keluar Sesi</button>
-    </div>
-  </aside>
+    <main class="main">
+      <!-- TULIS JURNAL -->
+      <div class="tab-content active" id="tc-tulis">
+        <div class="ph">
+          <div>
+            <h1 class="ph-title"><i class="fa fa-pen-nib" style="color:var(--accent-cyan)"></i> Jurnal Aktivitas Harian</h1>
+            <p class="ph-sub" id="ss-head">Lengkapi rincian kegiatan PKL Anda hari ini</p>
+          </div>
+        </div>
 
-  <main class="main-c">
-    <!-- TULIS JURNAL -->
-    <div class="tc on" id="tc-tulis">
-      <div class="ph">
-        <div>
-          <h1><i class="fa fa-pen-nib" style="color:var(--cyan)"></i> Tulis Jurnal Harian</h1>
-          <p id="ss-head">Lengkapi laporan aktivitas magang Anda hari ini</p>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-cyan)"><i class="fa fa-file-pen"></i> Form Jurnal</div>
+          <form onsubmit="saveJurnal(event)">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="form-group"><label class="form-label">Tanggal Kegiatan</label><input class="form-control" type="date" id="j-date" required></div>
+              <div class="form-group"><label class="form-label">Nama DUDI / Bengkel</label><input class="form-control" id="j-dudi" required placeholder="Tempat Magang"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Deskripsi Aktivitas / Pekerjaan</label>
+              <textarea class="form-control" id="j-act" rows="5" required placeholder="Jelaskan langkah kerja pengerjaan motor/mobil atau aktivitas magang lainnya secara detail..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kendala Lapangan (Opsional)</label>
+              <input class="form-control" id="j-isu" placeholder="Baut slek, tools kurang lengkap, dll.">
+            </div>
+            <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn-act bp" type="submit"><i class="fa fa-save"></i> Simpan Jurnal</button>
+              <button class="btn-act bs" type="button" onclick="sendWA()"><i class="fa-brands fa-whatsapp"></i> Kirim &amp; Sync WA</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- CODE BOX -->
+        <div class="card" id="sync-box" style="display:none">
+          <div class="card-title" style="color:var(--accent-cyan)"><i class="fa fa-qrcode"></i> Kode Sinkronisasi Jurnal</div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Kirimkan kode sync di bawah ini ke WhatsApp Guru Anda agar jurnal ini masuk ke dashboard Portal Guru.</p>
+          <textarea class="form-control" id="sync-code" rows="4" readonly onclick="this.select()" style="font-family:monospace;font-size:11px"></textarea>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn-act bp" onclick="copySyncCode()"><i class="fa fa-copy"></i> Salin Kode</button>
+            <button class="btn-act bs" onclick="document.getElementById('sync-box').style.display='none'"><i class="fa fa-times"></i> Tutup</button>
+          </div>
         </div>
       </div>
-      <div class="cd">
-        <div class="cd-t" style="color:var(--cyan)"><i class="fa fa-file-pen"></i> Form Laporan Aktivitas</div>
-        <form onsubmit="saveJurnal(event)">
-          <div class="frow" style="margin-bottom:14px">
-            <div class="fg"><label class="fl">Tanggal Kegiatan</label><input class="fc" type="date" id="j-date" required></div>
-            <div class="fg"><label class="fl">Nama DUDI / Bengkel</label><input class="fc" id="j-dudi" required placeholder="Nama bengkel tempat PKL"></div>
-          </div>
-          <div class="fg">
-            <label class="fl">Aktivitas / Kegiatan yang Dilakukan</label>
-            <textarea class="fc" id="j-act" rows="5" required placeholder="Contoh: Melakukan tune-up mesin Avanza, membersihkan throttle body, memeriksa busi dan menyetel celah..."></textarea>
-          </div>
-          <div class="fg">
-            <label class="fl">Hambatan / Kendala (Opsional)</label>
-            <input class="fc" id="j-isu" placeholder="Contoh: Kunci 12 ring pas slip, baut keras">
-          </div>
-          <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-            <button class="ba bp" type="submit"><i class="fa fa-save"></i> Simpan Jurnal</button>
-            <button class="ba bs" type="button" onclick="sendWA()"><i class="fa-brands fa-whatsapp"></i> Kirim &amp; Sync WA</button>
-          </div>
-        </form>
-      </div>
 
-      <!-- KODE SYNC -->
-      <div class="cd" id="sync-box" style="display:none">
-        <div class="cd-t" style="color:var(--cyan)"><i class="fa fa-qrcode"></i> Kode Sinkronisasi Jurnal</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Salin kode di bawah ini dan kirimkan ke WA guru agar jurnal bisa dimasukkan ke Portal Guru.</p>
-        <textarea class="fc" id="sync-code" rows="4" readonly onclick="this.select()" style="font-family:monospace;font-size:11px"></textarea>
-        <div style="display:flex;gap:10px;margin-top:12px">
-          <button class="ba bp" onclick="copySyncCode()"><i class="fa fa-copy"></i> Salin Kode</button>
-          <button class="ba bs" onclick="document.getElementById('sync-box').style.display='none'"><i class="fa fa-times"></i> Tutup</button>
+      <!-- RIWAYAT JURNAL -->
+      <div class="tab-content" id="tc-riwayat">
+        <div class="ph">
+          <div>
+            <h1 class="ph-title"><i class="fa fa-clock-rotate-left" style="color:var(--accent-cyan)"></i> Riwayat Laporan</h1>
+            <p class="ph-sub">Daftar semua jurnal yang tersimpan di memori perangkat ini</p>
+          </div>
+          <div class="action-bar">
+            <button class="btn-act bs" onclick="exMyJurnal()"><i class="fa fa-file-word"></i> Ekspor Word</button>
+          </div>
+        </div>
+        <div id="my-feed">
+          <p style="color:var(--text-muted);text-align:center;padding:30px">Belum ada riwayat jurnal.</p>
         </div>
       </div>
+    </main>
+  </div>
+
+  <!-- MOBILE NAV -->
+  <nav class="m-nav" id="s-mn" style="display:none">
+    <button class="m-btn active" id="mn-tulis" onclick="sSwitch('tulis')"><i class="fa fa-pen-nib"></i>Tulis</button>
+    <button class="m-btn" id="mn-riwayat" onclick="sSwitch('riwayat')"><i class="fa fa-clock-rotate-left"></i>Riwayat</button>
+  </nav>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span id="t-icon" style="font-size:20px;">✓</span>
+    <div>
+      <div class="t-title" id="t-title">-</div>
+      <div class="t-msg" id="t-msg">-</div>
     </div>
+  </div>
 
-    <!-- RIWAYAT JURNAL -->
-    <div class="tc" id="tc-riwayat">
-      <div class="ph">
-        <div>
-          <h1><i class="fa fa-clock-rotate-left" style="color:var(--cyan)"></i> Riwayat Jurnal Saya</h1>
-          <p>Daftar semua jurnal yang sudah Anda simpan di perangkat ini</p>
-        </div>
-        <div class="action-bar">
-          <button class="ba bs" onclick="exMyJurnal()"><i class="fa fa-file-word"></i> Ekspor Word</button>
-        </div>
-      </div>
-      <div id="my-feed"><p style="color:var(--muted);text-align:center;padding:30px">Belum ada riwayat jurnal.</p></div>
-    </div>
-  </main>
-</div>
-
-<!-- MOBILE NAV -->
-<nav class="mn" id="s-mn">
-  <button class="mb on" id="mn-tulis"   onclick="sSwitch('tulis')">   <i class="fa fa-pen-nib"></i>Tulis</button>
-  <button class="mb"    id="mn-riwayat" onclick="sSwitch('riwayat')"><i class="fa fa-clock-rotate-left"></i>Riwayat</button>
-</nav>
-
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span id="t-icon" style="font-size:20px">&#10003;</span>
-  <div><div class="tt" id="t-title">-</div><div class="tm" id="t-msg">-</div></div>
-</div>
-
-<script>
-// ── CONFIG ──
-var GAS_URL = "https://script.google.com/macros/s/AKfycbwkrQiPi02Y9anDQ92b8_2mV-dqJ6sRcXTy3lA5kr7ShvA7PrSYEf0tVvfBp_uEaB8WZw/exec";
-var KEY_S_LOCAL = "id234_stu";
-var KEY_J_LOCAL = "id234_stu_j_";
-var KEY_GLOBAL_STUDENTS = "id234_students";
-
-// ── STATE ──
-var SS_student = null;
-var SS_journals = [];
-
-// ── INIT ──
-document.addEventListener("DOMContentLoaded", function() {
-  var tglInput = document.getElementById("j-date");
-  if (tglInput) tglInput.value = new Date().toISOString().split("T")[0];
-
-  var saved = localStorage.getItem(KEY_S_LOCAL);
-  if (saved) {
-    try {
-      SS_student = JSON.parse(saved);
-      loadSJ();
-      showSDash();
-    } catch(e) {
-      localStorage.removeItem(KEY_S_LOCAL);
-    }
-  }
-  fillDropdown();
-});
-
-function fillDropdown() {
-  var sel = document.getElementById("s-select");
-  if (!sel) return;
-  var local = [];
-  try { local = JSON.parse(localStorage.getItem(KEY_GLOBAL_STUDENTS) || "[]"); } catch(e) {}
-  populateSel(sel, local);
-
-  if (!GAS_URL || GAS_URL === "https://script.google.com/macros/s/AKfycbwkrQiPi02Y9anDQ92b8_2mV-dqJ6sRcXTy3lA5kr7ShvA7PrSYEf0tVvfBp_uEaB8WZw/exec") return;
-  fetch(GAS_URL, { cache: "no-cache" })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d && d.placements && d.placements.length) {
-        var mapped = d.placements.map(function(p) {
-          return { name: p.siswa, dudi: p.bengkel, supervisor: p.pembimbing };
-        });
-        localStorage.setItem(KEY_GLOBAL_STUDENTS, JSON.stringify(mapped));
-        populateSel(sel, mapped);
-      }
-    })
-    .catch(function(err) { console.log("GAS dropdown skip:", err.message); });
-}
-
-function populateSel(sel, list) {
-  var inds = [];
-  list.forEach(function(item) {
-    var names = (item.name || "").split(",");
-    names.forEach(function(n) {
-      var nm = n.trim();
-      if (nm && !inds.some(function(x) { return x.name === nm; })) {
-        inds.push({ name: nm, dudi: item.dudi || "", supervisor: item.supervisor || "" });
-      }
-    });
-  });
-  inds.sort(function(a, b) { return a.name.localeCompare(b.name); });
-  sel.innerHTML = '<option value="">-- Pilih nama Anda --</option>';
-  inds.forEach(function(s) {
-    var o = document.createElement("option");
-    o.value = s.name;
-    o.dataset.dudi = s.dudi;
-    o.dataset.sup = s.supervisor;
-    o.textContent = s.name + (s.dudi ? " (" + s.dudi + ")" : "");
-    sel.appendChild(o);
-  });
-  if (!inds.length) {
-    sel.innerHTML = '<option value="">-- Nama belum terdaftar di Portal Guru --</option>';
-  }
-}
-
-// ── SISWA LOGIN ──
-function doSiswaLogin(e) {
-  e.preventDefault();
-  var sel = document.getElementById("s-select");
-  var wa = (document.getElementById("s-wa").value || "").trim();
-  var name = sel.value;
-  if (!name || !wa) { toast("Lengkapi Data", "Pilih nama dan isi WA/NISN.", "err"); return; }
-
-  var opt = sel.options[sel.selectedIndex];
-  SS_student = {
-    name: name,
-    wa: wa,
-    dudi: opt.dataset.dudi || "",
-    supervisor: opt.dataset.sup || ""
-  };
-  localStorage.setItem(KEY_S_LOCAL, JSON.stringify(SS_student));
-  loadSJ();
-  showSDash();
-  toast("Selamat Datang", "Halo " + name + "! Selamat menulis jurnal hari ini.");
-}
-
-function doSiswaLogout() {
-  if (!confirm("Keluar dari sesi siswa?")) return;
-  localStorage.removeItem(KEY_S_LOCAL);
-  location.reload();
-}
-
-function showSDash() {
-  document.getElementById("s-auth").style.display = "none";
-  document.getElementById("s-dash").className = "on";
-  document.getElementById("s-mn").style.display = "flex";
-  var s = SS_student;
-  var init = (s.name || "S").charAt(0).toUpperCase();
-  document.getElementById("ss-av").textContent = init;
-  document.getElementById("ss-name").textContent = s.name;
-  document.getElementById("ss-dudi").textContent = "DUDI: " + (s.dudi || "-");
-  document.getElementById("ss-wa").textContent = "WA: " + s.wa;
-  var jDudi = document.getElementById("j-dudi");
-  if (jDudi) jDudi.value = s.dudi || "";
-  document.getElementById("ss-head").textContent = "Pembimbing: " + (s.supervisor || "Guru Pamong");
-  renderMyJurnal();
-}
-
-function loadSJ() {
-  var key = KEY_J_LOCAL + (SS_student ? SS_student.name : "");
-  try { SS_journals = JSON.parse(localStorage.getItem(key) || "[]"); } catch(e) { SS_journals = []; }
-}
-
-function saveSJ() {
-  var key = KEY_J_LOCAL + (SS_student ? SS_student.name : "");
-  localStorage.setItem(key, JSON.stringify(SS_journals));
-}
-
-// ── TAB SWITCH ──
-var STABS = ["tulis", "riwayat"];
-function sSwitch(id) {
-  STABS.forEach(function(t) {
-    var tc = document.getElementById("tc-" + t);
-    var nv = document.getElementById("nv-" + t);
-    var mn = document.getElementById("mn-" + t);
-    if (tc) tc.className = "tc" + (t === id ? " on" : "");
-    if (nv) nv.className = "ni" + (t === id ? " on" : "");
-    if (mn) mn.className = "mb" + (t === id ? " on" : "");
-  });
-  if (id === "riwayat") renderMyJurnal();
-}
-
-function saveJurnal(e) {
-  e.preventDefault();
-  var date = document.getElementById("j-date").value;
-  var dudi = (document.getElementById("j-dudi").value || "").trim();
-  var act  = (document.getElementById("j-act").value  || "").trim();
-  var isu  = (document.getElementById("j-isu").value  || "").trim();
-  if (!date || !act) { toast("Data Kurang", "Isi tanggal dan aktivitas.", "err"); return; }
-
-  var entry = {
-    id: Date.now(),
-    studentName: SS_student.name,
-    wa: SS_student.wa,
-    dudi: dudi,
-    date: date,
-    content: act,
-    issue: isu,
-    approved: false
-  };
-
-  SS_journals.push(entry);
-  saveSJ();
-
-  var code = "JURNAL_SYNC:" + btoa(JSON.stringify(entry));
-  var syncCodeText = document.getElementById("sync-code");
-  if (syncCodeText) syncCodeText.value = code;
-  var syncBox = document.getElementById("sync-box");
-  if (syncBox) syncBox.style.display = "block";
-
-  document.getElementById("j-act").value = "";
-  document.getElementById("j-isu").value = "";
-  toast("Jurnal Disimpan", "Jurnal tanggal " + date + " tersimpan! Salin kode di bawah.");
-  renderMyJurnal();
-}
-
-function sendWA() {
-  var date = document.getElementById("j-date").value;
-  var dudi = (document.getElementById("j-dudi").value || "").trim();
-  var act  = (document.getElementById("j-act").value  || "").trim();
-  var isu  = (document.getElementById("j-isu").value  || "").trim();
-  if (!date || !act) { toast("Data Kurang", "Isi tanggal dan aktivitas magang.", "err"); return; }
-
-  var entry = {
-    id: Date.now(),
-    studentName: SS_student.name,
-    wa: SS_student.wa,
-    dudi: dudi,
-    date: date,
-    content: act,
-    issue: isu,
-    approved: false
-  };
-
-  SS_journals.push(entry);
-  saveSJ();
-
-  var code = "JURNAL_SYNC:" + btoa(JSON.stringify(entry));
-  var textMsg = "*JURNAL HARIAN PKL*\nNama: " + entry.studentName + "\nTanggal: " + entry.date + "\nDUDI: " + entry.dudi + "\n\nAktivitas:\n" + entry.content;
-  if (entry.issue) {
-    textMsg += "\n\nKendala: " + entry.issue;
-  }
-  textMsg += "\n\nKode Sync:\n" + code;
-
-  window.open("https://wa.me/?text=" + encodeURIComponent(textMsg), "_blank");
-  toast("WA Dibuka", "Kirim pesan jurnal ini ke nomor WA guru pamong Anda.");
-  renderMyJurnal();
-}
-
-function renderMyJurnal() {
-  var f = document.getElementById("my-feed");
-  if (!f) return;
-  if (!SS_journals.length) {
-    f.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;">Belum ada riwayat jurnal.</p>';
-    return;
-  }
-  var h = "";
-  var rev = SS_journals.slice().reverse();
-  rev.forEach(function(j) {
-    var statClass = j.approved ? "bg2" : "bo2";
-    var statText = j.approved ? "Disetujui Guru" : "Menunggu";
-    var isuHtml = j.issue ? "<div style='font-size:12px;color:var(--gold);margin-top:8px'><i class='fa fa-triangle-exclamation'></i> Kendala: " + j.issue + "</div>" : "";
-    h += "<div class='ji'><div class='jh'><div><div class='jn' style='color:var(--cyan)'><i class='fa fa-calendar-day'></i> " + j.date + "</div><div class='jd'>" + (j.dudi || "-") + "</div></div><span class='badge " + statClass + "'>" + statText + "</span></div><div class='jb'>" + j.content + "</div>" + isuHtml + "<div class='ja'><button class='bsm' style='background:rgba(0,245,255,.1);color:var(--cyan)' onclick='resendWA(" + j.id + ")'><i class='fa-brands fa-whatsapp'></i> Kirim Ulang</button></div></div>";
-  });
-  f.innerHTML = h;
-}
-
-function resendWA(id) {
-  var j = null;
-  for (var i = 0; i < SS_journals.length; i++) {
-    if (SS_journals[i].id == id) { j = SS_journals[i]; break; }
-  }
-  if (!j) return;
-  var code = "JURNAL_SYNC:" + btoa(JSON.stringify(j));
-  var textMsg = "RESEND JURNAL PKL\nNama: " + j.studentName + "\nTanggal: " + j.date + "\n\n" + j.content + "\n\nKode Sync:\n" + code;
-  window.open("https://wa.me/?text=" + encodeURIComponent(textMsg), "_blank");
-}
-
-function copySyncCode() {
-  var el = document.getElementById("sync-code");
-  if (!el) return;
-  el.select();
-  document.execCommand("copy");
-  toast("Tersalin", "Kode sync jurnal disalin ke clipboard.");
-}
-
-function exMyJurnal() {
-  if (!SS_journals.length) { toast("Kosong", "Belum ada data jurnal.", "err"); return; }
-  var s = SS_student;
-  var h = "<html><body><h2>Laporan Jurnal PKL</h2><p>Nama: " + s.name + " | WA: " + s.wa + "</p><hr><ol>";
-  SS_journals.forEach(function(j) {
-    h += "<li><h4>" + j.date + " - " + (j.dudi || "") + "</h4><p>" + j.content + "</p>";
-    if (j.issue) h += "<p><i>Kendala: " + j.issue + "</i></p>";
-    h += "</li>";
-  });
-  h += "</ol></body></html>";
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([h], {type:"application/msword"}));
-  a.download = "Jurnal_" + (s.name || "Siswa") + ".doc";
-  a.click();
-  toast("Ekspor", "File Word diunduh.");
-}
-
-// ── TOAST ──
-function toast(title, msg, type) {
-  var el = document.getElementById("toast");
-  document.getElementById("t-title").textContent = title;
-  document.getElementById("t-msg").textContent   = msg || "";
-  var icon = document.getElementById("t-icon");
-  if (type === "err")  { icon.textContent = "!"; el.style.borderColor = "var(--ruby)"; }
-  else if (type === "warn") { icon.textContent = "~"; el.style.borderColor = "var(--gold)"; }
-  else { icon.textContent = "✓"; el.style.borderColor = "var(--cyan)"; }
-  el.classList.add("show");
-  clearTimeout(el._t);
-  el._t = setTimeout(function() { el.classList.remove("show"); }, 4000);
-}
-</script>
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/siswa.js"></script>
 </body>
 </html>

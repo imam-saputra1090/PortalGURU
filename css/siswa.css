@@ -1,0 +1,110 @@
+/* Siswa Portal Specific styles */
+.auth-card::before {
+  background: linear-gradient(90deg, var(--accent-cyan), #0088cc);
+}
+
+.sb-avatar-s {
+  background: linear-gradient(135deg, var(--accent-cyan), #0088cc);
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.25);
+  color: #050b14;
+}
+
+.nav-item.active {
+  background: rgba(0, 245, 255, 0.12);
+  color: var(--accent-cyan);
+}
+
+.btn-logout {
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  color: var(--accent-cyan);
+}
+.btn-logout:hover {
+  background: rgba(0, 245, 255, 0.08);
+}
+
+.bp {
+  background: linear-gradient(135deg, var(--accent-cyan), #0088cc);
+  color: #050b14;
+}
+.bp:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3);
+}
+
+.form-control:focus {
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.15) !important;
+}
+
+.m-btn.active {
+  color: var(--accent-cyan);
+}
+
+/* JURNAL */
+.j-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.j-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.j-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.j-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.j-body {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.j-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-ok {
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge.bg {
+  background: rgba(0, 230, 118, 0.15);
+  color: var(--accent-green);
+}
+
+.badge.bo {
+  background: rgba(245, 197, 66, 0.15);
+  color: var(--accent-gold);
+}

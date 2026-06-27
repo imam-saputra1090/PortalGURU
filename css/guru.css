@@ -1,0 +1,351 @@
+/* Guru Portal Specific styles */
+.auth-card::before {
+  background: linear-gradient(90deg, var(--accent-ruby), var(--accent-cyan));
+}
+
+.auth-dot-g {
+  background: var(--accent-ruby);
+  box-shadow: 0 0 10px var(--accent-ruby);
+}
+
+.sb-avatar-g {
+  background: linear-gradient(135deg, #d8226c, #a0184f);
+  box-shadow: 0 0 15px rgba(216, 34, 108, 0.4);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: rgba(216, 34, 108, 0.15);
+  color: var(--accent-ruby);
+}
+
+.btn-logout {
+  border: 1px solid rgba(216, 34, 108, 0.3);
+  color: var(--accent-ruby);
+}
+.btn-logout:hover {
+  background: rgba(216, 34, 108, 0.1);
+}
+
+.bp {
+  background: linear-gradient(135deg, #d8226c, #a0184f);
+}
+.bp:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(216, 34, 108, 0.4);
+}
+
+/* STATS */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.s-ruby::before  { background: var(--accent-ruby); }
+.s-cyan::before  { background: var(--accent-cyan); }
+.s-gold::before  { background: var(--accent-gold); }
+.s-green::before { background: var(--accent-green); }
+
+.stat-val {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.stat-icon {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 22px;
+  opacity: 0.15;
+}
+
+/* TABLE */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 13px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge.bg {
+  background: rgba(0, 230, 118, 0.15);
+  color: var(--accent-green);
+}
+
+.badge.bo {
+  background: rgba(245, 197, 66, 0.15);
+  color: var(--accent-gold);
+}
+
+/* ADD FORM */
+.add-form {
+  display: none;
+  background: rgba(216, 34, 108, 0.05);
+  border: 1px solid rgba(216, 34, 108, 0.2);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.add-form-title {
+  font-weight: 700;
+  color: var(--accent-ruby);
+  margin-bottom: 14px;
+}
+
+/* JURNAL FEED */
+.j-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.j-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.j-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.j-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.j-body {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.j-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-ok {
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+/* MODUL */
+.mod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+  gap: 16px;
+}
+
+.mod-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  transition: var(--transition);
+}
+
+.mod-card:hover {
+  border-color: rgba(216, 34, 108, 0.3);
+  transform: translateY(-2px);
+}
+
+.mod-kelas {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-ruby);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.mod-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.mod-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.mod-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* SOAL */
+.soal-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.soal-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-ruby);
+  margin-bottom: 4px;
+}
+
+.soal-q {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.soal-opts {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.soal-opts li {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.soal-opts li.ans {
+  color: var(--accent-green);
+  font-weight: 600;
+  background: rgba(0, 230, 118, 0.07);
+}
+
+/* CHAT AI */
+.chat-box {
+  height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+
+.chat-msg {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-msg.user {
+  flex-direction: row-reverse;
+}
+
+.chat-bubble {
+  max-width: 76%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.chat-msg.bot .chat-bubble {
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px 14px 14px 14px;
+}
+
+.chat-msg.user .chat-bubble {
+  background: linear-gradient(135deg, var(--accent-ruby), #a0184f);
+  color: #fff;
+  border-radius: 14px 4px 14px 14px;
+}
+
+.chat-row {
+  display: flex;
+  gap: 10px;
+}
+
+.m-btn.active {
+  color: var(--accent-ruby);
+}
+
+@media(max-width:768px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+}
