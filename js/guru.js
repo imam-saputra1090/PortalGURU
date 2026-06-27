@@ -47,7 +47,7 @@
                 owner: p.pemilik || "",
                 wa: p.wa || "",
                 addr: p.alamat || "",
-                supervisor: p.pembimbing || ""
+                pembimbing: p.pembimbing || ""
               });
             }
           });
@@ -196,18 +196,28 @@
 
   function renderStudents() {
     var tb = document.getElementById("pkl-tb");
-    if (!G_students.length) {
-      tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:28px">Belum ada siswa.</td></tr>';
+    
+    // Filter: Only show students assigned to THIS logged-in teacher
+    var myStudents = G_students.filter(function(s) {
+      if (!s.pembimbing) return true; // Show unassigned as fallback
+      var tName = (G_teacher.name || "").toLowerCase().trim();
+      var sPem = (s.pembimbing || "").toLowerCase().trim();
+      return sPem.indexOf(tName) >= 0 || tName.indexOf(sPem) >= 0;
+    });
+
+    if (!myStudents.length) {
+      tb.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:28px">Belum ada siswa bimbingan Anda.</td></tr>';
       return renderStats();
     }
+    
     var rows = "";
-    G_students.forEach(function(s, i) {
+    myStudents.forEach(function(s, i) {
       var waLink = s.wa ? '<a href="https://wa.me/' + s.wa.replace(/[^0-9]/g,"") + '" target="_blank" style="color:var(--accent-cyan)">' + s.wa + '</a>' : "-";
       var actHtml = "<div style='display:flex;gap:4px;'>" +
                         "<button class='btn-act bs' style='padding:3px 6px;margin:0;font-size:11px;border-color:rgba(0,245,255,0.3);color:var(--accent-cyan);' onclick='window.editStu(" + s.id + ")'><i class='fa fa-pencil'></i></button>" +
                         "<button class='btn-act bs' style='padding:3px 6px;margin:0;font-size:11px;border-color:rgba(216,34,108,0.3);color:var(--accent-ruby);' onclick='window.delStu(" + s.id + ")'><i class='fa fa-trash'></i></button>" +
                       "</div>";
-      rows += "<tr><td style='color:var(--text-muted)'>" + (i+1) + "</td><td style='font-weight:600'>" + s.name + "</td><td>" + (s.kelas||"-") + "</td><td>" + (s.dudi||"-") + "</td><td>" + (s.supervisor||s.owner||"-") + "</td><td>" + waLink + "</td><td><span class='badge bg'>Aktif</span></td><td>" + actHtml + "</td></tr>";
+      rows += "<tr><td style='color:var(--text-muted)'>" + (i+1) + "</td><td style='font-weight:600'>" + s.name + "</td><td>" + (s.kelas||"-") + "</td><td>" + (s.dudi||"-") + "</td><td>" + (s.owner||"-") + "</td><td>" + (s.pembimbing||"-") + "</td><td>" + waLink + "</td><td><span class='badge bg'>Aktif</span></td><td>" + actHtml + "</td></tr>";
     });
     tb.innerHTML = rows;
     renderStats();
@@ -249,7 +259,7 @@
         G_students[idx].kelas = kelas;
         G_students[idx].dudi = dudi;
         G_students[idx].owner = owner;
-        G_students[idx].supervisor = owner;
+        G_students[idx].pembimbing = G_teacher.name;
         G_students[idx].wa = wa;
         G_students[idx].addr = addr;
         
@@ -269,7 +279,7 @@
       }
     } else {
       // ADD MODE
-      G_students.push({ id: Date.now(), name: name, kelas: kelas, dudi: dudi, owner: owner, supervisor: owner, wa: wa, addr: addr });
+      G_students.push({ id: Date.now(), name: name, kelas: kelas, dudi: dudi, owner: owner, pembimbing: G_teacher.name, wa: wa, addr: addr });
       localStorage.setItem(conf.KEY_STUDENTS, JSON.stringify(G_students));
       renderStudents(); toggleAF();
       ["ns-n","ns-d","ns-o","ns-w","ns-a"].forEach(function(id2) { document.getElementById(id2).value = ""; });
@@ -340,10 +350,56 @@
     var h = "";
     var rev = G_journals.slice().reverse();
     rev.forEach(function(j) {
-      var btnHtml = !j.approved ? "<button class='btn-ok' style='background:rgba(0,230,118,.15);color:var(--accent-green)' onclick='window.apvJ(" + j.id + ")'><i class='fa fa-check'></i> Setujui</button>" : "";
-      h += "<div class='j-item'><div class='j-head'><div><div class='j-name'><i class='fa fa-user-graduate' style='color:var(--accent-ruby)'></i> " + (j.studentName||"Siswa") + "</div><div class='j-date'>" + j.date + " | " + (j.dudi||"DUDI") + "</div></div><span class='badge " + (j.approved ? "bg" : "bo") + "'>" + (j.approved ? "Disetujui" : "Menunggu") + "</span></div><div class='j-body'>" + j.content + "</div><div class='j-actions'>" + btnHtml + "<button class='btn-ok' style='background:rgba(0,245,255,.1);color:var(--accent-cyan)' onclick='window.replyWA(" + j.id + ")'><i class='fa-brands fa-whatsapp'></i> Balas WA</button></div></div>";
+      var btnHtml = !j.approved ? "<button class='btn-ok' style='background:rgba(0,230,118,.15);color:var(--accent-green);' onclick='window.apvJ(" + j.id + ")'><i class='fa fa-check'></i> Setujui</button>" : "";
+      h += "<div class='j-item'><div class='j-head'><div><div class='j-name'><i class='fa fa-user-graduate' style='color:var(--accent-ruby)'></i> " + (j.studentName||"Siswa") + "</div><div class='j-date'>" + j.date + " | " + (j.dudi||"DUDI") + "</div></div><span class='badge " + (j.approved ? "bg" : "bo") + "'>" + (j.approved ? "Disetujui" : "Menunggu") + "</span></div><div class='j-body'>" + j.content + "</div>" + (j.issue ? "<div style='font-size:12px;color:var(--accent-gold);margin-top:6px;'><i class='fa fa-triangle-exclamation'></i> Kendala: " + j.issue + "</div>" : "") + "<div class='j-actions'>" + btnHtml + "<button class='btn-ok' style='background:rgba(0,245,255,.1);color:var(--accent-cyan);' onclick='window.replyWA(" + j.id + ")'><i class='fa-brands fa-whatsapp'></i> Balas WA</button><button class='btn-ok' style='background:rgba(255,255,255,.05);color:var(--text-main);border:1px solid var(--border);' onclick='window.printJournalPDF(" + j.id + ")'><i class='fa fa-file-pdf'></i> Cetak PDF</button></div></div>";
     });
     f.innerHTML = h;
+  }
+
+  function printJournalPDF(id) {
+    var j = G_journals.find(function(x) { return x.id === id; });
+    if (!j) return;
+    
+    var printWindow = window.open("", "_blank");
+    printWindow.document.write("<html><head><title>Jurnal Harian PKL - " + j.studentName + "</title>");
+    printWindow.document.write("<style>");
+    printWindow.document.write("body { font-family: 'Helvetica Neue', Arial, sans-serif; padding: 40px; color: #333; line-height: 1.6; }");
+    printWindow.document.write(".header { border-bottom: 2px solid #333; padding-bottom: 12px; margin-bottom: 30px; text-align: center; }");
+    printWindow.document.write(".title { font-size: 24px; font-weight: bold; text-transform: uppercase; }");
+    printWindow.document.write(".meta-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }");
+    printWindow.document.write(".meta-table td { padding: 8px 12px; border: 1px solid #ddd; }");
+    printWindow.document.write(".meta-table td.label { font-weight: bold; background-color: #f9f9f9; width: 25%; }");
+    printWindow.document.write(".content-box { border: 1px solid #ddd; padding: 20px; border-radius: 6px; background: #fff; margin-bottom: 20px; }");
+    printWindow.document.write(".content-box h4 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }");
+    printWindow.document.write(".sign-area { margin-top: 50px; display: flex; justify-content: space-between; }");
+    printWindow.document.write(".sign-box { text-align: center; width: 40%; }");
+    printWindow.document.write(".sign-space { height: 80px; }");
+    printWindow.document.write("</style></head><body>");
+    
+    printWindow.document.write("<div class='header'><div class='title'>Laporan Jurnal Harian PKL</div><div>SMK INFODESK 234</div></div>");
+    
+    printWindow.document.write("<table class='meta-table'>");
+    printWindow.document.write("<tr><td class='label'>Nama Siswa</td><td>" + j.studentName + "</td><td class='label'>Tanggal Kegiatan</td><td>" + j.date + "</td></tr>");
+    printWindow.document.write("<tr><td class='label'>DUDI / Bengkel</td><td>" + (j.dudi || "-") + "</td><td class='label'>Kontak WA</td><td>" + (j.wa || "-") + "</td></tr>");
+    printWindow.document.write("</table>");
+    
+    printWindow.document.write("<div class='content-box'><h4>Aktivitas / Kegiatan Hari Ini</h4><p>" + j.content.replace(/\n/g, "<br>") + "</p></div>");
+    if (j.issue) {
+      printWindow.document.write("<div class='content-box' style='border-left: 4px solid #f5c542;'><h4>Kendala / Hambatan</h4><p>" + j.issue.replace(/\n/g, "<br>") + "</p></div>");
+    }
+    
+    printWindow.document.write("<div class='sign-area'>");
+    printWindow.document.write("<div class='sign-box'><div>Siswa PKL,</div><div class='sign-space'></div><div style='text-decoration:underline; font-weight:bold;'>" + j.studentName + "</div></div>");
+    printWindow.document.write("<div class='sign-box'><div>Pembimbing Industri,</div><div class='sign-space'></div><div style='text-decoration:underline; font-weight:bold;'>___________________</div></div>");
+    printWindow.document.write("</div>");
+    
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(function() {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
   }
 
   function apvJ(id) {
@@ -405,21 +461,60 @@
 
   function getDefaultModules() {
     return [
-      { id:1, kelas:"Kelas X",   kode:"M.10.1", title:"K3 dan Alat Ukur Otomotif",    desc:"K3 bengkel, jangka sorong, mikrometer, multimeter.", size:"4.2 MB", link:"" },
-      { id:2, kelas:"Kelas X",   kode:"M.10.2", title:"Gambar Teknik Proyeksi",        desc:"Proyeksi ISO, gambar potongan, orthogonal.",            size:"5.8 MB", link:"" },
-      { id:3, kelas:"Kelas XI",  kode:"M.11.1", title:"Sistem EFI dan Sensor Engine",  desc:"MAP, IAT, ECT, CKP, O2 sensor, OBD-II scan.",          size:"8.1 MB", link:"" },
-      { id:4, kelas:"Kelas XI",  kode:"M.11.2", title:"Sistem Rem dan Kemudi",          desc:"Rem cakram, ABS, power steering, balancing.",           size:"6.3 MB", link:"" },
-      { id:5, kelas:"Kelas XII", kode:"M.12.1", title:"Diagnosa Kendaraan dan Scanner", desc:"DTC OBD-II, wiring diagram, scanner Autel/Launch.",     size:"7.5 MB", link:"" },
-      { id:6, kelas:"Kelas XII", kode:"M.12.2", title:"Panduan Laporan PKL dan Sidang", desc:"Format laporan, rubrik DUDI, ujian sidang.",            size:"3.1 MB", link:"" }
+      { id:1, kelas:"TBSM X",   kode:"MATERI TBSM 1", title:"Bahan Ajar TBSM 1 (Premium)", desc:"Materi Kelistrikan Instrument, Karburator konvensional, Tune-Up sepeda motor bebek.", size:"14.5 MB", link:"", price:"Rp 50.000", premium:true },
+      { id:2, kelas:"TBSM XI",  kode:"MATERI TBSM 2", title:"Bahan Ajar TBSM 2 (Premium)", desc:"Sistem Injeksi PGM-FI, Sensor TP/IAT/ECT, Diagnosis DTC MIL, Overhaul kopling.", size:"18.2 MB", link:"", price:"Rp 50.000", premium:true },
+      { id:3, kelas:"Kelas X",   kode:"M.10.1", title:"K3 dan Alat Ukur Otomotif",    desc:"K3 bengkel, jangka sorong, mikrometer, multimeter.", size:"4.2 MB", link:"https://drive.google.com", premium:false },
+      { id:4, kelas:"Kelas XI",  kode:"M.11.1", title:"Sistem EFI dan Sensor Engine",  desc:"MAP, IAT, ECT, CKP, O2 sensor, OBD-II scan.",          size:"8.1 MB", link:"https://drive.google.com", premium:false },
+      { id:5, kelas:"Kelas XI",  kode:"M.11.2", title:"Sistem Rem Sepeda Motor",      desc:"Rem cakram hidrolik, CBS, bleeding minyak rem, kaliper.", size:"6.3 MB", link:"https://drive.google.com", premium:false },
+      { id:6, kelas:"Kelas XII", kode:"M.12.1", title:"Diagnosa Scanner dan Diagnosis", desc:"DTC OBD-II, wiring diagram kelistrikan, reset MIL.",     size:"7.5 MB", link:"https://drive.google.com", premium:false }
     ];
   }
 
   function renderModules() {
     var h = "";
     G_modules.forEach(function(m) {
-      h += "<div class='mod-card'><div class='mod-kelas'><i class='fa fa-graduation-cap'></i> " + m.kelas + " - " + m.kode + "</div><div class='mod-title'>" + m.title + "</div><div class='mod-desc'>" + m.desc + "</div><div class='mod-foot'><span><i class='fa fa-file'></i> " + m.size + "</span>" + (m.link ? "<button class='btn-act bp' onclick=\"window.open('" + m.link + "','_blank')\" style='padding:5px 12px;font-size:11px'><i class='fa fa-download'></i> Unduh</button>" : "<span style='color:var(--text-muted);font-size:11px'><i class='fa fa-lock'></i> Hubungi Admin</span>") + "</div></div>";
+      var actionBtn = "";
+      if (m.premium) {
+        var unlocked = localStorage.getItem("unlocked_mod_" + m.id) === "true";
+        if (unlocked) {
+          actionBtn = "<button class='btn-act bp' onclick=\"window.open('https://drive.google.com','_blank')\" style='padding:5px 12px;font-size:11px;'><i class='fa fa-download'></i> Unduh</button>";
+        } else {
+          actionBtn = "<div style='display:flex;gap:4px;'>" +
+                        "<button class='btn-act bs' style='padding:4px 8px;font-size:10px;border-color:var(--accent-gold);color:var(--accent-gold);' onclick=\"window.buyModule('" + m.kode + "', '" + m.price + "')\"><i class='fa fa-cart-shopping'></i> Beli " + m.price + "</button>" +
+                        "<button class='btn-act bs' style='padding:4px 8px;font-size:10px;' onclick=\"window.unlockCode(" + m.id + ")\"><i class='fa fa-key'></i> Aktivasi</button>" +
+                      "</div>";
+        }
+      } else {
+        actionBtn = "<button class='btn-act bp' onclick=\"window.open('" + (m.link || "https://drive.google.com") + "','_blank')\" style='padding:5px 12px;font-size:11px;'><i class='fa fa-download'></i> Unduh</button>";
+      }
+      
+      var lockIcon = m.premium && localStorage.getItem("unlocked_mod_" + m.id) !== "true" ? " <i class='fa fa-lock' style='color:var(--accent-gold)'></i>" : "";
+      
+      h += "<div class='mod-card'>" +
+             "<div class='mod-kelas'><i class='fa fa-graduation-cap'></i> " + m.kelas + " - " + m.kode + lockIcon + "</div>" +
+             "<div class='mod-title'>" + m.title + "</div>" +
+             "<div class='mod-desc'>" + m.desc + "</div>" +
+             "<div class='mod-foot'><span><i class='fa fa-file'></i> " + m.size + "</span>" + actionBtn + "</div>" +
+           "</div>";
     });
     document.getElementById("mod-grid").innerHTML = h;
+  }
+
+  function buyModule(kode, price) {
+    var msg = encodeURIComponent("Halo Admin InfoDesk234, saya ingin membeli akses lisensi Premium untuk: " + kode + " seharga " + price + ". Bagaimana langkah pembayarannya?");
+    window.open("https://wa.me/6281234567890?text=" + msg, "_blank"); // replace with real admin WA
+  }
+
+  function unlockCode(id) {
+    var code = prompt("Masukkan Kode Lisensi Modul:");
+    if (!code) return;
+    if (code.trim().toUpperCase() === "TBSM123" || code.trim().toUpperCase() === "GURU234") {
+      localStorage.setItem("unlocked_mod_" + id, "true");
+      renderModules();
+      toast("Aktivasi Sukses", "Modul berhasil dibuka dan siap diunduh.");
+    } else {
+      toast("Aktivasi Gagal", "Kode lisensi salah atau tidak aktif.", "err");
+    }
   }
 
   function addModul() {
@@ -436,16 +531,37 @@
       { q:"Komponen yang mengubah tekanan hidrolis menjadi gaya mekanis pada rem cakram?", o:["A. Master Silinder","B. Kaliper rem","C. Booster rem","D. Proportioning valve"], a:1 },
       { q:"Bleeding rem bertujuan untuk?", o:["A. Mengganti minyak rem","B. Membuang udara dari sistem rem","C. Menyetel celah rem","D. Membersihkan kaliper"], a:1 },
       { q:"Sistem ABS mencegah?", o:["A. Ban terlalu cepat direm","B. Ban terkunci saat pengereman keras","C. Rem terlalu panas","D. Minyak rem habis"], a:1 },
-      { q:"Tebal minimum pad rem cakram umumnya?", o:["A. 1 mm","B. 3 mm","C. 5 mm","D. 8 mm"], a:1 }
+      { q:"Tebal minimum pad rem cakram umumnya?", o:["A. 1 mm","B. 3 mm","C. 5 mm","D. 8 mm"], a:1 },
+      { q:"Minyak rem yang memiliki titik didih paling tinggi adalah kelas?", o:["A. DOT 3","B. DOT 4","C. DOT 5","D. DOT 2"], a:2 },
+      { q:"Gejala rem bergetar saat pedal diinjak disebabkan oleh?", o:["A. Minyak rem habis","B. Piringan rotor oleng/runout","C. Kaliper macet","D. Booster bocor"], a:1 },
+      { q:"Komponen rem tromol yang bergesekan langsung dengan tromol saat pengereman adalah?", o:["A. Wheel cylinder","B. Brake shoe/kanvas rem","C. Return spring","D. Backing plate"], a:1 },
+      { q:"Piston kaliper pada rem cakram didorong keluar oleh?", o:["A. Tekanan udara","B. Tekanan cairan minyak rem","C. Kabel baja mekanis","D. Pegas pengembali"], a:1 },
+      { q:"Komponen yang mendistribusikan gaya pengereman antara roda depan dan belakang?", o:["A. Master silinder","B. Proportioning valve","C. Bypass valve","D. Check valve"], a:1 },
+      { q:"Berikut ini adalah kelebihan rem cakram dibanding rem tromol, KECUALI?", o:["A. Pendinginan lebih baik","B. Efek pengereman lebih linier","C. Lebih tahan air dan kotoran","D. Self-energizing action lebih kuat"], a:3 }
     ],
     efi: [
-      { q:"Sensor yang mengukur masa udara masuk mesin EFI?", o:["A. Sensor ECT","B. Sensor MAF/MAP","C. Sensor O2","D. Sensor TPS"], a:1 },
+      { q:"Sensor yang mengukur massa udara masuk mesin EFI?", o:["A. Sensor ECT","B. Sensor MAF/MAP","C. Sensor O2","D. Sensor TPS"], a:1 },
       { q:"Tekanan bahan bakar sistem EFI umumnya berkisar?", o:["A. 0.5-1 bar","B. 2-4 bar","C. 6-8 bar","D. 10-15 bar"], a:1 },
-      { q:"Kode DTC P0115 menandakan kerusakan pada?", o:["A. Sensor MAP","B. Sensor ECT (suhu air)","C. Sensor O2","D. Injector"], a:1 }
+      { q:"Kode DTC P0115 menandakan kerusakan pada?", o:["A. Sensor MAP","B. Sensor ECT (suhu air)","C. Sensor O2","D. Injector"], a:1 },
+      { q:"Actuator pada sistem EFI yang berfungsi menyuplai tambahan udara saat dingin?", o:["A. Fuel injector","B. Idle Air Control (IAC/FID)","C. Purge Control Valve","D. O2 Sensor"], a:1 },
+      { q:"Sensor yang mendeteksi posisi sudut pembukaan katup gas adalah?", o:["A. MAP Sensor","B. TPS (Throttle Position Sensor)","C. IAT Sensor","D. CKP Sensor"], a:1 },
+      { q:"Fungsi utama Oxygen (O2) Sensor pada saluran buang adalah?", o:["A. Mendinginkan gas buang","B. Mendeteksi kadar oksigen sisa pembakaran untuk feedback AFR","C. Mengurangi emisi CO2","D. Membakar sisa bensin"], a:1 },
+      { q:"Sensor yang mendeteksi ketukan (knocking) pada blok mesin adalah?", o:["A. Knock Sensor","B. ECT Sensor","C. CMP Sensor","D. TP Sensor"], a:0 },
+      { q:"Sinyal dari Crankshaft Position (CKP) Sensor digunakan ECU untuk menentukan?", o:["A. Suhu mesin","B. Putaran mesin (RPM) dan saat pengapian","C. Kecepatan kendaraan","D. Kadar O2"], a:1 },
+      { q:"Komponen EFI yang bertugas memompa bensin dari tangki ke delivery pipe adalah?", o:["A. Injector","B. Fuel Pump","C. Pressure Regulator","D. Charcoal Canister"], a:1 },
+      { q:"Perbandingan campuran bensin dan udara ideal (stoikiometri) adalah?", o:["A. 12:1","B. 14.7:1","C. 10:1","D. 16:1"], a:1 }
     ],
     tune: [
       { q:"Celah busi mesin bensin modern idealnya?", o:["A. 0.2-0.3 mm","B. 0.7-1.0 mm","C. 1.5-2.0 mm","D. 2.5-3.0 mm"], a:1 },
-      { q:"Putaran stasioner mesin EFI modern?", o:["A. 400-500 rpm","B. 700-850 rpm","C. 1200-1500 rpm","D. 2000 rpm"], a:1 }
+      { q:"Putaran stasioner mesin EFI modern?", o:["A. 400-500 rpm","B. 700-850 rpm","C. 1200-1500 rpm","D. 2000 rpm"], a:1 },
+      { q:"Penyetelan celah katup dilakukan pada saat mesin berada di posisi?", o:["A. Top kompresi 1","B. Top overlap","C. Langkah buang","D. Langkah hisap"], a:0 },
+      { q:"Alat yang digunakan untuk mengukur celah katup adalah?", o:["A. Dial Gauge","B. Feeler Gauge/thickness gauge","C. Micrometer","D. Vernier Caliper"], a:1 },
+      { q:"Jika celah katup terlalu sempit, maka akibatnya adalah?", o:["A. Katup berisik","B. Katup terlambat menutup/bocor kompresi","C. Konsumsi BBM irit","D. Mesin dingin"], a:1 },
+      { q:"Untuk mengukur berat jenis elektrolit baterai aki basah menggunakan?", o:["A. Multimeter","B. Hydrometer","C. Compression Tester","D. Tachometer"], a:1 },
+      { q:"Alat untuk mengukur tekanan kompresi silinder adalah?", o:["A. Vacuum Gauge","B. Compression Tester","C. Radiator Cup Tester","D. Cylinder Bore Gauge"], a:1 },
+      { q:"Radiator Cap Tester digunakan untuk?", o:"Memeriksa kebocoran sistem pendingin dan tekanan pembukaan katup tutup radiator", o:["A. Mengisi air radiator","B. Mengukur suhu air","C. Memeriksa kebocoran dan tekanan katup tutup radiator","D. Menguji thermostat"], a:2 },
+      { q:"Saat melakukan tune-up, filter udara yang sangat kotor sebaiknya?", o:["A. Dicuci air sabun","B. Disemprot udara bertekanan atau diganti jika rusak","C. Dibiarkan saja","D. Dilumasi oli"], a:1 },
+      { q:"Fungsi vacuum advancer pada distributor pengapian konvensional adalah?", o:["A. Memajukan saat pengapian berdasarkan beban mesin","B. Meningkatkan tegangan koil","C. Menstabilkan idle","D. Menyetel celah platina"], a:0 }
     ]
   };
   var lastSoal = [];
@@ -598,7 +714,7 @@
             kelas: kelas,
             dudi: dudi,
             owner: owner,
-            supervisor: owner,
+            pembimbing: G_teacher.name,
             wa: wa,
             addr: addr
           });
@@ -650,4 +766,14 @@ window.showPanel = showPanel;
   window.sendChat = sendChat;
   window.clrChat = clrChat;
   window.toast = toast;
+  window.buyModule = buyModule;
+  window.unlockCode = unlockCode;
+  window.printJournalPDF = printJournalPDF;
 })();
+
+  function resetLocalDatabase() {
+    if(!confirm("⚠️ PERINGATAN: Ini akan menghapus seluruh data siswa, jurnal, dan sesi di browser Anda. Lanjutkan?")) return;
+    localStorage.clear();
+    location.reload();
+  }
+  window.resetLocalDatabase = resetLocalDatabase;

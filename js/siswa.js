@@ -176,8 +176,19 @@
 
     document.getElementById("j-act").value = "";
     document.getElementById("j-isu").value = "";
-    toast("Jurnal Disimpan", "Jurnal tanggal " + date + " tersimpan! Salin kode di bawah.");
+    toast("Jurnal Disimpan", "Jurnal tanggal " + date + " tersimpan! Mensinkronkan otomatis...");
     renderMyJurnal();
+
+    // Auto Sync to GAS in background
+    try {
+      var p = "action=addJournal&studentName=" + encodeURIComponent(SS_student.name) +
+              "&wa=" + encodeURIComponent(SS_student.wa) +
+              "&dudi=" + encodeURIComponent(dudi) +
+              "&date=" + encodeURIComponent(date) +
+              "&content=" + encodeURIComponent(act) +
+              "&issue=" + encodeURIComponent(isu);
+      fetch(conf.GAS_URL + "?" + p).catch(function(e) {});
+    } catch(e) {}
   }
 
   function sendWA() {

@@ -126,9 +126,12 @@
           <i class="fa fa-robot"></i> AI Kurikulum
         </button>
       </nav>
-      <div class="sb-footer">
+      <div class="sb-footer" style="display:flex; flex-direction:column; gap:6px;">
         <button class="btn-logout" onclick="doLogout()">
           <i class="fa fa-right-from-bracket"></i> Keluar Sesi
+        </button>
+        <button class="btn-logout" style="border-color:rgba(216,34,108,0.2); color:var(--text-muted);" onclick="resetLocalDatabase()">
+          <i class="fa fa-trash-can"></i> Reset Database
         </button>
       </div>
     </aside>
@@ -184,7 +187,7 @@
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Bengkel/DUDI</th><th>Penyelia</th><th>WA Bengkel</th><th>Status</th><th>Aksi</th></tr>
+                <tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Bengkel/DUDI</th><th>Penyelia</th><th>Pembimbing</th><th>WA Bengkel</th><th>Status</th><th>Aksi</th></tr>
               </thead>
               <tbody id="pkl-tb">
                 <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:28px">Belum ada data.</td></tr>
